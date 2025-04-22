@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SignInDto } from '../dtos/user/signin.dto';
-import { environment } from '../environments/environment';
+import { SignInDto } from '../models/user/signin.dto';
+import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountService {
   private apiSignUp = `${environment.apiBaseUrl}/sign-up`;
   private apiSignIn = `${environment.apiBaseUrl}/sign-in`;
   private apiConfig = {
     headers: this.createHeaders(),
-  }
+  };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   private createHeaders(): HttpHeaders {
     return new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -25,6 +25,6 @@ export class AccountService {
   }
 
   signin(signInDto: SignInDto): Observable<any> {
-    return this.http.post(this.apiSignIn, signInDto, this.apiConfig)
+    return this.http.post(this.apiSignIn, signInDto, this.apiConfig);
   }
 }

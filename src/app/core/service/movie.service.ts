@@ -1,13 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
+import { delay, map, Observable, of } from 'rxjs';
+import { MovieResponseDto } from '../models/movie/movie-response.dto';
+import { MovieSearchRequest } from '../models/movie/movie-search-request.dto';
+import { PagingResponse } from '../models/movie/paging-response.dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MovieService {
+  private apiUrl = 'http://localhost:8080/api/movies/search';
+
   constructor(private http: HttpClient) {}
+
+  getMovies(page: number, size: number): Observable<PagingResponse<MovieResponseDto>> {
+    const request: MovieSearchRequest = {
+      paging: {
+        page: page,
+        size: size,
+        orders: {
+          id: 'DESC',
+        },
+      },
+      keyword: '',
+      status: [],
+    };
+
+    return this.http.post<PagingResponse<MovieResponseDto>>(this.apiUrl, request);
+  }
 
   searchMovies(query: string) {
     if (!query.trim()) {

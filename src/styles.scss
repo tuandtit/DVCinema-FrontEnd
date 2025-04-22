@@ -1,1 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'styles/variables';
+@import 'styles/common';
+
+// Các style toàn cục khác nếu có
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}

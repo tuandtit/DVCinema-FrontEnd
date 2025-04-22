@@ -1,8 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { MovieService } from '../../service/movie.service';
+import { MovieService } from '../../core/service/movie.service';
 
 @Component({
   selector: 'app-header',
@@ -10,19 +9,18 @@ import { MovieService } from '../../service/movie.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
+  login() {
+    throw new Error('Method not implemented.');
+  }
+  navigateTo(arg0: string) {
+    throw new Error('Method not implemented.');
+  }
   searchQuery: string = '';
   suggestions: any[] = [];
 
   private searchSubject = new Subject<string>();
 
-  constructor(
-    private translate: TranslateService,
-    private movieService: MovieService
-  ) {
-    translate.addLangs(['vi', 'en']);
-    translate.setDefaultLang('vi');
-    this.translate.use('vi');
-  }
+  constructor(private movieService: MovieService) {}
 
   @HostListener('window:scroll', ['$event'])
   onScroll() {
@@ -48,10 +46,6 @@ export class HeaderComponent implements OnInit {
 
   onSearchChange(query: string): void {
     this.searchSubject.next(query);
-  }
-
-  switchLang(lang: string) {
-    this.translate.use(lang);
   }
 
   selectMovie(movie: any): void {

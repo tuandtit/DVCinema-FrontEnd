@@ -20,12 +20,12 @@
       </a>
 
       <!-- Ô tìm kiếm (bên phải logo) -->
-      <div class="search-autocomplete ms-2 flex-grow-1">
+      <div class="search-autocomplete ms-2 me-3 flex-grow-1">
         <div class="input-group">
           <input
             type="text"
             class="form-control search-input"
-            placeholder="{{ 'NAV.SEARCH' | translate }}"
+            placeholder="Tìm kiếm phim, diễn viên..."
             [(ngModel)]="searchQuery"
             (ngModelChange)="onSearchChange($event)"
           />
@@ -45,7 +45,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="#">{{ 'NAV.TOPIC' | translate }}</a>
+            <a class="nav-link" href="#">CHỦ ĐỀ</a>
           </li>
           <li class="nav-item dropdown hover-dropdown">
             <a
@@ -55,52 +55,41 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              {{ 'NAV.DROPDOWN' | translate }}
+              PHIM
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item" href="#">{{ 'NAV.SINGLE' | translate }}</a>
+                <a class="dropdown-item" href="#">PHIM LẺ</a>
               </li>
               <li>
-                <a class="dropdown-item" href="#">{{ 'NAV.SERIES' | translate }}</a>
+                <a class="dropdown-item" href="#">PHIM BỘ</a>
               </li>
               <li>
-                <a class="dropdown-item" href="#">{{ 'NAV.CINEMA_MOVIES' | translate }}</a>
+                <a class="dropdown-item" href="#">PHIM CHIẾU RẠP</a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">{{ 'NAV.CINEMA' | translate }}</a>
+            <a class="nav-link" href="#">RẠP</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">{{ 'NAV.PRICE' | translate }}</a>
+            <a class="nav-link" href="#">GIÁ VÉ</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">{{ 'NAV.NEWS' | translate }}</a>
+            <a class="nav-link" href="#">TIN TỨC</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">{{ 'NAV.SCHEDULE' | translate }}</a>
+            <a class="nav-link" href="#">LỊCH CHIẾU</a>
           </li>
           <!-- Đăng nhập (trong menu trên mobile) -->
           <li class="nav-item d-lg-none">
-            <button class="btn btn-primary btn-sm btn-login w-100 text-start">
-              {{ 'NAV.LOGIN' | translate }}
-            </button>
-          </li>
-          <!-- Ngôn ngữ (trong menu trên mobile) -->
-          <li class="nav-item d-lg-none">
-            <div class="language-switcher">
-              <button class="btn btn-sm" (click)="switchLang('vi')">🇻🇳</button>
-              <button class="btn btn-sm" (click)="switchLang('en')">🇺🇸</button>
-            </div>
+            <button class="btn btn-primary btn-sm btn-login w-100 text-start">ĐĂNG NHẬP</button>
           </li>
         </ul>
 
         <!-- Đăng nhập và ngôn ngữ (bên phải trên desktop) -->
         <div class="d-none d-lg-flex align-items-center ms-auto">
-          <button class="btn btn-primary btn-sm btn-login">{{ 'NAV.LOGIN' | translate }}</button>
-          <button class="btn btn-sm" (click)="switchLang('vi')">🇻🇳</button>
-          <button class="btn btn-sm" (click)="switchLang('en')">🇺🇸</button>
+          <button class="btn btn-primary btn-sm btn-login">ĐĂNG NHẬP</button>
         </div>
       </div>
     </div>

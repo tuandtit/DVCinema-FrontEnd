@@ -1,11 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AccountService } from '../../service/account.service';
-import { SignInDto } from '../../dtos/user/signin.dto';
-import { LoginResponse } from '../../responses/user/login.response';
-import { ApiResponse } from '../../responses/api.response';
-import { TokenService } from '../../service/token.service';
+import { AccountService } from '../../../core/service/account.service';
+import { SignInDto } from '../../../core/models/user/signin.dto';
+import { LoginResponse } from '../../../responses/user/login.response';
+import { ApiResponse } from '../../../responses/api.response';
+import { TokenService } from '../../../core/service/token.service';
 
 @Component({
   selector: 'app-login',

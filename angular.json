@@ -24,7 +24,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/shopapp-angular",
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles"]
+            },
+            "outputPath": "dist/dvcinema-angular",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -57,7 +60,7 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumError": "6kB"
                 }
               ],
               "outputHashing": "all"

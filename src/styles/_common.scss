@@ -1,0 +1,61 @@
+@import 'variables';
+
+// Typography
+h2 {
+  font-size: 32px;
+  color: $color-text-dark;
+  margin-bottom: 24px;
+  text-align: center;
+
+  @media (max-width: 991px) {
+    font-size: 28px;
+  }
+
+  @media (max-width: 576px) {
+    font-size: 24px;
+  }
+}
+
+h3 {
+  font-size: 20px;
+  color: $color-text-dark;
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+// Buttons
+.btn-primary {
+  background-color: $color-primary;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: darken($color-primary, 10%);
+  }
+}
+
+.btn-outline-primary {
+  border-color: $color-primary;
+  color: $color-primary;
+
+  &:hover {
+    background-color: $color-primary;
+    color: white;
+  }
+}
+
+.btn-success {
+  background-color: $color-accent;
+  border: none;
+
+  &:hover {
+    background-color: darken($color-accent, 10%);
+  }
+}
