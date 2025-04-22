@@ -1,0 +1,38 @@
+.footer {
+  padding: 20px 0;
+  font-size: 14px;
+  color: #6c757d;
+
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .footer-logo img {
+      max-height: 40px; // tùy chỉnh chiều cao phù hợp
+      height: auto;
+      width: auto;
+      border-radius: 10px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 15px;
+
+      a {
+        color: #6c757d;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .footer-bottom {
+    text-align: center;
+    margin-top: 15px;
+  }
+}

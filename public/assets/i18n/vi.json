@@ -1,0 +1,16 @@
+{
+  "NAV": {
+    "SEARCH": "Tìm kiếm phim...",
+    "LOGIN": "ĐĂNG NHẬP",
+    "TOPIC": "CHỦ ĐỀ",
+    "SCHEDULE": "LỊCH CHIẾU",
+    "MOVIE": "PHIM",
+    "CINEMA": "RẠP",
+    "PRICE": "GIÁ VÉ",
+    "NEWS": "TIN MỚI VÀ ƯU ĐÃI",
+    "DROPDOWN": "PHIM",
+    "SINGLE": "PHIM LẺ",
+    "SERIES": "PHIM BỘ",
+    "CINEMA_MOVIES": "PHIM CHIẾU RẠP"
+  }
+}

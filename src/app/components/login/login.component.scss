@@ -1,0 +1,83 @@
+.container {
+  color: white;
+  height: 100vh;
+  margin-top: 50px;
+}
+
+.login-form {
+  background: linear-gradient(to bottom right, #e0f7fa, #f3e5f5); // giống form đăng ký
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 500px;
+  border: 1px solid #dbe2f5;
+  color: #333;
+}
+
+.login-header {
+  text-align: center;
+  color: #3a8ddb;
+  margin-bottom: 20px;
+}
+
+.register-link {
+  text-decoration: none;
+}
+
+.form-control {
+  background-color: transparent;
+  border: none;
+  color: #333;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 153, 0, 0.5);
+}
+
+.login-button {
+  background: linear-gradient(to right, #2b6cb0, #3182ce);
+  color: white;
+  border-radius: 30px;
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 20px;
+  border: none;
+}
+
+.login-button:hover {
+  background: linear-gradient(to right, #225a9b, #2b6cb0);
+  cursor: pointer;
+}
+
+.password-feild {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(0%);
+  color: #3a8ddb;
+  cursor: pointer;
+}
+
+.diviser-nospace {
+  height: 1px;
+  margin: 10px;
+  border: 1px solid #ccc;
+}
+
+.forgot-password {
+  text-align: center;
+  margin-top: 10px;
+
+  a {
+    color: #222;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      color: #3182ce;
+    }
+  }
+}
