@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit {
   filteredMovies: Movie[] = [];
   filterType: string = 'all';
   currentPage: number = 1;
-  pageSize: number = 8;
+  pageSize: number = 12;
   totalPages: number = 1;
   // totalRecord: number = 0;
   isLoading: boolean = false; // Thêm loading state

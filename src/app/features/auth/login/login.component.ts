@@ -31,7 +31,7 @@ export class LoginComponent {
 
   login() {
     const message = `username: ${this.username}` + `password: ${this.password};`;
-    debugger;
+    // debugger;
     const signInData: SignInDto = {
       username: this.username,
       password: this.password,
@@ -39,18 +39,23 @@ export class LoginComponent {
 
     this.accountService.signin(signInData).subscribe({
       next: (response: ApiResponse<LoginResponse>) => {
-        debugger;
+        // debugger;
         // Xử lý khi kết quả trả về khi đăng nhập thành công
         if (response && (response.status.code === 200 || response.status.code === 201)) {
           const result = response.data;
           const token = result.token;
           this.tokenService.setToken(token);
           console.log('true');
+          const returnUrl = this.accountService.getReturnUrl() || '/';
+          this.accountService.clearReturnUrl();
+
+          // Chuyển hướng về trang trước đó
+          this.navigate(returnUrl);
         } else {
         }
       },
       complete: () => {
-        debugger;
+        // debugger;
       },
       error: (error: any) => {
         let errorMessage = 'Something went wrong. Please try again.';
@@ -68,5 +73,14 @@ export class LoginComponent {
         alert(`Cannot sign in: ${errorMessage}`);
       },
     });
+  }
+
+  navigate(route: string): void {
+    this.router.navigate([route]);
+    // Đóng menu mobile nếu đang mở
+    const navbarCollapse = document.querySelector('#navbarSupportedContent');
+    if (navbarCollapse?.classList.contains('show')) {
+      navbarCollapse.classList.remove('show');
+    }
   }
 }

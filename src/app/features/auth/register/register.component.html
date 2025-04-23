@@ -1,4 +1,3 @@
-<app-header></app-header>
 <div class="container">
   <form #registerForm="ngForm" (ngSubmit)="register()">
     <div class="row">
@@ -116,11 +115,10 @@
           <div class="divider"></div>
           <p class="text-center">
             Bạn đã có tài khoản?
-            <span><a href="#" class="register-link">Đăng nhập</a></span>
+            <span><a (click)="navigate('/login')" class="login-link">Đăng nhập</a></span>
           </p>
         </div>
       </div>
     </div>
   </form>
 </div>
-<app-footer></app-footer>

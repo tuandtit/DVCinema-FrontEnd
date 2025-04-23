@@ -15,7 +15,7 @@
       </button>
 
       <!-- Logo -->
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" [routerLink]="['/']">
         <img src="assets/image/logo_dvcinema.jpg" alt="logo_dvcinema" class="logo-img" />
       </a>
 
@@ -61,51 +61,122 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="#">CHỦ ĐỀ</a>
+            <a class="nav-link" (click)="navigate('/topics')">CHỦ ĐỀ</a>
           </li>
           <li class="nav-item dropdown hover-dropdown">
             <a
               class="nav-link dropdown-toggle"
-              href="#"
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
+              (click)="toggleMoviesDropdown()"
             >
               PHIM
             </a>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" [ngClass]="{ show: showMoviesDropdown }">
               <li>
-                <a class="dropdown-item" href="#">PHIM LẺ</a>
+                <a class="dropdown-item" (click)="navigate('/movies/single')">PHIM LẺ</a>
               </li>
               <li>
-                <a class="dropdown-item" href="#">PHIM BỘ</a>
+                <a class="dropdown-item" (click)="navigate('/movies/series')">PHIM BỘ</a>
               </li>
               <li>
-                <a class="dropdown-item" href="#">PHIM CHIẾU RẠP</a>
+                <a class="dropdown-item" (click)="navigate('/movies/theater')">PHIM CHIẾU RẠP</a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">RẠP</a>
+            <a class="nav-link" (click)="navigate('/cinemas')">RẠP</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">GIÁ VÉ</a>
+            <a class="nav-link" (click)="navigate('/ticket-prices')">GIÁ VÉ</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">TIN TỨC</a>
+            <a class="nav-link" (click)="navigate('/news')">TIN TỨC</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">LỊCH CHIẾU</a>
+            <a class="nav-link" (click)="navigate('/showtimes')">LỊCH CHIẾU</a>
           </li>
-          <!-- Đăng nhập (trong menu trên mobile) -->
-          <li class="nav-item d-lg-none">
-            <button class="btn btn-primary btn-sm btn-login w-100 text-start">ĐĂNG NHẬP</button>
+          <!-- Menu trên mobile -->
+          <li *ngIf="isLoggedIn">
+            <div class="nav-item d-lg-none user-menu-mobile">
+              <div class="nav-link user-info" (click)="toggleUserDropdown()">
+                <img
+                  src="https://files.betacorp.vn/media%2fimages%2f2025%2f03%2f28%2f400x633%2D114754%2D280325%2D84.jpg"
+                  alt="User Avatar"
+                  class="user-avatar-mobile"
+                />
+                <span>{{ username || 'Người dùng' }}</span>
+              </div>
+              <ul class="user-dropdown" [ngClass]="{ show: showUserDropdown }">
+                <li>
+                  <a class="dropdown-item" (click)="navigate('/favorites')">Yêu thích</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="navigate('/lists')">Danh sách</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="navigate('/continue-watching')">Xem tiếp</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="navigate('/account')">Tài khoản</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="logout()">Thoát</a>
+                </li>
+              </ul>
+            </div>
           </li>
         </ul>
 
-        <!-- Đăng nhập và ngôn ngữ (bên phải trên desktop) -->
-        <div class="d-none d-lg-flex align-items-center ms-auto">
-          <button class="btn btn-primary btn-sm btn-login">ĐĂNG NHẬP</button>
+        <!-- Nút đăng nhập trên mobile khi chưa đăng nhập -->
+        <ng-container *ngIf="!isLoggedIn">
+          <div class="nav-item d-lg-none">
+            <button class="btn btn-primary btn-sm btn-login w-100 text-start" (click)="login()">
+              ĐĂNG NHẬP
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- User menu trên desktop -->
+        <div class="d-none d-lg-flex align-items-center ms-auto navbar-nav">
+          <ng-container *ngIf="!isLoggedIn">
+            <button
+              class="btn btn-primary btn-sm btn-login w-100 text-start nav-item"
+              (click)="login()"
+            >
+              ĐĂNG NHẬP
+            </button>
+          </ng-container>
+          <ng-container *ngIf="isLoggedIn">
+            <div class="nav-item dropdown user-menu">
+              <div class="nav-link user-info" (click)="toggleUserDropdown()">
+                <img
+                  src="https://files.betacorp.vn/media%2fimages%2f2025%2f03%2f28%2f400x633%2D114754%2D280325%2D84.jpg"
+                  alt="ảnh"
+                  class="user-avatar-mobile"
+                />
+                <span>{{ username || 'Người dùng' }}</span>
+              </div>
+              <ul class="user-dropdown" [ngClass]="{ show: showUserDropdown }">
+                <li>
+                  <a class="dropdown-item" (click)="navigate('/favorites')">Yêu thích</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="navigate('/lists')">Danh sách</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="navigate('/continue-watching')">Xem tiếp</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="navigate('/account')">Tài khoản</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="logout()">Thoát</a>
+                </li>
+              </ul>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>

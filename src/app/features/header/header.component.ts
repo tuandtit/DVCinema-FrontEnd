@@ -10,6 +10,8 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { MovieService } from '../../core/service/movie.service';
 import { MovieResponseDto } from '../../core/models/movie/movie-response.dto';
+import { Router } from '@angular/router';
+import { AccountService } from '../../core/service/account.service';
 
 @Component({
   selector: 'app-header',
@@ -17,12 +19,6 @@ import { MovieResponseDto } from '../../core/models/movie/movie-response.dto';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
-  login() {
-    throw new Error('Method not implemented.');
-  }
-  navigateTo(arg0: string) {
-    throw new Error('Method not implemented.');
-  }
   searchQuery: string = '';
   suggestions: any[] = [];
   pageSize: number = 5;
@@ -32,6 +28,10 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   isLoading: boolean = false;
   isLoadingMore: boolean = false;
   canLoadMore: boolean = true;
+  isLoggedIn: boolean = false;
+  username: string | null = null;
+  showMoviesDropdown: boolean = false;
+  showUserDropdown: boolean = false;
 
   @ViewChild('loadMoreTrigger') loadMoreTrigger!: ElementRef;
   @ViewChild('searchInput') searchInput!: ElementRef;
@@ -40,7 +40,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   private searchSubject = new Subject<string>();
   private observer!: IntersectionObserver;
 
-  constructor(private movieService: MovieService) {}
+  constructor(
+    private movieService: MovieService,
+    private router: Router,
+    private accountService: AccountService
+  ) {}
 
   @HostListener('window:scroll', ['$event'])
   onScroll() {
@@ -56,7 +60,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
 
-    // Đóng menu autocomplete nếu click ra ngoài
     const clickedInsideSearch =
       this.searchInput?.nativeElement.contains(target) ||
       this.suggestionsList?.nativeElement.contains(target);
@@ -64,16 +67,39 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.suggestions = [];
     }
 
-    // Đóng menu mobile nếu click ra ngoài
     const navbarCollapse = document.querySelector('#navbarSupportedContent');
     const navbarToggler = document.querySelector('.navbar-toggler');
-    const clickedInsideMenu = navbarCollapse?.contains(target) || navbarToggler?.contains(target);
+    const userInfo = document.querySelector('.user-info');
+    const moviesDropdownToggle = document.querySelector('.dropdown-toggle');
+    const moviesDropdownMenu = document.querySelector('.dropdown-menu');
+    const userDropdownMenu = document.querySelector('.user-dropdown');
+
+    const clickedInsideMenu =
+      navbarCollapse?.contains(target) ||
+      navbarToggler?.contains(target) ||
+      userInfo?.contains(target) ||
+      moviesDropdownToggle?.contains(target) ||
+      moviesDropdownMenu?.contains(target) ||
+      userDropdownMenu?.contains(target);
+
     if (!clickedInsideMenu && navbarCollapse?.classList.contains('show')) {
       navbarCollapse.classList.remove('show');
+      this.showMoviesDropdown = false;
+      this.showUserDropdown = false;
     }
   }
 
   ngOnInit(): void {
+    this.accountService.isLoggedIn$.subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
+      if (loggedIn) {
+        this.username = this.accountService.getUsername() || 'Người dùng'; // Giả lập
+      } else {
+        this.username = null;
+        this.showUserDropdown = false; // Đóng dropdown khi đăng xuất
+      }
+    });
+
     this.searchSubject
       .pipe(
         debounceTime(300),
@@ -178,14 +204,56 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   onSearchEnter(): void {
     if (this.searchQuery.trim() === '') return;
-    console.log('Chuyển hướng đến trang tìm kiếm với từ khóa:', this.searchQuery);
-    // Sau này: this.router.navigate(['/search', { query: this.searchQuery }]);
+    console.log('Chuyển hướng đến trang kết quả tìm kiếm với từ khóa:', this.searchQuery);
     this.suggestions = [];
+    this.router.navigate(['/search-results'], { queryParams: { q: this.searchQuery } });
   }
 
   selectMovie(movie: any): void {
     console.log('Chuyển hướng đến trang chi tiết phim:', movie.id, movie.title);
     this.suggestions = [];
     this.searchQuery = movie.title;
+    this.router.navigate(['/detail-product', movie.id]);
+  }
+
+  login(): void {
+    this.saveUrl();
+    this.navigate('/login');
+  }
+
+  logout(): void {
+    const currentUrl = this.router.url;
+    this.accountService.logout();
+    this.navigate(currentUrl);
+  }
+
+  saveUrl(): void {
+    const currentUrl = this.router.url;
+    if (currentUrl !== '/login') {
+      this.accountService.setReturnUrl(currentUrl);
+    }
+  }
+
+  navigate(route: string): void {
+    this.router.navigate([route]);
+    const navbarCollapse = document.querySelector('#navbarSupportedContent');
+    if (navbarCollapse?.classList.contains('show')) {
+      navbarCollapse.classList.remove('show');
+    }
+    this.showMoviesDropdown = false;
+    this.showUserDropdown = false;
+  }
+
+  toggleMoviesDropdown(event?: Event): void {
+    this.showMoviesDropdown = !this.showMoviesDropdown;
+    this.showUserDropdown = false;
+    event?.stopPropagation();
+  }
+
+  toggleUserDropdown(event?: Event): void {
+    console.log('Toggling user dropdown', this.showUserDropdown);
+    this.showUserDropdown = !this.showUserDropdown;
+    this.showMoviesDropdown = false;
+    event?.stopPropagation();
   }
 }

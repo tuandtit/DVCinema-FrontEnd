@@ -97,4 +97,13 @@ export class RegisterComponent {
   checkPasswordMatch() {
     this.passwordMismatch = this.password !== this.retypePassword;
   }
+
+  navigate(route: string): void {
+    this.router.navigate([route]);
+    // Đóng menu mobile nếu đang mở
+    const navbarCollapse = document.querySelector('#navbarSupportedContent');
+    if (navbarCollapse?.classList.contains('show')) {
+      navbarCollapse.classList.remove('show');
+    }
+  }
 }

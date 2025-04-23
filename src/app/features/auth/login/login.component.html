@@ -1,6 +1,5 @@
-<app-header></app-header>
 <div class="container">
-  <form #loginForm="ngForm">
+  <form #loginForm="ngForm" (ngSubmit)="login()">
     <div class="row">
       <div class="col-md-6 offset-md-3">
         <div class="login-form mx-auto">
@@ -8,7 +7,7 @@
           <div class="form-group">
             <p class="text-center">
               Nếu bạn chưa có tài khoản,
-              <span><a href="#" class="register-link">Đăng ký ngay</a></span>
+              <span><a (click)="navigate('/register')" class="register-link">Đăng ký ngay</a></span>
             </p>
             <label for="username">Email</label>
             <input
@@ -51,7 +50,7 @@
               </div>
             </div>
           </div>
-          <button type="button" (click)="login()" class="login-button">Đăng nhập</button>
+          <button type="submit" class="login-button">Đăng nhập</button>
           <p class="forgot-password">
             <a href="#">Quên mật khẩu</a>
           </p>
@@ -60,4 +59,3 @@
     </div>
   </form>
 </div>
-<app-footer></app-footer>

@@ -8,18 +8,18 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  background-color: transparent;
-  transition: background-color 0.3s ease;
+  background: transparent;
+  transition: 0.3s ease;
+  padding: 5px 0;
 
   &.scrolled {
-    background-color: $color-dropdown-search-box-bg;
+    background: $color-dropdown-search-box-bg;
     box-shadow: $box-shadow-light;
   }
 }
 
 body {
   padding-top: 80px;
-
   @media (max-width: 991px) {
     padding-top: 60px;
   }
@@ -27,7 +27,7 @@ body {
 
 // Navbar
 .navbar {
-  background-color: transparent;
+  background: transparent;
   box-shadow: none;
 
   .container {
@@ -36,14 +36,21 @@ body {
     justify-content: space-between;
     flex-wrap: nowrap;
     position: relative;
+    padding: 0 10px;
 
     .navbar-brand {
       color: $color-accent;
       font-weight: bold;
+      cursor: pointer;
       order: 2;
-
       @media (min-width: 992px) {
         order: 1;
+      }
+
+      .logo-img {
+        max-height: 40px;
+        width: auto;
+        border-radius: 10px;
       }
     }
 
@@ -52,12 +59,10 @@ body {
       border: none;
       padding: 8px;
       background: transparent;
-
       &:focus {
         outline: none;
         box-shadow: none;
       }
-
       @media (min-width: 992px) {
         flex: 0 0 auto;
       }
@@ -74,7 +79,6 @@ body {
         width: 100%;
         flex: 1 1 auto;
       }
-
       @media (min-width: 992px) {
         order: 2;
         flex-grow: 0;
@@ -91,7 +95,7 @@ body {
         left: 0;
         right: 0;
         padding: 8px 12px;
-        background-color: $color-dropdown-search-box-bg;
+        background: $color-dropdown-search-box-bg;
         border: 1px solid #ddd;
         border-top: none;
         border-radius: 0 0 8px 8px;
@@ -110,7 +114,7 @@ body {
         left: 0;
         right: 0;
         z-index: 1001;
-        background-color: $color-dropdown-search-box-bg;
+        background: $color-dropdown-search-box-bg;
         border: 1px solid #ddd;
         max-height: 300px;
         overflow-y: auto;
@@ -121,13 +125,11 @@ body {
           padding: 8px 12px;
           cursor: pointer;
           border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-
           &:last-child {
             border-bottom: none;
           }
-
           &:hover {
-            background-color: darken($color-dropdown-search-box-bg, 5%);
+            background: darken($color-dropdown-search-box-bg, 5%);
           }
 
           .suggestion-content {
@@ -144,15 +146,11 @@ body {
 
             .suggestion-details {
               flex: 1;
-              display: flex;
-              flex-direction: column;
-
               .suggestion-title {
                 font-weight: bold;
                 font-size: 14px;
                 color: $color-text-dark;
               }
-
               .suggestion-genre {
                 font-size: 12px;
                 color: #666;
@@ -163,7 +161,6 @@ body {
 
         .load-more-trigger {
           text-align: center;
-
           .loading-more {
             padding: 8px 12px;
             font-size: 14px;
@@ -174,28 +171,37 @@ body {
     }
 
     .navbar-nav {
+      .nav-item {
+        @media (max-width: 991px) {
+          padding: 8px 0;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+      }
+
       .nav-link {
         color: $color-text-dark;
         border-radius: 18px;
         padding: 8px 16px;
-        transition: background-color 0.3s ease;
+        transition: 0.3s ease;
+        cursor: pointer;
 
         &:hover {
-          background-color: $color-primary-light;
+          background: $color-primary-light;
         }
-
         &.active {
-          background-color: $color-primary;
+          background: $color-primary;
           color: white !important;
         }
-      }
-    }
 
-    .logo-img {
-      max-height: 40px;
-      height: auto;
-      width: auto;
-      border-radius: 10px;
+        @media (max-width: 991px) {
+          padding: 12px 16px;
+          font-size: 16px;
+          border-radius: 8px;
+        }
+      }
     }
 
     .navbar-collapse {
@@ -214,18 +220,12 @@ body {
         display: none;
         opacity: 0;
         visibility: hidden;
-        -ms-overflow-style: none;
-
-        &::-webkit-scrollbar {
-          display: none;
-        }
-
         transform: translateY(-10px);
         transition:
           opacity 0.3s ease,
           transform 0.3s ease,
           visibility 0.3s ease;
-        background-color: darken($color-dropdown-search-box-bg, 5%);
+        background: darken($color-dropdown-search-box-bg, 5%);
         padding: 5px;
         border-radius: 8px;
         box-shadow: $box-shadow-light;
@@ -234,28 +234,14 @@ body {
         border: 1px solid rgba(0, 0, 0, 0.1);
         z-index: 1001;
 
+        &::-webkit-scrollbar {
+          display: none;
+        }
         &.show {
           display: block;
           opacity: 1;
           visibility: visible;
           transform: translateY(0);
-        }
-
-        .navbar-nav {
-          .nav-item {
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-
-            &:last-child {
-              border-bottom: none;
-            }
-          }
-
-          .nav-link {
-            padding: 12px 16px;
-            font-size: 16px;
-            border-radius: 8px;
-          }
         }
 
         .btn-login {
@@ -264,73 +250,179 @@ body {
           font-size: 16px;
           border-radius: 8px;
           width: 100%;
+          cursor: pointer;
         }
       }
     }
   }
 }
 
-// Hover Dropdown
+// Hover Dropdown (menu PHIM và user-menu trên desktop)
 .hover-dropdown {
+  position: relative;
+
   .dropdown-menu {
     display: none;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease;
+    background: $color-dropdown-search-box-bg;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 8px 0;
+    box-shadow: $box-shadow-deep;
+    min-width: 150px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1001;
 
-    @media (max-width: 991px) {
-      display: none;
+    .dropdown-item {
+      color: $color-text-dark;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition:
+        0.2s ease,
+        color 0.2s ease;
+      &:hover {
+        background: $color-primary-light;
+        color: $color-primary;
+      }
+    }
+
+    &.show {
+      display: block;
       opacity: 1;
       visibility: visible;
     }
   }
 
-  &:hover {
-    .dropdown-menu {
+  @media (min-width: 992px) {
+    // Hover trên desktop
+    &:hover .dropdown-menu {
       display: block;
       opacity: 1;
       visibility: visible;
-      background-color: $color-dropdown-search-box-bg;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      padding: 8px 0;
-      box-shadow: $box-shadow-deep;
-      min-width: 150px;
-
-      .dropdown-item {
-        color: $color-text-dark;
-        padding: 8px 16px;
-        transition:
-          background-color 0.2s ease,
-          color 0.2s ease;
-
-        &:hover {
-          background-color: $color-primary-light;
-          color: $color-primary;
-        }
-      }
     }
+  }
 
-    @media (max-width: 991px) {
-      .dropdown-menu {
-        position: absolute;
-      }
+  @media (max-width: 991px) {
+    // Click trên mobile
+    .dropdown-menu {
+      display: none;
+      opacity: 1;
+      visibility: visible;
+      position: relative;
+      top: 0;
+      left: 0;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      padding: 0 16px;
     }
   }
 }
 
-@media (max-width: 991px) {
-  .sticky-header {
-    padding: 5px 0;
+// User Menu trên desktop và mobile
+.user-menu,
+.user-menu-mobile {
+  position: relative;
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    font-size: 16px;
+    color: $color-text-dark;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover {
+      background: $color-primary-light;
+    }
   }
 
-  .navbar .container {
-    flex-wrap: nowrap;
-    padding: 0 10px;
+  .user-avatar-mobile {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
 
-    .navbar-brand,
-    .navbar-toggler {
-      flex: 0 0 auto;
+  .user-dropdown {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    background: $color-dropdown-search-box-bg;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 8px 0;
+    box-shadow: $box-shadow-deep;
+    min-width: 150px;
+    z-index: 1001;
+
+    &.show {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .dropdown-item {
+      color: $color-text-dark;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition:
+        0.2s ease,
+        color 0.2s ease;
+      &:hover {
+        background: $color-primary-light;
+        color: $color-primary;
+      }
+    }
+  }
+
+  @media (min-width: 992px) {
+    // Hover trên desktop
+    &.user-menu {
+      .user-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: auto;
+        list-style: none;
+      }
+
+      &:hover .user-dropdown {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+
+  @media (max-width: 991px) {
+    // Click trên mobile
+    &.user-menu-mobile {
+      .user-dropdown {
+        display: none;
+        opacity: 1;
+        visibility: visible;
+        position: relative;
+        top: 0;
+        left: 0;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+        padding: 0 16px;
+        list-style: none;
+
+        &.show {
+          display: block;
+          opacity: 1;
+          visibility: visible;
+        }
+      }
     }
   }
 }
