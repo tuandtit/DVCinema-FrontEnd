@@ -4,7 +4,7 @@ export interface MovieSearchRequest {
     size: number;
     orders: { [key: string]: string };
   };
-  keyword: string;
+  query: string;
   status: string[];
   isAvailableOnline: boolean | null;
 }

@@ -85,6 +85,22 @@ body {
         padding: 8px 12px;
       }
 
+      .loading {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        padding: 8px 12px;
+        background-color: $color-dropdown-search-box-bg;
+        border: 1px solid #ddd;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        z-index: 1001;
+      }
+
       .suggestions-list {
         list-style: none;
         padding: 0;
@@ -96,7 +112,7 @@ body {
         z-index: 1001;
         background-color: $color-dropdown-search-box-bg;
         border: 1px solid #ddd;
-        max-height: 200px;
+        max-height: 300px;
         overflow-y: auto;
         border-radius: 0 0 8px 8px;
         box-shadow: $box-shadow-light;
@@ -104,9 +120,54 @@ body {
         .suggestion-item {
           padding: 8px 12px;
           cursor: pointer;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+          &:last-child {
+            border-bottom: none;
+          }
 
           &:hover {
             background-color: darken($color-dropdown-search-box-bg, 5%);
+          }
+
+          .suggestion-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            .suggestion-poster {
+              width: 40px;
+              height: 60px;
+              object-fit: cover;
+              border-radius: 4px;
+            }
+
+            .suggestion-details {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+
+              .suggestion-title {
+                font-weight: bold;
+                font-size: 14px;
+                color: $color-text-dark;
+              }
+
+              .suggestion-genre {
+                font-size: 12px;
+                color: #666;
+              }
+            }
+          }
+        }
+
+        .load-more-trigger {
+          text-align: center;
+
+          .loading-more {
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #666;
           }
         }
       }

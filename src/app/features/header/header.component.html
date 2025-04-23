@@ -23,20 +23,36 @@
       <div class="search-autocomplete ms-2 me-3 flex-grow-1">
         <div class="input-group">
           <input
+            #searchInput
             type="text"
             class="form-control search-input"
             placeholder="Tìm kiếm phim, diễn viên..."
             [(ngModel)]="searchQuery"
             (ngModelChange)="onSearchChange($event)"
+            (keydown.enter)="onSearchEnter()"
           />
         </div>
-        <ul *ngIf="suggestions.length > 0" class="suggestions-list">
+        <div class="loading" *ngIf="isLoading">Đang tìm kiếm...</div>
+        <ul #suggestionsList *ngIf="suggestions.length > 0 && !isLoading" class="suggestions-list">
           <li
             *ngFor="let movie of suggestions"
             (click)="selectMovie(movie)"
             class="suggestion-item"
           >
-            {{ movie.title }}
+            <div class="suggestion-content">
+              <img
+                src="https://files.betacorp.vn/media%2fimages%2f2025%2f03%2f28%2f400x633%2D114754%2D280325%2D84.jpg"
+                alt="movie-poster"
+                class="suggestion-poster"
+              />
+              <div class="suggestion-details">
+                <div class="suggestion-title">{{ movie.title }}</div>
+                <div class="suggestion-genre">{{ movie.genre }}</div>
+              </div>
+            </div>
+          </li>
+          <li class="load-more-trigger" #loadMoreTrigger *ngIf="canLoadMore">
+            <div class="loading-more" *ngIf="isLoadingMore">Đang tải thêm...</div>
           </li>
         </ul>
       </div>

@@ -16,7 +16,7 @@ export class MovieService {
   getMovies(
     page: number,
     size: number,
-    keyword: string,
+    query: string,
     status: string[],
     isAvailableOnline: boolean | null
   ): Observable<PagingResponse<MovieResponseDto>> {
@@ -28,7 +28,7 @@ export class MovieService {
           id: 'DESC',
         },
       },
-      keyword: keyword,
+      query: query,
       status: status,
       isAvailableOnline: isAvailableOnline,
     };
