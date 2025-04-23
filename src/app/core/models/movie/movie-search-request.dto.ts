@@ -6,4 +6,5 @@ export interface MovieSearchRequest {
   };
   keyword: string;
   status: string[];
+  isAvailableOnline: boolean | null;
 }

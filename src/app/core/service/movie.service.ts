@@ -13,7 +13,13 @@ export class MovieService {
 
   constructor(private http: HttpClient) {}
 
-  getMovies(page: number, size: number): Observable<PagingResponse<MovieResponseDto>> {
+  getMovies(
+    page: number,
+    size: number,
+    keyword: string,
+    status: string[],
+    isAvailableOnline: boolean | null
+  ): Observable<PagingResponse<MovieResponseDto>> {
     const request: MovieSearchRequest = {
       paging: {
         page: page,
@@ -22,8 +28,9 @@ export class MovieService {
           id: 'DESC',
         },
       },
-      keyword: '',
-      status: [],
+      keyword: keyword,
+      status: status,
+      isAvailableOnline: isAvailableOnline,
     };
 
     return this.http.post<PagingResponse<MovieResponseDto>>(this.apiUrl, request);

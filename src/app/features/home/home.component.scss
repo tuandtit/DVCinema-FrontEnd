@@ -18,6 +18,13 @@
   }
 }
 
+.loading {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+  color: #333;
+}
+
 .product-item {
   background: linear-gradient(to bottom right, #e0f7fa, #f3e5f5);
   border: 1px solid #dbe2f5;
@@ -61,7 +68,7 @@
       justify-content: center;
       opacity: 0;
       transition: opacity 0.3s ease;
-      cursor: pointer; // Bỏ comment để luôn hiển thị con trỏ bàn tay
+      cursor: pointer;
 
       i {
         font-size: 24px;
@@ -90,7 +97,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    cursor: pointer !important; // Tăng độ ưu tiên để tránh bị ghi đè
+    cursor: pointer !important;
     transition: color 0.3s ease;
 
     &:hover {
@@ -120,7 +127,7 @@
       flex: 1;
       font-size: 14px;
       padding: 8px;
-      cursor: pointer !important; // Thêm con trỏ bàn tay cho các nút
+      cursor: pointer !important;
     }
   }
 }
@@ -136,7 +143,7 @@
     padding: 8px 16px;
     font-size: 14px;
     transition: all 0.3s ease;
-    cursor: pointer !important; // Đảm bảo các nút filter cũng có con trỏ bàn tay
+    cursor: pointer !important;
 
     &.active {
       background-color: $color-primary;
@@ -165,7 +172,7 @@
   .btn {
     padding: 8px 16px;
     font-size: 14px;
-    cursor: pointer !important; // Đảm bảo các nút phân trang cũng có con trỏ bàn tay
+    cursor: pointer !important;
   }
 
   span {
@@ -179,7 +186,6 @@
   }
 }
 
-// Hero Section (Carousel)
 .hero-section {
   position: relative;
   margin-bottom: 40px;

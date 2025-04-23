@@ -17,8 +17,7 @@
           />
         </div>
       </div>
-      <!-- Thông báo mặc định nếu không có phim nổi bật -->
-      <div class="carousel-item active" *ngIf="!featuredMovies.length">
+      <div class="carousel-item active" *ngIf="!featuredMovies.length && !isLoading">
         <div class="hero-slide">
           <div class="no-featured-movies">
             <p>Chưa có phim nổi bật để hiển thị.</p>
@@ -48,6 +47,9 @@
 </div>
 
 <div class="container">
+  <!-- Loading Indicator -->
+  <div class="loading" *ngIf="isLoading">Đang tải dữ liệu...</div>
+
   <!-- Quick Filters -->
   <div class="quick-filters">
     <button
@@ -81,7 +83,7 @@
   </div>
 
   <!-- Danh sách phim -->
-  <div class="row">
+  <div class="row" *ngIf="!isLoading">
     <div class="col-lg-3 col-md-6 col-sm-6" *ngFor="let movie of getPaginatedMovies()">
       <div class="product-item">
         <div class="poster-wrapper">
@@ -102,7 +104,7 @@
   </div>
 
   <!-- Phân trang -->
-  <div class="pagination" *ngIf="totalPages > 1">
+  <div class="pagination" *ngIf="totalPages > 1 && !isLoading">
     <button
       class="btn btn-outline-primary"
       [disabled]="currentPage === 1"
