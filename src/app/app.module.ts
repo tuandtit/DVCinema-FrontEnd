@@ -7,19 +7,19 @@ import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@a
 // App-specific imports
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './features/home/home.component';
-import { HeaderComponent } from './features/header/header.component';
-import { FooterComponent } from './features/footer/footer.component';
-import { OrderComponent } from './components/order/order.component';
-import { DetailProductComponent } from './components/detail-product/detail-product.component';
-import { OrderConfirmComponent } from './components/order-confirm/order-confirm.component';
-import { LoginComponent } from './features/auth/login/login.component';
-import { RegisterComponent } from './features/auth/register/register.component';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from './shared/components/error-message/error-message.component';
 import { HighlightDirective } from './shared/directives/highlight.directive';
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
 import { ToastComponent } from './shared/components/toast/toast.component';
+import { HomeComponent } from './user/components/home/home.component';
+import { HeaderComponent } from './user/components/header/header.component';
+import { FooterComponent } from './user/components/footer/footer.component';
+import { DetailMovieComponent } from './user/components/detail-movie/detail-movie.component';
+import { OrderComponent } from './user/components/order/order.component';
+import { OrderConfirmComponent } from './user/components/order-confirm/order-confirm.component';
+import { LoginComponent } from './user/components/login/login.component';
+import { RegisterComponent } from './user/components/register/register.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,7 @@ import { ToastComponent } from './shared/components/toast/toast.component';
     HomeComponent,
     HeaderComponent,
     FooterComponent,
-    DetailProductComponent,
+    DetailMovieComponent,
     OrderComponent,
     OrderConfirmComponent,
     LoginComponent,

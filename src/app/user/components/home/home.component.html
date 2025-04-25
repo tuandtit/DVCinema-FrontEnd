@@ -1,0 +1,141 @@
+<app-header></app-header>
+<div class="hero-section">
+  <div id="featuredMoviesCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div
+        class="carousel-item"
+        *ngFor="let movie of featuredMovies; let i = index"
+        [ngClass]="{ active: i === 0 }"
+      >
+        <div class="hero-slide">
+          <img
+            alt=""
+            [src]="movie.poster"
+            [alt]="movie.title"
+            class="hero-image"
+            (click)="viewDetails(movie)"
+          />
+        </div>
+      </div>
+      <div class="carousel-item active" *ngIf="!featuredMovies.length && !isLoading">
+        <div class="hero-slide">
+          <div class="no-featured-movies">
+            <p>Chưa có phim nổi bật để hiển thị.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      class="carousel-control-prev"
+      type="button"
+      data-bs-target="#featuredMoviesCarousel"
+      data-bs-slide="prev"
+    >
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button
+      class="carousel-control-next"
+      type="button"
+      data-bs-target="#featuredMoviesCarousel"
+      data-bs-slide="next"
+    >
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Modal trailer -->
+  <div class="modal" *ngIf="showTrailerModal">
+    <div class="modal-content" #modalTrailer>
+      <span class="close" (click)="closeTrailerModal()">×</span>
+      <iframe
+        title="Trailer"
+        [src]="safeTrailerUrl"
+        frameborder="0"
+        allow="autoplay"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+  <!-- Loading Indicator -->
+  <div class="loading" *ngIf="isLoading">Đang tải dữ liệu...</div>
+
+  <!-- Quick Filters -->
+  <div class="quick-filters">
+    <button
+      class="btn btn-outline-primary"
+      [ngClass]="{ active: filterType === 'all' }"
+      (click)="setFilter('all')"
+    >
+      Tất cả
+    </button>
+    <button
+      class="btn btn-outline-primary"
+      [ngClass]="{ active: filterType === 'new' }"
+      (click)="setFilter('new')"
+    >
+      Phim mới
+    </button>
+    <button
+      class="btn btn-outline-primary"
+      [ngClass]="{ active: filterType === 'popular' }"
+      (click)="setFilter('popular')"
+    >
+      Phim được yêu thích
+    </button>
+    <button
+      class="btn btn-outline-primary"
+      [ngClass]="{ active: filterType === 'upcoming' }"
+      (click)="setFilter('upcoming')"
+    >
+      Phim sắp chiếu
+    </button>
+  </div>
+
+  <!-- Danh sách phim -->
+  <div class="row" *ngIf="!isLoading">
+    <div class="col-lg-3 col-md-6 col-sm-6" *ngFor="let movie of getPaginatedMovies()">
+      <div class="product-item">
+        <div class="poster-wrapper">
+          <img alt="" [src]="movie.poster" [alt]="movie.title" class="movie-poster" />
+          <button title="play-button" class="play-button" (click)="playTrailer(movie)">
+            <i class="fa-solid fa-play"></i>
+          </button>
+        </div>
+        <h3 class="movie-title" [routerLink]="['/detail-movie', movie.id]">{{ movie.title }}</h3>
+        <p class="movie-desc">Thể loại: {{ movie.genres }}</p>
+        <p class="movie-desc">Thời lượng: {{ movie.duration }} phút</p>
+        <div class="product-actions">
+          <button class="btn btn-primary" (click)="watchMovie(movie)">Xem phim</button>
+          <button class="btn btn-success" (click)="bookTicket(movie)">Đặt vé</button>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item active" *ngIf="!getPaginatedMovies().length && !isLoading">
+      Không tìm thấy phim nào.
+    </div>
+  </div>
+
+  <!-- Phân trang -->
+  <div class="pagination" *ngIf="totalPages > 1 && !isLoading">
+    <button
+      class="btn btn-outline-primary"
+      [disabled]="currentPage === 1"
+      (click)="changePage(currentPage - 1)"
+    >
+      Trang trước
+    </button>
+    <span>Trang {{ currentPage }} / {{ totalPages }}</span>
+    <button
+      class="btn btn-outline-primary"
+      [disabled]="currentPage === totalPages"
+      (click)="changePage(currentPage + 1)"
+    >
+      Trang sau
+    </button>
+  </div>
+</div>
+<app-footer></app-footer>
