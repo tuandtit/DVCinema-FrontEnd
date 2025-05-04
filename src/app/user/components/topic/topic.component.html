@@ -1,0 +1,21 @@
+<div class="topic-page-container">
+  <div class="container">
+    <h2>Các Chủ Đề</h2>
+
+    <!-- Danh sách chủ đề -->
+    <div class="topic-list">
+      <div
+        class="topic-item"
+        *ngFor="let topic of topics; let i = index"
+        [ngStyle]="getGradientStyle(i)"
+        [routerLink]="['/topics', topic.slug]"
+      >
+        <h3>{{ topic.name }}</h3>
+        <p>Xem toàn bộ</p>
+      </div>
+    </div>
+
+    <!-- Thông báo nếu không có chủ đề -->
+    <p *ngIf="!topics?.length">Không tìm thấy chủ đề nào.</p>
+  </div>
+</div>

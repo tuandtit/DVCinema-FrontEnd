@@ -3,14 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { SignInDto } from '../../user/models/user/signin.dto';
 import { environment } from '../../environments/environment';
+import { LoginResponse } from '../../user/models/user/login.response';
+import { Account } from '../../user/models/user/account.model';
+import { ApiResponse } from '../../shared/base-response/api.response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
-  getUsername(): string | null {
-    return 'Tên hiển thị';
-  }
   private apiSignUp = `${environment.apiBaseUrl}/sign-up`;
   private apiSignIn = `${environment.apiBaseUrl}/sign-in`;
   private apiLogOut = `${environment.apiBaseUrl}/logout`;
@@ -33,13 +33,16 @@ export class AccountService {
     return this.http.post(this.apiSignUp, registerFormData);
   }
 
-  signin(signInDto: SignInDto): Observable<any> {
-    return this.http.post(this.apiSignIn, signInDto, this.apiConfig).pipe(
-      tap((response) => {
-        localStorage.setItem('token', '');
-        this.isLoggedInSubject.next(true);
-      })
-    );
+  signin(signInDto: SignInDto): Observable<ApiResponse<LoginResponse>> {
+    return this.http
+      .post<ApiResponse<LoginResponse>>(this.apiSignIn, signInDto, this.apiConfig)
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('displayName', response.data.displayName);
+          localStorage.setItem('avatar', response.data.avatar);
+          this.isLoggedInSubject.next(true);
+        })
+      );
   }
 
   logout() {
@@ -62,5 +65,9 @@ export class AccountService {
 
   clearReturnUrl() {
     this.returnUrl = null;
+  }
+
+  getUsername(): string | null {
+    return localStorage.getItem('displayName');
   }
 }

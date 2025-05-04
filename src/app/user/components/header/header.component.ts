@@ -12,6 +12,7 @@ import { MovieService } from '../../services/movie.service';
 import { Router } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
 import { MovieResponseDto } from '../../models/movie/movie-response.dto';
+import { query } from '@angular/animations';
 
 @Component({
   selector: 'app-header',
@@ -132,6 +133,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
           const newSuggestions = response.data.contents.map((dto: MovieResponseDto) => ({
             id: dto.id,
+            poster: dto.posterUrl,
             title: dto.title,
             genre: dto.genreNames.join(', '),
           }));
@@ -213,7 +215,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     if (this.searchQuery.trim() === '') return;
     console.log('Chuyển hướng đến trang kết quả tìm kiếm với từ khóa:', this.searchQuery);
     this.suggestions = [];
-    this.router.navigate(['/search-results'], { queryParams: { q: this.searchQuery } });
+    this.router.navigate(['/search-page'], { queryParams: { query: this.searchQuery } });
   }
 
   selectMovie(movie: any): void {
@@ -250,6 +252,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   navigate(route: string): void {
+    this.suggestions = [];
     this.router.navigate([route]);
     const navbarCollapse = document.querySelector('#navbarSupportedContent');
     if (navbarCollapse?.classList.contains('show')) {

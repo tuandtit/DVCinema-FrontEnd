@@ -1,4 +1,3 @@
-<app-header></app-header>
 <div class="detail-movie-container">
   <!-- Banner phim -->
   <div class="banner" [style.backgroundImage]="'url(' + movie?.poster + ')'">
@@ -60,6 +59,30 @@
   <div class="showtimes-section">
     <div class="container">
       <h3>Suất Chiếu</h3>
+      <!-- Lọc theo thành phố và rạp -->
+      <div class="cinema-filter">
+        <div class="filter-item">
+          <label for="city-select">Chọn thành phố:</label>
+          <select id="city-select" [(ngModel)]="selectedCity" (change)="selectCity(selectedCity)">
+            <option [ngValue]="null" disabled>Chọn thành phố</option>
+            <option *ngFor="let city of cities" [value]="city.id">{{ city.name }}</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="cinema-select">Chọn rạp:</label>
+          <select
+            id="cinema-select"
+            [(ngModel)]="selectedCinema"
+            (change)="selectCinema(selectedCinema)"
+            [disabled]="!selectedCity"
+          >
+            <option [ngValue]="null" disabled>Chọn rạp</option>
+            <option *ngFor="let cinema of cinemasInCity" [value]="cinema.id">
+              {{ cinema.name }}
+            </option>
+          </select>
+        </div>
+      </div>
       <!-- Lọc theo ngày -->
       <div class="date-filter">
         <button
@@ -79,11 +102,11 @@
             class="showtime-btn"
             (click)="bookShowtime(showtime)"
           >
-            {{ showtime.startTime | date: 'HH:mm' }}
+            {{ formatTime(showtime.startTime) }}
           </button>
         </div>
       </div>
-      <p *ngIf="!filteredShowtimes?.length">Không có suất chiếu nào vào ngày này.</p>
+      <p *ngIf="!filteredShowtimes?.length">Không có suất chiếu nào vào ngày này tại rạp này.</p>
     </div>
   </div>
 
@@ -92,4 +115,3 @@
     <button class="btn btn-danger" (click)="bookTicket()">Đặt Vé Ngay</button>
   </div>
 </div>
-<app-footer></app-footer>

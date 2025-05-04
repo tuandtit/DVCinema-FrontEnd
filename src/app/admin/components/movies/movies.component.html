@@ -1,0 +1,121 @@
+<div class="movies-management">
+    <h2>Quản Lý Phim</h2>
+  
+    <!-- Tìm kiếm và lọc -->
+    <div class="filters">
+      <div class="search">
+        <input type="text" [(ngModel)]="searchTerm" (input)="filterMovies()" placeholder="Tìm kiếm phim theo tên..." />
+      </div>
+      <div class="status-filter">
+        <label for="status">Lọc theo trạng thái:</label>
+        <select id="status" [(ngModel)]="statusFilter" (change)="filterMovies()">
+          <option value="all">Tất cả</option>
+          <option value="showing">Đang chiếu</option>
+          <option value="upcoming">Sắp chiếu</option>
+        </select>
+      </div>
+      <button class="add-btn" (click)="showAddForm = true">Thêm phim mới</button>
+    </div>
+  
+    <!-- Bảng danh sách phim -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên phim</th>
+            <th>Thể loại</th>
+            <th>Thời lượng (phút)</th>
+            <th>Ngày phát hành</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let movie of filteredMovies; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ movie.title }}</td>
+            <td>{{ movie.genre }}</td>
+            <td>{{ movie.duration }}</td>
+            <td>{{ movie.releaseDate }}</td>
+            <td>{{ movie.status === 'showing' ? 'Đang chiếu' : 'Sắp chiếu' }}</td>
+            <td>
+              <button class="edit-btn" (click)="openEditForm(movie)">Sửa</button>
+              <button class="delete-btn" (click)="deleteMovie(movie.id)">Xóa</button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredMovies.length === 0">
+            <td colspan="7" class="no-data">Không có phim nào phù hợp.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Form thêm phim -->
+    <div class="modal" *ngIf="showAddForm">
+      <div class="modal-content">
+        <h3>Thêm phim mới</h3>
+        <div class="form-group">
+          <label for="title">Tên phim:</label>
+          <input type="text" id="title" [(ngModel)]="newMovie.title" />
+        </div>
+        <div class="form-group">
+          <label for="genre">Thể loại:</label>
+          <input type="text" id="genre" [(ngModel)]="newMovie.genre" />
+        </div>
+        <div class="form-group">
+          <label for="duration">Thời lượng (phút):</label>
+          <input type="number" id="duration" [(ngModel)]="newMovie.duration" />
+        </div>
+        <div class="form-group">
+          <label for="releaseDate">Ngày phát hành:</label>
+          <input type="date" id="releaseDate" [(ngModel)]="newMovie.releaseDate" />
+        </div>
+        <div class="form-group">
+          <label for="status">Trạng thái:</label>
+          <select id="status" [(ngModel)]="newMovie.status">
+            <option value="showing">Đang chiếu</option>
+            <option value="upcoming">Sắp chiếu</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="save-btn" (click)="addMovie()">Thêm</button>
+          <button class="cancel-btn" (click)="cancelForm()">Hủy</button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Form sửa phim -->
+    <div class="modal" *ngIf="showEditForm">
+      <div class="modal-content">
+        <h3>Sửa phim</h3>
+        <div class="form-group">
+          <label for="edit-title">Tên phim:</label>
+          <input type="text" id="edit-title" [(ngModel)]="editMovie!.title" />
+        </div>
+        <div class="form-group">
+          <label for="edit-genre">Thể loại:</label>
+          <input type="text" id="edit-genre" [(ngModel)]="editMovie!.genre" />
+        </div>
+        <div class="form-group">
+          <label for="edit-duration">Thời lượng (phút):</label>
+          <input type="number" id="edit-duration" [(ngModel)]="editMovie!.duration" />
+        </div>
+        <div class="form-group">
+          <label for="edit-releaseDate">Ngày phát hành:</label>
+          <input type="date" id="edit-releaseDate" [(ngModel)]="editMovie!.releaseDate" />
+        </div>
+        <div class="form-group">
+          <label for="edit-status">Trạng thái:</label>
+          <select id="edit-status" [(ngModel)]="editMovie!.status">
+            <option value="showing">Đang chiếu</option>
+            <option value="upcoming">Sắp chiếu</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="save-btn" (click)="updateMovie()">Lưu</button>
+          <button class="cancel-btn" (click)="cancelForm()">Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>

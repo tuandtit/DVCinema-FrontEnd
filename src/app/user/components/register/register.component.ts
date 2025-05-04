@@ -3,8 +3,8 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
 import { SignUpDto } from '../../models/user/signup.dto';
-import { RegisterResponse } from '../../responses/user/register.response';
-import { ApiResponse } from '../../responses/api.response';
+import { RegisterResponse } from '../../models/user/register.response';
+import { ApiResponse } from '../../../shared/base-response/api.response';
 
 @Component({
   selector: 'app-register',

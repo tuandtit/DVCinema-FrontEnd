@@ -6,7 +6,8 @@ import { Movie } from '../../models/movie/movie.model';
 import { Cinema } from '../../models/cinema/cinema.model';
 import { MovieService } from '../../services/movie.service';
 import { ShowtimeService } from '../../services/showtime.service';
-import { MovieResponseDto } from '../../models/movie/movie-response.dto';
+import { ShowtimeResponseDto } from '../../models/showtime/showtime.response';
+import { City } from '../../models/cinema/city.model';
 
 interface CinemaShowtime {
   cinemaId: number;
@@ -22,82 +23,28 @@ interface CinemaShowtime {
 export class DetailMovieComponent implements OnInit {
   movie: Movie | null = null;
   showtimes: Showtime[] = [];
-  cinemas: Cinema[] = [];
+  cities: City[] = [];
+  cinemasInCity: Cinema[] = [];
   filteredShowtimes: CinemaShowtime[] = [];
   availableDates: Date[] = [];
   selectedDate: Date | null = null;
+  selectedCity: number | null = null;
+  selectedCinema: number | null = null;
   showTrailerModal: boolean = false;
   safeTrailerUrl: SafeResourceUrl | null = null;
 
   @ViewChild('modalTrailer') modalTrailer!: ElementRef;
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
-
-    // Nếu modal đang mở và tồn tại phần tử modalTrailer
     if (this.showTrailerModal && this.modalTrailer) {
       const clickedInside = this.modalTrailer.nativeElement.contains(target);
-
       if (!clickedInside) {
         this.showTrailerModal = false;
       }
     }
   }
-
-  // Fake data cho rạp chiếu
-  private fakeCinemas: Cinema[] = [
-    { id: 1, name: 'Cinema Alpha', address: '123 Main Street', city: 'Hanoi' },
-    { id: 2, name: 'Cinema Beta', address: '456 Oak Avenue', city: 'Ho Chi Minh City' },
-  ];
-
-  // Fake data cho suất chiếu
-  private fakeShowtimes: Showtime[] = [
-    {
-      id: 1,
-      movieId: 1,
-      roomId: 1,
-      cinemaId: 1,
-      startTime: '2025-04-24T14:00',
-      endTime: '2025-04-24T16:23',
-      ticketPrice: 80000,
-    },
-    {
-      id: 2,
-      movieId: 1,
-      roomId: 1,
-      cinemaId: 1,
-      startTime: '2025-04-24T17:00',
-      endTime: '2025-04-24T19:23',
-      ticketPrice: 80000,
-    },
-    {
-      id: 3,
-      movieId: 1,
-      roomId: 2,
-      cinemaId: 1,
-      startTime: '2025-04-24T20:00',
-      endTime: '2025-04-24T22:23',
-      ticketPrice: 80000,
-    },
-    {
-      id: 4,
-      movieId: 1,
-      roomId: 3,
-      cinemaId: 2,
-      startTime: '2025-04-25T15:00',
-      endTime: '2025-04-25T17:23',
-      ticketPrice: 85000,
-    },
-    {
-      id: 5,
-      movieId: 1,
-      roomId: 3,
-      cinemaId: 2,
-      startTime: '2025-04-25T18:00',
-      endTime: '2025-04-25T20:23',
-      ticketPrice: 85000,
-    },
-  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -108,23 +55,23 @@ export class DetailMovieComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const movieId = this.route.snapshot.paramMap.get('id');
-    if (movieId) {
-      this.loadMovie(+movieId);
-      this.loadShowtimes(+movieId);
-      this.loadCinemas();
-    }
+    this.route.paramMap.subscribe((params) => {
+      const movieId = this.route.snapshot.paramMap.get('id');
+      if (movieId) {
+        this.loadMovie(+movieId);
+        this.loadShowtimes(+movieId);
+        this.loadCities();
+      }
+    });
   }
 
   loadMovie(movieId: number): void {
-    debugger;
     this.movieService.getMovieById(movieId).subscribe({
       next: (response) => {
         if (response.status.code !== 200) {
           console.error('Lỗi từ API:', response.status.timestamp);
           return;
         }
-        debugger;
         this.movie = {
           id: response.data.id,
           title: response.data.title,
@@ -132,8 +79,8 @@ export class DetailMovieComponent implements OnInit {
           trailer: response.data.trailerUrl,
           description: response.data.description,
           genres: response.data.genreNames.join(', '),
-          director: 'Bùi Thạc Chuyên',
-          actors: 'Thái Hòa',
+          director: response.data.directorName,
+          actors: response.data.actorNames.join(', '),
           duration: response.data.duration,
           availableOnline: response.data.isAvailableOnline,
           releaseDate: response.data.releaseDate,
@@ -147,41 +94,127 @@ export class DetailMovieComponent implements OnInit {
   }
 
   loadShowtimes(movieId: number): void {
-    // Sử dụng fake data
-    this.showtimes = this.fakeShowtimes.filter((s) => s.movieId === movieId);
-    this.extractAvailableDates();
-    this.selectDate(this.availableDates[0]); // Chọn ngày đầu tiên mặc định
+    this.showTimeService.getShowtimesByMovieId(movieId).subscribe({
+      next: (response) => {
+        if (response.status.code !== 200) {
+          console.error('Lỗi từ API:', response.status.timestamp);
+          return;
+        }
+        this.showtimes = response.data.map((dto: ShowtimeResponseDto) => ({
+          id: dto.id,
+          movieId: dto.movieId,
+          roomId: dto.roomId,
+          cinemaId: dto.cinemaId,
+          showDate: dto.showDate,
+          startTime: dto.startTime,
+          ticketPrice: dto.ticketPrice,
+        }));
+        console.log('Dữ liệu suất chiếu:', this.showtimes); // Debug
+        this.extractAvailableDates();
+        this.selectDate(this.availableDates[0]);
+      },
+      error: (err) => {
+        console.error('Lỗi khi lấy suất chiếu:', err);
+      },
+    });
   }
 
-  loadCinemas(): void {
-    // Sử dụng fake data
-    this.cinemas = this.fakeCinemas;
-    this.filterShowtimesByDate();
+  loadCities(): void {
+    this.showTimeService.getAllCities().subscribe({
+      next: (response) => {
+        if (response.status.code !== 200) {
+          console.error('Lỗi từ API:', response.status.timestamp);
+          return;
+        }
+        this.cities = response.data.map((dto: City) => ({
+          id: dto.id,
+          name: dto.name,
+          cinemas: dto.cinemas,
+        }));
+        console.log('Dữ liệu suất chiếu:', this.showtimes); // Debug
+        this.extractAvailableDates();
+        this.selectDate(this.availableDates[0]);
+      },
+      error: (err) => {
+        console.error('Lỗi khi lấy suất chiếu:', err);
+      },
+    });
+    this.selectedCity = null;
+    this.selectedCinema = null;
+    this.cinemasInCity = [];
+    this.filterShowtimesByDateAndCinema();
+  }
+
+  loadCinemasInCity(cityId: number): void {
+    console.log('Danh sách các thành phố: ', this.cities);
+
+    this.cinemasInCity = this.filterCinemasInCity(cityId) || [];
+    this.selectedCinema = this.cinemasInCity[0]?.id || null;
+    console.log('Danh sách rạp trong thành phố:', this.cinemasInCity); // Debug
+    console.log('Rạp được chọn mặc định:', this.selectedCinema); // Debug
+    this.filterShowtimesByDateAndCinema();
+  }
+
+  filterCinemasInCity(cityId: number): Cinema[] | undefined {
+    return this.cities.find((c) => c.id == cityId)?.cinemas;
+  }
+
+  selectCity(cityId: number | null): void {
+    this.selectedCity = cityId;
+    console.log('Thành phố được chọn: ' + this.selectedCity);
+    if (cityId !== null) {
+      this.loadCinemasInCity(cityId);
+    } else {
+      this.cinemasInCity = [];
+      this.selectedCinema = null;
+      this.filterShowtimesByDateAndCinema();
+    }
+  }
+
+  selectCinema(cinemaId: number | null): void {
+    this.selectedCinema = cinemaId;
+    console.log('Rạp được chọn:', this.selectedCinema); // Debug
+    this.filterShowtimesByDateAndCinema();
   }
 
   extractAvailableDates(): void {
     const dates = new Set<string>();
     this.showtimes.forEach((showtime) => {
-      const date = new Date(showtime.startTime).toISOString().split('T')[0];
-      dates.add(date);
+      dates.add(showtime.showDate);
     });
     this.availableDates = Array.from(dates)
       .map((date) => new Date(date))
       .sort((a, b) => a.getTime() - b.getTime());
+    console.log('Danh sách ngày khả dụng:', this.availableDates); // Debug
   }
 
   selectDate(date: Date): void {
     this.selectedDate = date;
-    this.filterShowtimesByDate();
+    console.log('Ngày được chọn:', this.selectedDate); // Debug
+    this.filterShowtimesByDateAndCinema();
   }
 
-  filterShowtimesByDate(): void {
-    if (!this.selectedDate) return;
+  filterShowtimesByDateAndCinema(): void {
+    // Reset danh sách suất chiếu
+    this.filteredShowtimes = [];
+
+    if (!this.selectedDate || !this.selectedCinema) {
+      console.log('Chưa đủ điều kiện để lọc: ', {
+        selectedDate: this.selectedDate,
+        selectedCinema: this.selectedCinema,
+      });
+      return;
+    }
+
     const selectedDateStr = this.selectedDate.toISOString().split('T')[0];
+    console.log('Ngày được chọn: ', selectedDateStr);
+    console.log('danh sách showtimes: ', this.showtimes);
+    console.log('cinema được chọn: ', this.selectedCinema);
     const filtered = this.showtimes.filter((showtime) => {
-      const showtimeDate = new Date(showtime.startTime).toISOString().split('T')[0];
-      return showtimeDate === selectedDateStr;
+      return showtime.showDate === selectedDateStr && showtime.cinemaId == this.selectedCinema;
     });
+
+    console.log('Suất chiếu sau khi lọc:', filtered); // Debug
 
     const cinemaMap: { [key: number]: Showtime[] } = {};
     filtered.forEach((showtime) => {
@@ -192,23 +225,28 @@ export class DetailMovieComponent implements OnInit {
     });
 
     this.filteredShowtimes = Object.keys(cinemaMap).map((cinemaId) => {
-      const cinema = this.cinemas.find((c) => c.id === +cinemaId);
+      const cinema = this.cinemasInCity.find((c) => c.id === +cinemaId);
       return {
         cinemaId: +cinemaId,
         cinemaName: cinema ? cinema.name : 'Unknown Cinema',
-        showtimes: cinemaMap[+cinemaId].sort(
-          (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-        ),
+        showtimes: cinemaMap[+cinemaId].sort((a, b) => {
+          const timeA = a.startTime;
+          const timeB = b.startTime;
+          return timeA.localeCompare(timeB);
+        }),
       };
     });
+
+    console.log('Danh sách suất chiếu đã lọc để hiển thị:', this.filteredShowtimes); // Debug
+  }
+
+  formatTime(time: string): string {
+    return time.split(':').slice(0, 2).join(':');
   }
 
   openTrailerModal(): void {
     if (this.movie?.trailer) {
-      // Bước 1: Chuyển "watch?v=" thành "embed/"
       const embedUrl = this.movie.trailer.replace('watch?v=', 'embed/');
-
-      // Bước 2: Thêm các tham số
       const finalUrl = `${embedUrl}?rel=0&showinfo=0&autoplay=1`;
       this.safeTrailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(finalUrl);
       this.showTrailerModal = true;

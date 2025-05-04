@@ -43,14 +43,16 @@
     max-width: 800px;
     background: #fff;
     padding: 20px;
-
+    .modal-title {
+      color: #333;
+    }
     .close {
       position: absolute;
       top: 10px;
       right: 10px;
       font-size: 2rem;
       cursor: pointer;
-      color: #fff;
+      color: red;
     }
 
     iframe {
@@ -142,7 +144,7 @@
   }
 
   .movie-desc {
-    color: rgb(242, 126, 212);
+    color: rgb(244, 98, 205);
     font-size: 14px;
     margin-bottom: 8px;
     white-space: nowrap;

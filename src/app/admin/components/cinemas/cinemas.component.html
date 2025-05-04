@@ -1,0 +1,116 @@
+<div class="cinemas-management">
+  <h2>Quản Lý Rạp</h2>
+
+  <!-- Tìm kiếm và lọc -->
+  <div class="filters">
+    <div class="search">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="filterCinemas()"
+        placeholder="Tìm kiếm rạp theo tên..."
+      />
+    </div>
+    <div class="status-filter">
+      <label for="status">Lọc theo trạng thái:</label>
+      <select id="status" [(ngModel)]="statusFilter" (change)="filterCinemas()">
+        <option value="all">Tất cả</option>
+        <option value="active">Đang hoạt động</option>
+        <option value="inactive">Ngừng hoạt động</option>
+      </select>
+    </div>
+    <button class="add-btn" (click)="showAddForm = true">Thêm rạp mới</button>
+  </div>
+
+  <!-- Bảng danh sách rạp -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Tên rạp</th>
+          <th>Địa chỉ</th>
+          <th>Số phòng chiếu</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cinema of filteredCinemas; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ cinema.name }}</td>
+          <td>{{ cinema.address }}</td>
+          <td>{{ cinema.numberOfRooms }}</td>
+          <td>{{ cinema.status === 'active' ? 'Đang hoạt động' : 'Ngừng hoạt động' }}</td>
+          <td>
+            <button class="edit-btn" (click)="openEditForm(cinema)">Sửa</button>
+            <button class="delete-btn" (click)="deleteCinema(cinema.id)">Xóa</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredCinemas.length === 0">
+          <td colspan="6" class="no-data">Không có rạp nào phù hợp.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Form thêm rạp -->
+  <div class="modal" *ngIf="showAddForm">
+    <div class="modal-content">
+      <h3>Thêm rạp mới</h3>
+      <div class="form-group">
+        <label for="name">Tên rạp:</label>
+        <input type="text" id="name" [(ngModel)]="newCinema.name" />
+      </div>
+      <div class="form-group">
+        <label for="address">Địa chỉ:</label>
+        <input type="text" id="address" [(ngModel)]="newCinema.address" />
+      </div>
+      <div class="form-group">
+        <label for="numberOfRooms">Số phòng chiếu:</label>
+        <input type="number" id="numberOfRooms" [(ngModel)]="newCinema.numberOfRooms" />
+      </div>
+      <div class="form-group">
+        <label for="status">Trạng thái:</label>
+        <select id="status" [(ngModel)]="newCinema.status">
+          <option value="active">Đang hoạt động</option>
+          <option value="inactive">Ngừng hoạt động</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="save-btn" (click)="addCinema()">Thêm</button>
+        <button class="cancel-btn" (click)="cancelForm()">Hủy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form sửa rạp -->
+  <div class="modal" *ngIf="showEditForm">
+    <div class="modal-content">
+      <h3>Sửa rạp</h3>
+      <div class="form-group">
+        <label for="edit-name">Tên rạp:</label>
+        <input type="text" id="edit-name" [(ngModel)]="editCinema!.name" />
+      </div>
+      <div class="form-group">
+        <label for="edit-address">Địa chỉ:</label>
+        <input type="text" id="edit-address" [(ngModel)]="editCinema!.address" />
+      </div>
+      <div class="form-group">
+        <label for="edit-numberOfRooms">Số phòng chiếu:</label>
+        <input type="number" id="edit-numberOfRooms" [(ngModel)]="editCinema!.numberOfRooms" />
+      </div>
+      <div class="form-group">
+        <label for="edit-status">Trạng thái:</label>
+        <select id="edit-status" [(ngModel)]="editCinema!.status">
+          <option value="active">Đang hoạt động</option>
+          <option value="inactive">Ngừng hoạt động</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="save-btn" (click)="updateCinema()">Lưu</button>
+        <button class="cancel-btn" (click)="cancelForm()">Hủy</button>
+      </div>
+    </div>
+  </div>
+</div>

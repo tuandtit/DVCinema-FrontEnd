@@ -9,4 +9,6 @@ export interface MovieResponseDto {
   isAvailableOnline: boolean;
   status: string | null;
   genreNames: string[];
+  actorNames: string[];
+  directorName: string;
 }

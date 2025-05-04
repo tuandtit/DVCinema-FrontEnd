@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
 import { SignInDto } from '../../models/user/signin.dto';
 import { TokenService } from '../../services/token.service';
-import { LoginResponse } from '../../responses/user/login.response';
-import { ApiResponse } from '../../responses/api.response';
+import { LoginResponse } from '../../models/user/login.response';
+import { ApiResponse } from '../../../shared/base-response/api.response';
 
 @Component({
   selector: 'app-login',

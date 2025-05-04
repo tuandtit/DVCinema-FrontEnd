@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
   totalPages: number = 1;
   showTrailerModal: boolean = false;
   safeTrailerUrl: SafeResourceUrl | null = null;
+  selectMovieTile: string = '';
   isLoading: boolean = false; // Thêm loading state
 
   constructor(
@@ -87,8 +88,8 @@ export class HomeComponent implements OnInit {
             trailer: dto.trailerUrl,
             description: dto.description,
             genres: dto.genreNames.join(', '),
-            director: 'Bùi Thạc Chuyên',
-            actors: 'Thái Hòa',
+            director: dto.directorName,
+            actors: dto.actorNames.join(', '),
             duration: dto.duration,
             availableOnline: dto.isAvailableOnline,
             releaseDate: dto.releaseDate,
@@ -143,6 +144,7 @@ export class HomeComponent implements OnInit {
 
   playTrailer(movie: Movie): void {
     console.log('Phát trailer phim:', movie.title);
+    this.selectMovieTile = movie.title;
     if (movie?.trailer) {
       // Bước 1: Chuyển "watch?v=" thành "embed/"
       const embedUrl = movie.trailer.replace('watch?v=', 'embed/');

@@ -1,0 +1,146 @@
+<div class="bookings-management">
+  <h2>Quản Lý Đặt Vé</h2>
+
+  <!-- Tìm kiếm và lọc -->
+  <div class="filters">
+    <div class="search">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="filterBookings()"
+        placeholder="Tìm kiếm đặt vé theo người dùng..."
+      />
+    </div>
+    <div class="status-filter">
+      <label for="status">Lọc theo trạng thái:</label>
+      <select id="status" [(ngModel)]="statusFilter" (change)="filterBookings()">
+        <option value="all">Tất cả</option>
+        <option value="paid">Đã thanh toán</option>
+        <option value="pending">Chưa thanh toán</option>
+      </select>
+    </div>
+    <button class="add-btn" (click)="showAddForm = true">Thêm đặt vé mới</button>
+  </div>
+
+  <!-- Bảng danh sách đặt vé -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Người dùng</th>
+          <th>Phim</th>
+          <th>Suất chiếu</th>
+          <th>Rạp</th>
+          <th>Ghế</th>
+          <th>Tổng tiền</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of filteredBookings; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ booking.user }}</td>
+          <td>{{ booking.movie }}</td>
+          <td>{{ formatDateTime(booking.showtime) }}</td>
+          <td>{{ booking.cinema }}</td>
+          <td>{{ booking.seat }}</td>
+          <td>{{ formatCurrency(booking.totalPrice) }}</td>
+          <td>{{ booking.status === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }}</td>
+          <td>
+            <button class="edit-btn" (click)="openEditForm(booking)">Sửa</button>
+            <button class="delete-btn" (click)="deleteBooking(booking.id)">Xóa</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredBookings.length === 0">
+          <td colspan="9" class="no-data">Không có đặt vé nào phù hợp.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Form thêm đặt vé -->
+  <div class="modal" *ngIf="showAddForm">
+    <div class="modal-content">
+      <h3>Thêm đặt vé mới</h3>
+      <div class="form-group">
+        <label for="user">Người dùng:</label>
+        <input type="text" id="user" [(ngModel)]="newBooking.user" />
+      </div>
+      <div class="form-group">
+        <label for="movie">Phim:</label>
+        <input type="text" id="movie" [(ngModel)]="newBooking.movie" />
+      </div>
+      <div class="form-group">
+        <label for="showtime">Suất chiếu:</label>
+        <input type="datetime-local" id="showtime" [(ngModel)]="newBooking.showtime" />
+      </div>
+      <div class="form-group">
+        <label for="cinema">Rạp:</label>
+        <input type="text" id="cinema" [(ngModel)]="newBooking.cinema" />
+      </div>
+      <div class="form-group">
+        <label for="seat">Ghế:</label>
+        <input type="text" id="seat" [(ngModel)]="newBooking.seat" />
+      </div>
+      <div class="form-group">
+        <label for="totalPrice">Tổng tiền (VND):</label>
+        <input type="number" id="totalPrice" [(ngModel)]="newBooking.totalPrice" />
+      </div>
+      <div class="form-group">
+        <label for="status">Trạng thái:</label>
+        <select id="status" [(ngModel)]="newBooking.status">
+          <option value="paid">Đã thanh toán</option>
+          <option value="pending">Chưa thanh toán</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="save-btn" (click)="addBooking()">Thêm</button>
+        <button class="cancel-btn" (click)="cancelForm()">Hủy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form sửa đặt vé -->
+  <div class="modal" *ngIf="showEditForm">
+    <div class="modal-content">
+      <h3>Sửa đặt vé</h3>
+      <div class="form-group">
+        <label for="edit-user">Người dùng:</label>
+        <input type="text" id="edit-user" [(ngModel)]="editBooking!.user" />
+      </div>
+      <div class="form-group">
+        <label for="edit-movie">Phim:</label>
+        <input type="text" id="edit-movie" [(ngModel)]="editBooking!.movie" />
+      </div>
+      <div class="form-group">
+        <label for="edit-showtime">Suất chiếu:</label>
+        <input type="datetime-local" id="edit-showtime" [(ngModel)]="editBooking!.showtime" />
+      </div>
+      <div class="form-group">
+        <label for="edit-cinema">Rạp:</label>
+        <input type="text" id="edit-cinema" [(ngModel)]="editBooking!.cinema" />
+      </div>
+      <div class="form-group">
+        <label for="edit-seat">Ghế:</label>
+        <input type="text" id="edit-seat" [(ngModel)]="editBooking!.seat" />
+      </div>
+      <div class="form-group">
+        <label for="edit-totalPrice">Tổng tiền (VND):</label>
+        <input type="number" id="edit-totalPrice" [(ngModel)]="editBooking!.totalPrice" />
+      </div>
+      <div class="form-group">
+        <label for="edit-status">Trạng thái:</label>
+        <select id="edit-status" [(ngModel)]="editBooking!.status">
+          <option value="paid">Đã thanh toán</option>
+          <option value="pending">Chưa thanh toán</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="save-btn" (click)="updateBooking()">Lưu</button>
+        <button class="cancel-btn" (click)="cancelForm()">Hủy</button>
+      </div>
+    </div>
+  </div>
+</div>
