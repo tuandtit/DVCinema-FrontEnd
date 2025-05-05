@@ -1,13 +1,13 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Showtime } from '../../models/showtime/showtime.model';
-import { Movie } from '../../models/movie/movie.model';
-import { Cinema } from '../../models/cinema/cinema.model';
-import { MovieService } from '../../services/movie.service';
-import { ShowtimeService } from '../../services/showtime.service';
-import { ShowtimeResponseDto } from '../../models/showtime/showtime.response';
-import { City } from '../../models/cinema/city.model';
+import { Showtime } from '../../../core/models/showtime/showtime.model';
+import { Movie } from '../../../core/models/movie/movie.model';
+import { Cinema } from '../../../core/models/cinema/cinema.model';
+import { MovieService } from '../../../core/services/movie.service';
+import { ShowtimeService } from '../../../core/services/showtime.service';
+import { ShowtimeResponseDto } from '../../../core/models/showtime/showtime.response';
+import { City } from '../../../core/models/cinema/city.model';
 
 interface CinemaShowtime {
   cinemaId: number;
@@ -82,7 +82,7 @@ export class DetailMovieComponent implements OnInit {
           director: response.data.directorName,
           actors: response.data.actorNames.join(', '),
           duration: response.data.duration,
-          availableOnline: response.data.isAvailableOnline,
+          isAvailableOnline: response.data.isAvailableOnline,
           releaseDate: response.data.releaseDate,
           status: response.data.status || '',
         };

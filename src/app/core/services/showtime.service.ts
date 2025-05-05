@@ -1,18 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../shared/base-response/api.response';
+import { ApiResponse } from '../models/base-response/api.response';
 import { Cinema } from '../models/cinema/cinema.model';
 import { City } from '../models/cinema/city.model';
 import { ShowtimeResponseDto } from '../models/showtime/showtime.response';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ShowtimeService {
-  private apiUrl = 'http://localhost:8080/api/showtimes';
-  private apiGetShowtimesByMovieId = 'http://localhost:8080/api/showtimes?movieId';
-  private apiGetAllCities = 'http://localhost:8080/api';
+  private apiUrl = `${environment.apiBaseUrl}/api/showtimes`;
+  private apiGetShowtimesByMovieId = `${environment.apiBaseUrl}/api/showtimes?movieId`;
+  private apiGetAllCities = `${environment.apiBaseUrl}/api`;
 
   constructor(private http: HttpClient) {}
 

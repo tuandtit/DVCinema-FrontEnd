@@ -1,5 +1,8 @@
-<div class="toast-container" *ngIf="toast$ | async as toast">
-  <div class="toast" [ngClass]="toast.type">
-    {{ toast.message }}
-  </div>
+<div
+  class="toast"
+  *ngIf="visible"
+  [ngClass]="{ success: type === 'success', error: type === 'error' }"
+>
+  <span>{{ message }}</span>
+  <button (click)="closeToast()">×</button>
 </div>

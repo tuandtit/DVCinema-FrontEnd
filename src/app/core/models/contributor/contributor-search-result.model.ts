@@ -1,4 +1,4 @@
-export interface ContributorSearchResult {
+export interface ContributorDto {
   id: number;
   name: string;
   photoUrl: string | null;

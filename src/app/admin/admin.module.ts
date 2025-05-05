@@ -9,9 +9,11 @@ import { MoviesComponent } from './components/movies/movies.component';
 import { CinemasComponent } from './components/cinemas/cinemas.component';
 import { ShowtimesComponent } from './components/showtimes/showtimes.component';
 import { UsersComponent } from './components/users/users.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { BookingsComponent } from './components/bookings/bookings.component';
+import { ToastComponent } from '../shared/components/toast/toast.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,13 @@ import { BookingsComponent } from './components/bookings/bookings.component';
     UsersComponent,
     StatisticsComponent,
   ],
-  imports: [CommonModule, RouterModule, AdminRoutingModule, FormsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    AdminRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule,
+  ],
 })
 export class AdminModule {}

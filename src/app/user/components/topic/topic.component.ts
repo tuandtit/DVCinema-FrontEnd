@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TopicService } from '../../services/topic.service';
+import { TopicService } from '../../../core/services/topic.service';
 
 interface Topic {
   id: number;

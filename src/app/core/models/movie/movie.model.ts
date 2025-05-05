@@ -8,7 +8,7 @@ export interface Movie {
   director: string;
   actors: string;
   duration: number;
-  availableOnline: boolean;
+  isAvailableOnline: boolean;
   releaseDate?: string | Date;
   status?: string; // Thêm status để hỗ trợ lọc
 }

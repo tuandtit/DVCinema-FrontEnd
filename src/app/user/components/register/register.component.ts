@@ -2,9 +2,9 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
-import { SignUpDto } from '../../models/user/signup.dto';
-import { RegisterResponse } from '../../models/user/register.response';
-import { ApiResponse } from '../../../shared/base-response/api.response';
+import { SignUpDto } from '../../../core/models/user/signup.dto';
+import { RegisterResponse } from '../../../core/models/user/register.response';
+import { ApiResponse } from '../../../core/models/base-response/api.response';
 
 @Component({
   selector: 'app-register',

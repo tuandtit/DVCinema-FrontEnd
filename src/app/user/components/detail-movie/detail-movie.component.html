@@ -6,10 +6,10 @@
         <h1>{{ movie?.title }}</h1>
         <div class="banner-buttons">
           <button class="btn btn-primary" (click)="openTrailerModal()">Xem Trailer</button>
-          <button class="btn btn-danger" (click)="bookTicket()" *ngIf="movie?.availableOnline">
+          <button class="btn btn-danger" (click)="bookTicket()" *ngIf="movie?.isAvailableOnline">
             Xem Phim
           </button>
-          <button class="btn btn-danger" (click)="bookTicket()" *ngIf="!movie?.availableOnline">
+          <button class="btn btn-danger" (click)="bookTicket()" *ngIf="!movie?.isAvailableOnline">
             Đặt Vé
           </button>
         </div>

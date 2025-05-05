@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { Movie } from '../../models/movie/movie.model';
-import { MovieService } from '../../services/movie.service';
-import { MovieResponseDto } from '../../models/movie/movie-response.dto';
+import { Movie } from '../../../core/models/movie/movie.model';
+import { MovieService } from '../../../core/services/movie.service';
+import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
@@ -91,7 +91,7 @@ export class HomeComponent implements OnInit {
             director: dto.directorName,
             actors: dto.actorNames.join(', '),
             duration: dto.duration,
-            availableOnline: dto.isAvailableOnline,
+            isAvailableOnline: dto.isAvailableOnline,
             releaseDate: dto.releaseDate,
             status: dto.status || '',
           }));
@@ -157,7 +157,7 @@ export class HomeComponent implements OnInit {
   }
 
   watchMovie(movie: Movie): void {
-    if (movie.availableOnline) {
+    if (movie.isAvailableOnline) {
       console.log('Chuyển hướng đến trang xem phim:', movie.title);
     } else {
       alert('Phim này hiện chưa hỗ trợ xem online. Vui lòng đặt vé để xem tại rạp!');

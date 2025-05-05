@@ -8,10 +8,10 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { MovieService } from '../../services/movie.service';
+import { MovieService } from '../../../core/services/movie.service';
 import { Router } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
-import { MovieResponseDto } from '../../models/movie/movie-response.dto';
+import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
 import { query } from '@angular/animations';
 
 @Component({

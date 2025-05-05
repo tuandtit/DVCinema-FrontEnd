@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MovieService } from '../../services/movie.service';
-import { ContributorService } from '../../services/contributor.service';
-import { MovieResponseDto } from '../../models/movie/movie-response.dto';
-import { Movie } from '../../models/movie/movie.model';
-import { ContributorSearchResult } from '../../models/movie/contributor-search-result.model';
+import { MovieService } from '../../../core/services/movie.service';
+import { ContributorService } from '../../../core/services/contributor.service';
+import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
+import { Movie } from '../../../core/models/movie/movie.model';
+import { ContributorDto } from '../../../core/models/contributor/contributor-search-result.model';
 
 @Component({
   selector: 'app-search-page',
@@ -15,7 +15,7 @@ export class SearchPageComponent implements OnInit {
   query: string = '';
   searchType: 'movies' | 'actors' = 'movies';
   movies: Movie[] = [];
-  actors: ContributorSearchResult[] = [];
+  actors: ContributorDto[] = [];
   totalPages: number = 0;
   currentPage: number = 1;
   pageSize: number = 12;
@@ -54,7 +54,7 @@ export class SearchPageComponent implements OnInit {
             director: dto.directorName,
             actors: dto.actorNames.join(', '),
             duration: dto.duration,
-            availableOnline: dto.isAvailableOnline,
+            isAvailableOnline: dto.isAvailableOnline,
             releaseDate: dto.releaseDate,
             status: dto.status || '',
           }));

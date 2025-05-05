@@ -4,8 +4,8 @@
   min-height: 100vh;
 
   .main-content {
-    margin-left: 250px; // Để lại khoảng trống cho sidebar
-    padding: 20px;
+    margin-left: 150px;
+    // padding: 20px;
     flex: 1;
 
     @media (max-width: 576px) {

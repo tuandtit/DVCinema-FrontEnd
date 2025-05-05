@@ -1,107 +1,419 @@
 import { Component, OnInit } from '@angular/core';
-
-interface Movie {
-  id: number;
-  title: string;
-  genre: string;
-  duration: number; // Thời lượng (phút)
-  releaseDate: string; // Ngày phát hành (YYYY-MM-DD)
-  status: 'showing' | 'upcoming'; // Trạng thái: Đang chiếu hoặc Sắp chiếu
-}
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MovieService } from '../../../core/services/movie.service';
+import { ContributorService } from '../../../core/services/contributor.service';
+import { GenreService } from '../../../core/services/genre.service';
+import { MovieRequestDto } from '../../../core/models/movie/movie-request.dto';
+import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
+import { MovieSearchRequest } from '../../../core/models/movie/movie-search-request.dto';
 
 @Component({
   selector: 'app-movies',
   templateUrl: './movies.component.html',
-  styleUrls: ['./movies.component.scss']
+  styleUrls: ['./movies.component.scss'],
 })
 export class MoviesComponent implements OnInit {
-  movies: Movie[] = [
-    { id: 1, title: 'The Matrix', genre: 'Khoa học viễn tưởng', duration: 136, releaseDate: '1999-03-31', status: 'showing' },
-    { id: 2, title: 'Inception', genre: 'Hành động', duration: 148, releaseDate: '2010-07-16', status: 'showing' },
-    { id: 3, title: 'Dune: Part Two', genre: 'Khoa học viễn tưởng', duration: 166, releaseDate: '2024-03-01', status: 'upcoming' }
-  ];
+  movies: MovieResponseDto[] = [];
+  totalItems: number = 0;
+  page: number = 1;
+  size: number = 10;
+  query: string = '';
+  statusFilter: string = ''; // Thay đổi từ string[] thành string
+  isAvailableOnline: boolean | null = null;
 
-  filteredMovies: Movie[] = [...this.movies]; // Danh sách phim sau khi lọc/tìm kiếm
-  searchTerm: string = '';
-  statusFilter: string = 'all'; // Lọc theo trạng thái: all, showing, upcoming
+  showAddForm: boolean = false;
+  showEditForm: boolean = false;
+  selectedPoster: File | null = null;
 
-  showAddForm: boolean = false; // Hiển thị form thêm phim
-  showEditForm: boolean = false; // Hiển thị form sửa phim
-  newMovie: Movie = { id: 0, title: '', genre: '', duration: 0, releaseDate: '', status: 'showing' };
-  editMovie: Movie | null = null;
+  directors: any[] = [];
+  actors: any[] = [];
+  genres: any[] = [];
+
+  movieForm: FormGroup;
+  editMovie: MovieResponseDto | null = null;
+
+  // Trạng thái hiển thị autocomplete
+  showDirectorList: boolean = false;
+  showActorList: boolean = false;
+  showGenreList: boolean = false;
+  showEditDirectorList: boolean = false;
+  showEditActorList: boolean = false;
+  showEditGenreList: boolean = false;
+
+  // Biến tìm kiếm cho autocomplete
+  directorSearch: string = '';
+  actorSearch: string = '';
+  genreSearch: string = '';
+  editDirectorSearch: string = '';
+  editActorSearch: string = '';
+  editGenreSearch: string = '';
+
+  constructor(
+    private movieService: MovieService,
+    private contributorService: ContributorService,
+    private genreService: GenreService,
+    private fb: FormBuilder
+  ) {
+    this.movieForm = this.fb.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      duration: ['', [Validators.required, Validators.min(1)]],
+      releaseDate: ['', Validators.required],
+      isAvailableOnline: [false],
+      trailerUrl: [''],
+      videoUrl: [''],
+      status: ['SHOWING', Validators.required],
+      directorId: [0, Validators.required],
+      actorIds: [[]],
+      genreIds: [[]],
+    });
+  }
 
   ngOnInit(): void {
-    this.filterMovies();
+    this.loadMovies();
+    this.loadContributors('DIRECTOR');
+    this.loadContributors('ACTOR');
+    this.loadGenres('');
   }
 
-  // Tìm kiếm và lọc phim
-  filterMovies(): void {
-    let tempMovies = [...this.movies];
-
-    // Tìm kiếm theo tên phim
-    if (this.searchTerm) {
-      tempMovies = tempMovies.filter(movie =>
-        movie.title.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    }
-
-    // Lọc theo trạng thái
-    if (this.statusFilter !== 'all') {
-      tempMovies = tempMovies.filter(movie => movie.status === this.statusFilter);
-    }
-
-    this.filteredMovies = tempMovies;
+  loadMovies(): void {
+    this.movieService
+      .getMovies(
+        this.page,
+        this.size,
+        this.query,
+        this.statusFilter ? [this.statusFilter] : [],
+        this.isAvailableOnline
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.movies = response.data.contents;
+            this.totalItems = response.data.paging.totalRecord;
+          }
+        },
+        error: (err) => console.error('Lỗi khi tải danh sách phim:', err),
+      });
   }
 
-  // Thêm phim mới
+  loadContributors(type: string): void {
+    this.contributorService
+      .getContributors(
+        this.page,
+        this.size,
+        type === 'DIRECTOR' ? this.directorSearch : this.actorSearch,
+        type
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            if (type === 'DIRECTOR') this.directors = response.data.contents;
+            else this.actors = response.data.contents;
+          }
+        },
+        error: (err) => console.error('Lỗi khi tải contributors:', err),
+      });
+  }
+
+  loadGenres(query: string): void {
+    this.genreService.getGenres(query).subscribe({
+      next: (response: any) => {
+        if (response.data) this.genres = response.data;
+      },
+      error: (err) => console.error('Lỗi khi tải genres:', err),
+    });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.loadMovies();
+  }
+
+  onPosterChange(event: any): void {
+    this.selectedPoster = event.target.files[0];
+  }
+
   addMovie(): void {
-    if (!this.newMovie.title || !this.newMovie.genre || !this.newMovie.duration || !this.newMovie.releaseDate) {
-      alert('Vui lòng điền đầy đủ thông tin phim!');
+    if (this.movieForm.invalid || !this.selectedPoster) {
+      alert('Vui lòng điền đầy đủ thông tin và chọn poster!');
       return;
     }
+    debugger;
+    const movie: MovieRequestDto = this.movieForm.value;
+    this.movieService.addMovie(movie, this.selectedPoster).subscribe({
+      next: (response: any) => {
+        debugger;
+        if (response.status.code === 200) {
+          alert('Thêm thành công');
+        } else if (response.status.code === 400) {
+          alert('Thêm thất bại');
+        }
+        this.loadMovies();
+        this.cancelForm();
+      },
+      error: (error) => {
+        // ❌ Xử lý khi response trả về lỗi
+        if (error.status === 400 && error.error?.details) {
+          // error.error: chính là object JSON từ backend
+          const details = error.error.details;
+          console.log('Validation errors:', details);
 
-    const newId = this.movies.length ? Math.max(...this.movies.map(m => m.id)) + 1 : 1;
-    this.movies.push({ ...this.newMovie, id: newId });
-    this.filteredMovies = [...this.movies];
-    this.newMovie = { id: 0, title: '', genre: '', duration: 0, releaseDate: '', status: 'showing' };
-    this.showAddForm = false;
-    this.filterMovies();
+          // Ví dụ: hiển thị thông báo
+          for (const field in details) {
+            if (details.hasOwnProperty(field)) {
+              const message = details[field];
+              // hiển thị message cho từng field
+              console.log(`${field}: ${message}`);
+            }
+          }
+        } else {
+          // Lỗi khác (401, 500, v.v)
+          console.error('Unexpected error:', error);
+        }
+      },
+    });
   }
 
-  // Mở form sửa phim
-  openEditForm(movie: Movie): void {
+  openEditForm(movie: MovieResponseDto): void {
     this.editMovie = { ...movie };
+    const director = this.directors.find((d: any) => d.name === movie.directorName);
+    const actorIds = movie.actorNames
+      .map((name: string) => this.actors.find((a: any) => a.name === name)?.id || 0)
+      .filter((id: number) => id);
+    const genreIds = movie.genreNames
+      .map((name: string) => this.genres.find((g: any) => g.name === name)?.id || 0)
+      .filter((id: number) => id);
+    this.movieForm.patchValue({
+      title: movie.title,
+      description: movie.description,
+      duration: movie.duration,
+      releaseDate: movie.releaseDate,
+      isAvailableOnline: movie.isAvailableOnline,
+      trailerUrl: movie.trailerUrl,
+      videoUrl: movie.videoUrl || '',
+      status: movie.status || 'SHOWING',
+      directorId: director ? director.id : 0,
+      actorIds: actorIds,
+      genreIds: genreIds,
+    });
+    this.editDirectorSearch = director ? director.name : '';
+    this.editActorSearch = movie.actorNames.join(', ');
+    this.editGenreSearch = movie.genreNames.join(', ');
     this.showEditForm = true;
   }
 
-  // Sửa phim
   updateMovie(): void {
-    if (!this.editMovie) return;
+    if (this.movieForm.invalid || !this.editMovie) return;
 
-    const index = this.movies.findIndex(m => m.id === this.editMovie!.id);
-    if (index !== -1) {
-      this.movies[index] = { ...this.editMovie };
-      this.filteredMovies = [...this.movies];
-      this.editMovie = null;
-      this.showEditForm = false;
-      this.filterMovies();
-    }
+    const movie: MovieRequestDto = this.movieForm.value;
+    this.movieService.updateMovie(this.editMovie.id, movie).subscribe({
+      next: (response: any) => {
+        this.loadMovies();
+        this.cancelForm();
+      },
+      error: (err) => console.error('Lỗi khi sửa phim:', err),
+    });
   }
 
-  // Xóa phim
   deleteMovie(id: number): void {
     if (confirm('Bạn có chắc muốn xóa phim này?')) {
-      this.movies = this.movies.filter(movie => movie.id !== id);
-      this.filteredMovies = [...this.movies];
-      this.filterMovies();
+      this.movieService.deleteMovie(id).subscribe({
+        next: () => this.loadMovies(),
+        error: (err) => console.error('Lỗi khi xóa phim:', err),
+      });
     }
   }
 
-  // Hủy form
   cancelForm(): void {
     this.showAddForm = false;
     this.showEditForm = false;
-    this.newMovie = { id: 0, title: '', genre: '', duration: 0, releaseDate: '', status: 'showing' };
+    this.movieForm.reset({
+      title: '',
+      description: '',
+      duration: '',
+      releaseDate: '',
+      isAvailableOnline: false,
+      trailerUrl: '',
+      videoUrl: '',
+      status: 'SHOWING',
+      directorId: 0,
+      actorIds: [],
+      genreIds: [],
+    });
+    this.selectedPoster = null;
     this.editMovie = null;
+    this.directorSearch = '';
+    this.actorSearch = '';
+    this.genreSearch = '';
+    this.editDirectorSearch = '';
+    this.editActorSearch = '';
+    this.editGenreSearch = '';
+    this.showDirectorList = false;
+    this.showActorList = false;
+    this.showGenreList = false;
+    this.showEditDirectorList = false;
+    this.showEditActorList = false;
+    this.showEditGenreList = false;
+  }
+
+  filterMovies(): void {
+    debugger;
+    this.page = 1; // Reset về trang 1 khi lọc
+    this.loadMovies(); // Gọi lại loadMovies với các tham số lọc đã cập nhật
+  }
+
+  // Autocomplete handlers
+  onInputFocus(type: string, isEdit: boolean = false): void {
+    if (isEdit) {
+      switch (type) {
+        case 'director':
+          this.showEditDirectorList = true;
+          break;
+        case 'actor':
+          this.showEditActorList = true;
+          break;
+        case 'genre':
+          this.showEditGenreList = true;
+          break;
+      }
+    } else {
+      switch (type) {
+        case 'director':
+          this.showDirectorList = true;
+          break;
+        case 'actor':
+          this.showActorList = true;
+          break;
+        case 'genre':
+          this.showGenreList = true;
+          break;
+      }
+    }
+  }
+
+  onInputBlur(type: string, isEdit: boolean = false): void {
+    setTimeout(() => {
+      if (isEdit) {
+        switch (type) {
+          case 'director':
+            this.showEditDirectorList = false;
+            break;
+          case 'actor':
+            this.showEditActorList = false;
+            break;
+          case 'genre':
+            this.showEditGenreList = false;
+            break;
+        }
+      } else {
+        switch (type) {
+          case 'director':
+            this.showDirectorList = false;
+            break;
+          case 'actor':
+            this.showActorList = false;
+            break;
+          case 'genre':
+            this.showGenreList = false;
+            break;
+        }
+      }
+    }, 200);
+  }
+
+  selectDirector(director: any, isEdit: boolean = false): void {
+    if (isEdit) {
+      this.movieForm.get('directorId')?.setValue(director.id);
+      this.editDirectorSearch = director.name;
+      this.showEditDirectorList = false;
+    } else {
+      this.movieForm.get('directorId')?.setValue(director.id);
+      this.directorSearch = director.name;
+      this.showDirectorList = false;
+    }
+  }
+
+  selectActor(actor: any, isEdit: boolean = false): void {
+    const actorIds = isEdit
+      ? this.movieForm.get('actorIds')?.value
+      : this.movieForm.get('actorIds')?.value;
+    if (!actorIds.includes(actor.id)) {
+      actorIds.push(actor.id);
+      this.movieForm.get('actorIds')?.setValue([...actorIds]);
+    }
+    if (isEdit) {
+      this.editActorSearch = actorIds
+        .map((id: number) => this.actors.find((a: any) => a.id === id)?.name)
+        .filter((name: string | undefined) => name)
+        .join(', ');
+      this.showEditActorList = false;
+    } else {
+      this.actorSearch = actorIds
+        .map((id: number) => this.actors.find((a: any) => a.id === id)?.name)
+        .filter((name: string | undefined) => name)
+        .join(', ');
+      this.showActorList = false;
+    }
+  }
+
+  selectGenre(genre: any, isEdit: boolean = false): void {
+    const genreIds = isEdit
+      ? this.movieForm.get('genreIds')?.value
+      : this.movieForm.get('genreIds')?.value;
+    if (!genreIds.includes(genre.id)) {
+      genreIds.push(genre.id);
+      this.movieForm.get('genreIds')?.setValue([...genreIds]);
+    }
+    if (isEdit) {
+      this.editGenreSearch = genreIds
+        .map((id: number) => this.genres.find((g: any) => g.id === id)?.name)
+        .filter((name: string | undefined) => name)
+        .join(', ');
+      this.showEditGenreList = false;
+    } else {
+      this.genreSearch = genreIds
+        .map((id: number) => this.genres.find((g: any) => g.id === id)?.name)
+        .filter((name: string | undefined) => name)
+        .join(', ');
+      this.showGenreList = false;
+    }
+  }
+
+  removeActor(actorId: number): void {
+    const actorIds = this.movieForm.get('actorIds')?.value.filter((id: number) => id !== actorId);
+    this.movieForm.get('actorIds')?.setValue(actorIds);
+    this.actorSearch = actorIds
+      .map((id: number) => this.actors.find((a: any) => a.id === id)?.name)
+      .filter((name: string | undefined) => name)
+      .join(', ');
+    this.editActorSearch = actorIds
+      .map((id: number) => this.actors.find((a: any) => a.id === id)?.name)
+      .filter((name: string | undefined) => name)
+      .join(', ');
+  }
+
+  removeGenre(genreId: number): void {
+    const genreIds = this.movieForm.get('genreIds')?.value.filter((id: number) => id !== genreId);
+    this.movieForm.get('genreIds')?.setValue(genreIds);
+    this.genreSearch = genreIds
+      .map((id: number) => this.genres.find((g: any) => g.id === id)?.name)
+      .filter((name: string | undefined) => name)
+      .join(', ');
+    this.editGenreSearch = genreIds
+      .map((id: number) => this.genres.find((g: any) => g.id === id)?.name)
+      .filter((name: string | undefined) => name)
+      .join(', ');
+  }
+
+  getGenreNameById(id: number): string | undefined {
+    return this.genres.find((g: any) => g.id === id)?.name;
+  }
+
+  getActorNameById(id: number): string | undefined {
+    return this.actors.find((a: any) => a.id === id)?.name;
+  }
+
+  getTotalPages(): number {
+    return Math.ceil(this.totalItems / this.size);
   }
 }

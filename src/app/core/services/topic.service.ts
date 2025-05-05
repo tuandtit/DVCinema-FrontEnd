@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../shared/base-response/api.response';
+import { ApiResponse } from '../models/base-response/api.response';
+import { environment } from '../../environments/environment';
 
 interface Topic {
   id: number;
@@ -13,7 +14,7 @@ interface Topic {
   providedIn: 'root',
 })
 export class TopicService {
-  private apiUrl = 'http://localhost:8080/api/genres';
+  private apiUrl = `${environment.apiBaseUrl}/api/genres`;
 
   constructor(private http: HttpClient) {}
 

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { SignInDto } from '../../user/models/user/signin.dto';
+import { SignInDto } from '../models/user/signin.dto';
 import { environment } from '../../environments/environment';
-import { LoginResponse } from '../../user/models/user/login.response';
-import { Account } from '../../user/models/user/account.model';
-import { ApiResponse } from '../../shared/base-response/api.response';
+import { LoginResponse } from '../models/user/login.response';
+import { Account } from '../models/user/account.model';
+import { ApiResponse } from '../models/base-response/api.response';
 
 @Injectable({
   providedIn: 'root',

@@ -1,18 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { ToastService } from '../../../user/services/toast.service';
-import { Observable } from 'rxjs';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-toast',
   templateUrl: './toast.component.html',
   styleUrls: ['./toast.component.scss'],
 })
-export class ToastComponent implements OnInit {
-  toast$!: Observable<{ message: string; type: 'success' | 'error' } | null>;
+export class ToastComponent {
+  @Input() message: string = '';
+  @Input() type: 'success' | 'error' = 'success';
+  visible: boolean = false;
 
-  constructor(private toastService: ToastService) {}
-
-  ngOnInit(): void {
-    this.toast$ = this.toastService.toast$;
+  closeToast() {
+    this.visible = false;
   }
 }
