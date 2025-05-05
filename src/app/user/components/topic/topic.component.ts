@@ -8,9 +8,10 @@ interface Topic {
 }
 
 @Component({
-  selector: 'app-topic',
-  templateUrl: './topic.component.html',
-  styleUrls: ['./topic.component.scss'],
+    selector: 'app-topic',
+    templateUrl: './topic.component.html',
+    styleUrls: ['./topic.component.scss'],
+    standalone: false
 })
 export class TopicComponent implements OnInit {
   topics: Topic[] = [];

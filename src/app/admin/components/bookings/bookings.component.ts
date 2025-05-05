@@ -12,9 +12,10 @@ interface Booking {
 }
 
 @Component({
-  selector: 'app-bookings',
-  templateUrl: './bookings.component.html',
-  styleUrls: ['./bookings.component.scss']
+    selector: 'app-bookings',
+    templateUrl: './bookings.component.html',
+    styleUrls: ['./bookings.component.scss'],
+    standalone: false
 })
 export class BookingsComponent implements OnInit {
   bookings: Booking[] = [

@@ -7,9 +7,10 @@ import { Movie } from '../../../core/models/movie/movie.model';
 import { ContributorDto } from '../../../core/models/contributor/contributor-search-result.model';
 
 @Component({
-  selector: 'app-search-page',
-  templateUrl: './search-page.component.html',
-  styleUrls: ['./search-page.component.scss'],
+    selector: 'app-search-page',
+    templateUrl: './search-page.component.html',
+    styleUrls: ['./search-page.component.scss'],
+    standalone: false
 })
 export class SearchPageComponent implements OnInit {
   query: string = '';

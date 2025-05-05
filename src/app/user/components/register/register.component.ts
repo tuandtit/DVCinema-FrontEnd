@@ -7,9 +7,10 @@ import { RegisterResponse } from '../../../core/models/user/register.response';
 import { ApiResponse } from '../../../core/models/base-response/api.response';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
+    selector: 'app-register',
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.scss',
+    standalone: false
 })
 export class RegisterComponent {
   @ViewChild('registerForm') registerForm!: NgForm;

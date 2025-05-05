@@ -9,9 +9,10 @@ interface Cinema {
 }
 
 @Component({
-  selector: 'app-cinemas',
-  templateUrl: './cinemas.component.html',
-  styleUrls: ['./cinemas.component.scss'],
+    selector: 'app-cinemas',
+    templateUrl: './cinemas.component.html',
+    styleUrls: ['./cinemas.component.scss'],
+    standalone: false
 })
 export class CinemasComponent implements OnInit {
   cinemas: Cinema[] = [

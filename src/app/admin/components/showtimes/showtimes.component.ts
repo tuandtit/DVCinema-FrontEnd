@@ -11,9 +11,10 @@ interface Showtime {
 }
 
 @Component({
-  selector: 'app-showtimes',
-  templateUrl: './showtimes.component.html',
-  styleUrls: ['./showtimes.component.scss']
+    selector: 'app-showtimes',
+    templateUrl: './showtimes.component.html',
+    styleUrls: ['./showtimes.component.scss'],
+    standalone: false
 })
 export class ShowtimesComponent implements OnInit {
   showtimes: Showtime[] = [

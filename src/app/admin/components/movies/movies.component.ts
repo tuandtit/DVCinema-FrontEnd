@@ -1,3 +1,4 @@
+// Đã chỉnh sửa và tối ưu mã nguồn
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MovieRequestDto } from '../../../core/models/movie/movie-request.dto';
@@ -7,21 +8,22 @@ import { GenreService } from '../../../core/services/genre.service';
 import { MovieService } from '../../../core/services/movie.service';
 
 @Component({
+  standalone: false,
   selector: 'app-movies',
   templateUrl: './movies.component.html',
   styleUrls: ['./movies.component.scss'],
 })
 export class MoviesComponent implements OnInit {
   movies: MovieResponseDto[] = [];
-  totalItems: number = 0;
-  page: number = 1;
-  size: number = 10;
-  query: string = '';
-  statusFilter: string = ''; // Thay đổi từ string[] thành string
+  totalItems = 0;
+  page = 1;
+  size = 10;
+  query = '';
+  statusFilter = '';
   isAvailableOnline: boolean | null = null;
 
-  showAddForm: boolean = false;
-  showEditForm: boolean = false;
+  showAddForm = false;
+  showEditForm = false;
   selectedPoster: File | null = null;
 
   directors: any[] = [];
@@ -31,21 +33,19 @@ export class MoviesComponent implements OnInit {
   movieForm: FormGroup;
   editMovie: MovieResponseDto | null = null;
 
-  // Trạng thái hiển thị autocomplete
-  showDirectorList: boolean = false;
-  showActorList: boolean = false;
-  showGenreList: boolean = false;
-  showEditDirectorList: boolean = false;
-  showEditActorList: boolean = false;
-  showEditGenreList: boolean = false;
+  showDirectorList = false;
+  showActorList = false;
+  showGenreList = false;
+  showEditDirectorList = false;
+  showEditActorList = false;
+  showEditGenreList = false;
 
-  // Biến tìm kiếm cho autocomplete
-  directorSearch: string = '';
-  actorSearch: string = '';
-  genreSearch: string = '';
-  editDirectorSearch: string = '';
-  editActorSearch: string = '';
-  editGenreSearch: string = '';
+  directorSearch = '';
+  actorSearch = '';
+  genreSearch = '';
+  editDirectorSearch = '';
+  editActorSearch = '';
+  editGenreSearch = '';
 
   constructor(
     private movieService: MovieService,
@@ -77,15 +77,9 @@ export class MoviesComponent implements OnInit {
 
   loadMovies(): void {
     this.movieService
-      .getMovies(
-        this.page,
-        this.size,
-        this.query,
-        this.statusFilter ? [this.statusFilter] : [],
-        this.isAvailableOnline
-      )
+      .getMovies(this.page, this.size, this.query, this.statusFilter ? [this.statusFilter] : [], this.isAvailableOnline)
       .subscribe({
-        next: (response: any) => {
+        next: (response) => {
           if (response.data) {
             this.movies = response.data.contents;
             this.totalItems = response.data.paging.totalRecord;
@@ -95,28 +89,22 @@ export class MoviesComponent implements OnInit {
       });
   }
 
-  loadContributors(type: string): void {
-    this.contributorService
-      .getContributors(
-        this.page,
-        this.size,
-        type === 'DIRECTOR' ? this.directorSearch : this.actorSearch,
-        type
-      )
-      .subscribe({
-        next: (response: any) => {
-          if (response.data) {
-            if (type === 'DIRECTOR') this.directors = response.data.contents;
-            else this.actors = response.data.contents;
-          }
-        },
-        error: (err) => console.error('Lỗi khi tải contributors:', err),
-      });
+  loadContributors(type: 'DIRECTOR' | 'ACTOR'): void {
+    const search = type === 'DIRECTOR' ? this.directorSearch : this.actorSearch;
+    this.contributorService.getContributors(this.page, this.size, search, type).subscribe({
+      next: (response) => {
+        if (response.data) {
+          if (type === 'DIRECTOR') this.directors = response.data.contents;
+          else this.actors = response.data.contents;
+        }
+      },
+      error: (err) => console.error('Lỗi khi tải contributors:', err),
+    });
   }
 
   loadGenres(query: string): void {
     this.genreService.getGenres(query).subscribe({
-      next: (response: any) => {
+      next: (response) => {
         if (response.data) this.genres = response.data;
       },
       error: (err) => console.error('Lỗi khi tải genres:', err),
@@ -128,45 +116,32 @@ export class MoviesComponent implements OnInit {
     this.loadMovies();
   }
 
-  onPosterChange(event: any): void {
-    this.selectedPoster = event.target.files[0];
+  onPosterChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.selectedPoster = input.files[0];
+    }
   }
 
   addMovie(): void {
     if (this.movieForm.invalid || !this.selectedPoster) {
-      alert('Vui lòng điền đầy đủ thông tin và chọn poster!');
+      alert('Vui lòng điền đủ thông tin và chọn poster!');
       return;
     }
-    debugger;
     const movie: MovieRequestDto = this.movieForm.value;
     this.movieService.addMovie(movie, this.selectedPoster).subscribe({
-      next: (response: any) => {
-        debugger;
-        if (response.status.code === 200) {
-          alert('Thêm thành công');
-        } else if (response.status.code === 400) {
-          alert('Thêm thất bại');
-        }
+      next: (response) => {
+        if (response.status.code === 200) alert('Thêm thành công');
+        else alert('Thêm thất bại');
         this.loadMovies();
         this.cancelForm();
       },
       error: (error) => {
-        // ❌ Xử lý khi response trả về lỗi
         if (error.status === 400 && error.error?.details) {
-          // error.error: chính là object JSON từ backend
-          const details = error.error.details;
-          console.log('Validation errors:', details);
-
-          // Ví dụ: hiển thị thông báo
-          for (const field in details) {
-            if (details.hasOwnProperty(field)) {
-              const message = details[field];
-              // hiển thị message cho từng field
-              console.log(`${field}: ${message}`);
-            }
+          for (const field in error.error.details) {
+            console.log(`${field}: ${error.error.details[field]}`);
           }
         } else {
-          // Lỗi khác (401, 500, v.v)
           console.error('Unexpected error:', error);
         }
       },

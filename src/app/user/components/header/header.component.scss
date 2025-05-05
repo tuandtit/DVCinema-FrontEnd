@@ -1,5 +1,6 @@
-@import 'variables';
-@import 'common';
+@use 'variables' as *;
+@use 'common' as *;
+@use 'sass:color';
 
 // Header
 .sticky-header {
@@ -129,7 +130,7 @@ body {
             border-bottom: none;
           }
           &:hover {
-            background: darken($color-dropdown-search-box-bg, 5%);
+            background: color.scale($color-dropdown-search-box-bg, $lightness: -5%);
           }
 
           .suggestion-content {
@@ -225,7 +226,7 @@ body {
           opacity 0.3s ease,
           transform 0.3s ease,
           visibility 0.3s ease;
-        background: darken($color-dropdown-search-box-bg, 5%);
+        background-color: color.scale($color-dropdown-search-box-bg, $lightness: -5%);
         padding: 5px;
         border-radius: 8px;
         box-shadow: $box-shadow-light;

@@ -1,5 +1,6 @@
-@import 'variables';
-@import 'common';
+@use 'variables' as *;
+@use 'common' as *;
+@use 'sass:color';
 
 .container {
   color: #333;

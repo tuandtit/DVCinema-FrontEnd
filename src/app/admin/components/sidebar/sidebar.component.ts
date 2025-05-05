@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-admin-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss'],
+    selector: 'app-admin-sidebar',
+    templateUrl: './sidebar.component.html',
+    styleUrls: ['./sidebar.component.scss'],
+    standalone: false
 })
 export class SidebarComponent {
   @Output() toggle = new EventEmitter<boolean>();

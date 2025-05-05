@@ -8,9 +8,10 @@ import { AccountService } from '../../../core/services/account.service';
 import { TokenService } from '../../../core/services/token.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss',
+    standalone: false
 })
 export class LoginComponent {
   @ViewChild('loginForm') loginForm!: NgForm;

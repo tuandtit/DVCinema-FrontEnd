@@ -4,10 +4,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
-import { UserModule } from './user/user.module';
-import { AdminModule } from './admin/admin.module';
-import { RouterModule } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [AppComponent],

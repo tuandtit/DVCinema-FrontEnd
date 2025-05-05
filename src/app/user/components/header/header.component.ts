@@ -9,15 +9,15 @@ import {
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { MovieService } from '../../../core/services/movie.service';
-import { Router } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
 import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
-import { query } from '@angular/animations';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    standalone: false
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
   searchQuery: string = '';

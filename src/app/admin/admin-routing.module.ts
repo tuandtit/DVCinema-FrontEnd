@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin.component';
 import { MoviesComponent } from './components/movies/movies.component';
 import { CinemasComponent } from './components/cinemas/cinemas.component';
@@ -7,6 +6,7 @@ import { ShowtimesComponent } from './components/showtimes/showtimes.component';
 import { UsersComponent } from './components/users/users.component';
 import { BookingsComponent } from './components/bookings/bookings.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
