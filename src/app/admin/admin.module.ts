@@ -10,10 +10,9 @@ import { CinemasComponent } from './components/cinemas/cinemas.component';
 import { ShowtimesComponent } from './components/showtimes/showtimes.component';
 import { UsersComponent } from './components/users/users.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { StatisticsComponent } from './components/statistics/statistics.component';
 import { BookingsComponent } from './components/bookings/bookings.component';
-import { ToastComponent } from '../shared/components/toast/toast.component';
 import { SharedModule } from '../shared/shared.module';
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +24,7 @@ import { SharedModule } from '../shared/shared.module';
     BookingsComponent,
     ShowtimesComponent,
     UsersComponent,
-    StatisticsComponent,
+    AdminDashboardComponent,
   ],
   imports: [
     CommonModule,
@@ -34,6 +33,7 @@ import { SharedModule } from '../shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
+    // NgChartsModule
   ],
 })
 export class AdminModule {}

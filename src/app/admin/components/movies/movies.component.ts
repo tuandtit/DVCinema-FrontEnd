@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MovieService } from '../../../core/services/movie.service';
-import { ContributorService } from '../../../core/services/contributor.service';
-import { GenreService } from '../../../core/services/genre.service';
 import { MovieRequestDto } from '../../../core/models/movie/movie-request.dto';
 import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
-import { MovieSearchRequest } from '../../../core/models/movie/movie-search-request.dto';
+import { ContributorService } from '../../../core/services/contributor.service';
+import { GenreService } from '../../../core/services/genre.service';
+import { MovieService } from '../../../core/services/movie.service';
 
 @Component({
   selector: 'app-movies',

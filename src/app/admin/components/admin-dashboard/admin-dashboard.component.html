@@ -1,0 +1,63 @@
+<div class="dashboard-container">
+  <div class="filter-bar">
+    <label for="range">Chọn khoảng thời gian:</label>
+    <select title="Chọn" [(ngModel)]="selectedRange" (change)="onTimeRangeChange()">
+      <option value="">-- Chọn --</option>
+      <option value="today">Hôm nay</option>
+      <option value="yesterday">Hôm qua</option>
+      <option value="this_week">Tuần này</option>
+      <option value="last_week">Tuần trước</option>
+      <option value="this_month">Tháng này</option>
+      <option value="last_month">Tháng trước</option>
+    </select>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="card">🎫 Vé đã bán: {{ stats.ticketsSold }}</div>
+    <div class="card">💰 Doanh thu: {{ stats.revenue | currency: 'VND' : 'symbol' }}</div>
+    <div class="card">🎥 Phim đang chiếu: {{ stats.moviesShowing }}</div>
+    <div class="card">🧑‍🤝‍🧑 Người dùng mới: {{ stats.newUsers }}</div>
+  </div>
+
+  <!-- Charts & Data Sections -->
+  <div class="charts">
+    <div class="chart-card">
+      <h4>📈 Doanh thu theo thời gian</h4>
+      <div class="chart-placeholder">[Line Chart Placeholder]</div>
+    </div>
+
+    <div class="chart-card">
+      <h4>🏆 Phim bán chạy</h4>
+      <ul>
+        <li *ngFor="let movie of topMovies">
+          {{ movie.name }} - {{ movie.revenue | currency: 'VND' : 'symbol' }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="chart-card">
+      <h4>🏢 Tỷ lệ lấp đầy theo rạp</h4>
+      <div class="chart-placeholder">[Bar Chart Placeholder]</div>
+    </div>
+
+    <div class="chart-card">
+      <h4>⚠️ Suất chiếu ít vé</h4>
+      <ul>
+        <li *ngFor="let show of lowRiskShowtimes">{{ show.time }} - {{ show.movie }}</li>
+      </ul>
+    </div>
+
+    <div class="chart-card">
+      <h4>💳 Phương thức thanh toán</h4>
+      <div class="chart-placeholder">[Pie Chart Placeholder]</div>
+    </div>
+
+    <div class="chart-card">
+      <h4>📊 Hành vi người dùng</h4>
+      <p><strong>Khung giờ đặt vé cao:</strong> {{ userBehavior.peakHours }}</p>
+      <p><strong>Thiết bị:</strong> {{ userBehavior.device }}</p>
+      <p><strong>Vị trí phổ biến:</strong> {{ userBehavior.location }}</p>
+    </div>
+  </div>
+</div>
