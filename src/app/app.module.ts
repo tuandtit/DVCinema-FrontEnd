@@ -6,10 +6,11 @@ import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@a
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
 import { SharedModule } from './shared/shared.module';
 import { RouterModule } from '@angular/router';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, RouterModule, SharedModule],
+  imports: [BrowserModule, AppRoutingModule, RouterModule, SharedModule, NgChartsModule],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
     {

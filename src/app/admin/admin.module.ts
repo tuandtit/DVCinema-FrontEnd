@@ -12,6 +12,7 @@ import { ShowtimesComponent } from './components/showtimes/showtimes.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UsersComponent } from './components/users/users.component';
 import { MoviesComponent } from './components/movies/movies.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { MoviesComponent } from './components/movies/movies.component';
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
+    NgChartsModule,
     // Nếu bạn muốn sử dụng NgChartsModule, hãy đảm bảo rằng module này đã được import chính xác
   ],
 })
