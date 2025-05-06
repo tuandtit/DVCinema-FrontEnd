@@ -3,12 +3,13 @@ import { Movie } from '../../../core/models/movie/movie.model';
 import { MovieService } from '../../../core/services/movie.service';
 import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
-    standalone: false
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
+  standalone: false,
 })
 export class HomeComponent implements OnInit {
   movies: Movie[] = [];
@@ -21,22 +22,23 @@ export class HomeComponent implements OnInit {
   showTrailerModal: boolean = false;
   safeTrailerUrl: SafeResourceUrl | null = null;
   selectMovieTile: string = '';
-  isLoading: boolean = false; // Thêm loading state
+  isLoading: boolean = false;
+  inputPage: number = 1; // Biến cho ô input phân trang
 
   constructor(
     private movieService: MovieService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   @ViewChild('modalTrailer') modalTrailer!: ElementRef;
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
-
-    // Nếu modal đang mở và tồn tại phần tử modalTrailer
     if (this.showTrailerModal && this.modalTrailer) {
       const clickedInside = this.modalTrailer.nativeElement.contains(target);
-
       if (!clickedInside) {
         this.showTrailerModal = false;
       }
@@ -44,13 +46,19 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadMovies();
+    // Lắng nghe thay đổi query params
+    this.route.queryParams.subscribe((params) => {
+      const page = parseInt(params['page'], 10) || 1;
+      const filter = params['filter'] || 'all';
+      this.currentPage = page;
+      this.inputPage = page; // Đồng bộ inputPage với query param page
+      this.filterType = filter; // Đồng bộ filterType với query param filter
+      this.loadMovies();
+    });
   }
 
   loadMovies(): void {
     this.isLoading = true;
-
-    // Ánh xạ filterType thành các tham số lọc cho API
     let status: string[] = [];
     let isAvailableOnline: boolean | null = null;
 
@@ -71,7 +79,6 @@ export class HomeComponent implements OnInit {
         break;
     }
 
-    // Gọi API với các tham số lọc và phân trang
     this.movieService
       .getMovies(this.currentPage, this.pageSize, '', status, isAvailableOnline)
       .subscribe({
@@ -97,10 +104,8 @@ export class HomeComponent implements OnInit {
             status: dto.status || '',
           }));
 
-          // this.totalRecord = response.data.paging.totalRecord;
           this.totalPages = response.data.paging.totalPage;
-
-          this.filteredMovies = this.movies; // Dữ liệu đã được lọc từ server
+          this.filteredMovies = this.movies;
           this.loadFeaturedMovies();
           this.isLoading = false;
         },
@@ -113,29 +118,49 @@ export class HomeComponent implements OnInit {
 
   loadFeaturedMovies(): void {
     this.featuredMovies = this.movies.slice(0, 3);
-    // Logic gốc (khôi phục sau khi backend cập nhật):
-    // this.featuredMovies = this.movies.filter(movie => movie.availableOnline).slice(0, 3);
   }
 
   getPaginatedMovies(): Movie[] {
-    return this.filteredMovies; // Dữ liệu đã được phân trang từ server
+    return this.filteredMovies;
   }
 
   changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.loadMovies();
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.inputPage = page; // Cập nhật inputPage
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { filter: this.filterType, page: page },
+        queryParamsHandling: 'merge',
+      });
+    }
+  }
+
+  goToPage(): void {
+    const page = Math.floor(Number(this.inputPage));
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { filter: this.filterType, page: page },
+        queryParamsHandling: 'merge',
+      });
+    } else {
+      this.inputPage = this.currentPage; // Đặt lại nếu không hợp lệ
     }
   }
 
   setFilter(filterType: string): void {
     this.filterType = filterType;
-    this.currentPage = 1; // Reset về trang 1 khi thay đổi bộ lọc
-    this.loadMovies();
+    this.currentPage = 1;
+    this.inputPage = 1;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { filter: this.filterType, page: 1 },
+      queryParamsHandling: 'merge',
+    });
   }
 
   viewDetails(movie: Movie): void {
-    console.log('Xem chi tiết phim:', movie.title);
+    this.router.navigate(['/detail-movie', movie.id]);
   }
 
   closeTrailerModal(): void {
@@ -147,10 +172,7 @@ export class HomeComponent implements OnInit {
     console.log('Phát trailer phim:', movie.title);
     this.selectMovieTile = movie.title;
     if (movie?.trailer) {
-      // Bước 1: Chuyển "watch?v=" thành "embed/"
       const embedUrl = movie.trailer.replace('watch?v=', 'embed/');
-
-      // Bước 2: Thêm các tham số
       const finalUrl = `${embedUrl}?rel=0&showinfo=0&autoplay=1`;
       this.safeTrailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(finalUrl);
       this.showTrailerModal = true;

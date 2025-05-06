@@ -220,6 +220,31 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  .page-input {
+    width: 40px;
+    padding: 6px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid #dbe2f5;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+      box-shadow: 0 0 5px rgba($color-primary, 0.3);
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    // -moz-appearance: textfield;
+  }
 }
 
 .hero-section {

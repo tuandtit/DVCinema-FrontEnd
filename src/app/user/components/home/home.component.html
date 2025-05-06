@@ -106,7 +106,7 @@
             <i class="fa-solid fa-play"></i>
           </button>
         </div>
-        <h3 class="movie-title" [routerLink]="['/detail-movie', movie.id]">{{ movie.title }}</h3>
+        <h3 class="movie-title" (click)="viewDetails(movie)">{{ movie.title }}</h3>
         <p class="movie-desc">Thể loại: {{ movie.genres }}</p>
         <p class="movie-desc">Thời lượng: {{ movie.duration }} phút</p>
         <div class="product-actions">
@@ -123,19 +123,37 @@
   <!-- Phân trang -->
   <div class="pagination" *ngIf="totalPages > 1 && !isLoading">
     <button
+      title="Previous"
       class="btn btn-outline-primary"
       [disabled]="currentPage === 1"
+      [routerLink]="[]"
+      [queryParams]="{ page: currentPage - 1, filter: filterType }"
+      queryParamsHandling="merge"
       (click)="changePage(currentPage - 1)"
     >
-      Trang trước
+      <i class="fa-solid fa-arrow-left"></i>
     </button>
-    <span>Trang {{ currentPage }} / {{ totalPages }}</span>
+    <span>Trang</span>
+    <input
+      type="number"
+      class="page-input"
+      [(ngModel)]="inputPage"
+      (keyup.enter)="goToPage()"
+      min="1"
+      [max]="totalPages"
+      placeholder="{{ currentPage }}"
+    />
+    <span>/ {{ totalPages }}</span>
     <button
+      title="Next"
       class="btn btn-outline-primary"
       [disabled]="currentPage === totalPages"
+      [routerLink]="[]"
+      [queryParams]="{ page: currentPage + 1, filter: filterType }"
+      queryParamsHandling="merge"
       (click)="changePage(currentPage + 1)"
     >
-      Trang sau
+      <i class="fa-solid fa-arrow-right"></i>
     </button>
   </div>
 </div>
