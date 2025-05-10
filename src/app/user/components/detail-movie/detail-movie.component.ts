@@ -16,10 +16,10 @@ interface CinemaShowtime {
 }
 
 @Component({
-    selector: 'app-detail-movie',
-    templateUrl: './detail-movie.component.html',
-    styleUrls: ['./detail-movie.component.scss'],
-    standalone: false
+  selector: 'app-detail-movie',
+  templateUrl: './detail-movie.component.html',
+  styleUrls: ['./detail-movie.component.scss'],
+  standalone: false,
 })
 export class DetailMovieComponent implements OnInit {
   movie: Movie | null = null;
@@ -60,7 +60,6 @@ export class DetailMovieComponent implements OnInit {
       const movieId = this.route.snapshot.paramMap.get('id');
       if (movieId) {
         this.loadMovie(+movieId);
-        this.loadShowtimes(+movieId);
         this.loadCities();
       }
     });
@@ -94,9 +93,10 @@ export class DetailMovieComponent implements OnInit {
     });
   }
 
-  loadShowtimes(movieId: number): void {
-    this.showTimeService.getShowtimesByMovieId(movieId).subscribe({
+  loadShowtimes(movieId: number, cinemaId: number): void {
+    this.showTimeService.getShowtimesByMovieId(movieId, cinemaId).subscribe({
       next: (response) => {
+        debugger;
         if (response.status.code !== 200) {
           console.error('Lỗi từ API:', response.status.timestamp);
           return;
@@ -151,8 +151,10 @@ export class DetailMovieComponent implements OnInit {
 
     this.cinemasInCity = this.filterCinemasInCity(cityId) || [];
     this.selectedCinema = this.cinemasInCity[0]?.id || null;
-    console.log('Danh sách rạp trong thành phố:', this.cinemasInCity); // Debug
-    console.log('Rạp được chọn mặc định:', this.selectedCinema); // Debug
+    console.log('Danh sách rạp trong thành phố:', this.cinemasInCity);
+    console.log('Rạp được chọn mặc định:', this.selectedCinema);
+    if (this.movie?.id && this.selectedCinema)
+      this.loadShowtimes(this.movie?.id, this.selectedCinema);
     this.filterShowtimesByDateAndCinema();
   }
 
@@ -174,7 +176,9 @@ export class DetailMovieComponent implements OnInit {
 
   selectCinema(cinemaId: number | null): void {
     this.selectedCinema = cinemaId;
-    console.log('Rạp được chọn:', this.selectedCinema); // Debug
+    console.log('Rạp được chọn:', this.selectedCinema);
+    if (this.movie?.id && this.selectedCinema)
+      this.loadShowtimes(this.movie?.id, this.selectedCinema);
     this.filterShowtimesByDateAndCinema();
   }
 

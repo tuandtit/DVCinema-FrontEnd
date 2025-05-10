@@ -78,14 +78,14 @@
       [ngClass]="{ active: filterType === 'new' }"
       (click)="setFilter('new')"
     >
-      Phim mới
+      Phim đang chiếu rạp
     </button>
     <button
       class="btn btn-outline-primary"
       [ngClass]="{ active: filterType === 'popular' }"
       (click)="setFilter('popular')"
     >
-      Phim được yêu thích
+      Phim xem trực tuyến
     </button>
     <button
       class="btn btn-outline-primary"
@@ -157,3 +157,19 @@
     </button>
   </div>
 </div>
+<!-- Thêm các component modal -->
+<app-cinema-showtime-modal
+  [movie]="selectedMovie"
+  [showModal]="showCinemaModal"
+  (close)="closeCinemaModal()"
+  (proceed)="openConfirmModal($event)"
+></app-cinema-showtime-modal>
+
+<app-confirm-booking-modal
+  [showModal]="showConfirmModal"
+  [movie]="selectedMovie"
+  [cinema]="selectedCinema"
+  [showtime]="selectedShowtime"
+  (close)="closeConfirmModal()"
+  (confirm)="proceedToSeatSelection()"
+></app-confirm-booking-modal>

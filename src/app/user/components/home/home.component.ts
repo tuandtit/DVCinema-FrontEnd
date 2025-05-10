@@ -4,6 +4,8 @@ import { MovieService } from '../../../core/services/movie.service';
 import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Cinema } from '../../../core/models/cinema/cinema.model';
+import { Showtime } from '../../../core/models/showtime/showtime.model';
 
 @Component({
   selector: 'app-home',
@@ -23,7 +25,14 @@ export class HomeComponent implements OnInit {
   safeTrailerUrl: SafeResourceUrl | null = null;
   selectMovieTile: string = '';
   isLoading: boolean = false;
-  inputPage: number = 1; // Biến cho ô input phân trang
+  inputPage: number = 1;
+
+  // Biến cho các modal
+  showCinemaModal: boolean = false;
+  showConfirmModal: boolean = false;
+  selectedMovie: Movie | null = null;
+  selectedCinema: Cinema | null = null;
+  selectedShowtime: Showtime | null = null;
 
   constructor(
     private movieService: MovieService,
@@ -46,13 +55,12 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Lắng nghe thay đổi query params
     this.route.queryParams.subscribe((params) => {
       const page = parseInt(params['page'], 10) || 1;
       const filter = params['filter'] || 'all';
       this.currentPage = page;
-      this.inputPage = page; // Đồng bộ inputPage với query param page
-      this.filterType = filter; // Đồng bộ filterType với query param filter
+      this.inputPage = page;
+      this.filterType = filter;
       this.loadMovies();
     });
   }
@@ -126,7 +134,7 @@ export class HomeComponent implements OnInit {
 
   changePage(page: number): void {
     if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
-      this.inputPage = page; // Cập nhật inputPage
+      this.inputPage = page;
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { filter: this.filterType, page: page },
@@ -144,7 +152,7 @@ export class HomeComponent implements OnInit {
         queryParamsHandling: 'merge',
       });
     } else {
-      this.inputPage = this.currentPage; // Đặt lại nếu không hợp lệ
+      this.inputPage = this.currentPage;
     }
   }
 
@@ -169,7 +177,6 @@ export class HomeComponent implements OnInit {
   }
 
   playTrailer(movie: Movie): void {
-    console.log('Phát trailer phim:', movie.title);
     this.selectMovieTile = movie.title;
     if (movie?.trailer) {
       const embedUrl = movie.trailer.replace('watch?v=', 'embed/');
@@ -188,7 +195,42 @@ export class HomeComponent implements OnInit {
   }
 
   bookTicket(movie: Movie): void {
-    console.log('Chuyển hướng đến logic đặt vé cho phim:', movie.title);
+    this.selectedMovie = movie;
+    console.log('Đặt vé cho phim ' + movie.id);
+    this.showCinemaModal = true;
+  }
+
+  closeCinemaModal(): void {
+    this.showCinemaModal = false;
+    this.selectedMovie = null;
+    this.selectedCinema = null;
+    this.selectedShowtime = null;
+  }
+
+  openConfirmModal(event: { cinema: Cinema; showtime: Showtime }): void {
+    this.selectedCinema = event.cinema;
+    this.selectedShowtime = event.showtime;
+    this.showCinemaModal = false;
+    this.showConfirmModal = true;
+  }
+
+  closeConfirmModal(): void {
+    this.showConfirmModal = false;
+    this.selectedCinema = null;
+    this.selectedShowtime = null;
+  }
+
+  proceedToSeatSelection(): void {
+    this.showConfirmModal = false;
+    if (this.selectedMovie && this.selectedCinema && this.selectedShowtime) {
+      this.router.navigate(['/seat-selection'], {
+        queryParams: {
+          movie: JSON.stringify(this.selectedMovie),
+          cinema: JSON.stringify(this.selectedCinema),
+          showtime: JSON.stringify(this.selectedShowtime),
+        },
+      });
+    }
   }
 
   getStars(rating: number): number[] {

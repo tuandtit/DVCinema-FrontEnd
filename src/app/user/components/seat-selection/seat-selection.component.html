@@ -1,0 +1,42 @@
+<div class="container">
+  <h2>Chọn ghế - {{ movie?.title }}</h2>
+  <div class="booking-info">
+    <p><strong>Rạp:</strong> {{ cinema?.name }}</p>
+    <p><strong>Ngày chiếu:</strong> {{ showtime?.date | date: 'dd/MM/yyyy' }}</p>
+    <p><strong>Giờ chiếu:</strong> {{ showtime?.time }}</p>
+  </div>
+  <div class="seat-map">
+    <div class="screen">Màn hình</div>
+    <div class="seats">
+      <div class="row" *ngFor="let row of seats; let i = index">
+        <div
+          class="seat"
+          *ngFor="let seat of row; let j = index"
+          [ngClass]="{ selected: seat.selected, booked: seat.booked }"
+          (click)="toggleSeat(i, j)"
+        >
+          {{ seat.id }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="seat-legend">
+    <span class="legend-item"><span class="seat available"></span> Còn trống</span>
+    <span class="legend-item"><span class="seat selected"></span> Đã chọn</span>
+    <span class="legend-item"><span class="seat booked"></span> Đã đặt</span>
+  </div>
+  <div class="booking-summary">
+    <p><strong>Ghế đã chọn:</strong> {{ getSelectedSeats() }}</p>
+    <p><strong>Tổng tiền:</strong> {{ calculateTotal() | currency: 'VND' }}</p>
+  </div>
+  <div class="actions">
+    <button
+      class="btn btn-success"
+      (click)="confirmPayment()"
+      [disabled]="!getSelectedSeats().length"
+    >
+      Thanh toán
+    </button>
+    <button class="btn btn-secondary" (click)="goBack()">Quay lại</button>
+  </div>
+</div>

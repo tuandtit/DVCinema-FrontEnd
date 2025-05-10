@@ -1,0 +1,31 @@
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content" #modalContent>
+    <h2 class="modal-title">Xác nhận đặt vé</h2>
+    <span class="close" (click)="closeModal()">×</span>
+    <hr />
+    <div class="booking-details">
+      <div class="detail-item">
+        <strong>Phim:</strong>
+        <span>{{ movie?.title || 'Không có thông tin' }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Rạp:</strong>
+        <span>{{ cinema?.name || 'Không có thông tin' }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Ngày chiếu:</strong>
+        <span>{{
+          showtime?.showDate ? (showtime?.showDate | date: 'dd/MM/yyyy') : 'Không có thông tin'
+        }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Giờ chiếu:</strong>
+        <span>{{ formatTime(showtime?.startTime) || 'Không có thông tin' }}</span>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-success" (click)="confirmBooking()">Xác nhận</button>
+      <button class="btn btn-secondary" (click)="closeModal()">Hủy</button>
+    </div>
+  </div>
+</div>

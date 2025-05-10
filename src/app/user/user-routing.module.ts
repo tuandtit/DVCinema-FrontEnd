@@ -9,6 +9,7 @@ import { OrderComponent } from './components/order/order.component';
 import { AuthGuard } from '../core/guards/auth.gard';
 import { SearchPageComponent } from './components/search-page/search-page.component';
 import { TopicComponent } from './components/topic/topic.component';
+import { SeatSelectionComponent } from './components/seat-selection/seat-selection.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
       { path: 'news', component: HomeComponent },
       { path: 'detail-movie/:id', component: DetailMovieComponent },
       { path: 'showtimes', component: OrderComponent, canActivate: [AuthGuard] },
+      { path: 'seat-selection', component: SeatSelectionComponent },
     ],
   },
 ];

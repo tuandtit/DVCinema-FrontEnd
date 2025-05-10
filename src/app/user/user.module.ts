@@ -14,6 +14,9 @@ import { UserRoutingModule } from './user-routing.module';
 import { OrderConfirmComponent } from './components/order-confirm/order-confirm.component';
 import { SearchPageComponent } from './components/search-page/search-page.component';
 import { TopicComponent } from './components/topic/topic.component';
+import { CinemaShowtimeModalComponent } from './components/cinema-showtime-modal/cinema-showtime-modal.component';
+import { ConfirmBookingModalComponent } from './components/confirm-booking-modal/confirm-booking-modal.component';
+import { SeatSelectionComponent } from './components/seat-selection/seat-selection.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +31,9 @@ import { TopicComponent } from './components/topic/topic.component';
     OrderConfirmComponent,
     SearchPageComponent,
     TopicComponent,
+    CinemaShowtimeModalComponent,
+    ConfirmBookingModalComponent,
+    SeatSelectionComponent,
   ],
   imports: [CommonModule, FormsModule, RouterModule, UserRoutingModule],
 })

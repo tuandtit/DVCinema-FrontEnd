@@ -12,7 +12,6 @@ import { environment } from '../../environments/environment';
 })
 export class ShowtimeService {
   private apiUrl = `${environment.apiBaseUrl}/api/showtimes`;
-  private apiGetShowtimesByMovieId = `${environment.apiBaseUrl}/api/showtimes?movieId`;
   private apiGetAllCities = `${environment.apiBaseUrl}/api`;
 
   constructor(private http: HttpClient) {}
@@ -21,9 +20,12 @@ export class ShowtimeService {
     return this.http.get<ApiResponse<ShowtimeResponseDto>>(this.apiUrl);
   }
 
-  getShowtimesByMovieId(movieId: number): Observable<ApiResponse<ShowtimeResponseDto[]>> {
+  getShowtimesByMovieId(
+    movieId: number,
+    cinemaId: number
+  ): Observable<ApiResponse<ShowtimeResponseDto[]>> {
     return this.http.get<ApiResponse<ShowtimeResponseDto[]>>(
-      `${this.apiGetShowtimesByMovieId}=${movieId}`
+      `${this.apiUrl}?movieId=${movieId}&cinemaId=${cinemaId}`
     );
   }
 
