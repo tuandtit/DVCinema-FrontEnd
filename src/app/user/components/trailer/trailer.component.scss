@@ -1,0 +1,38 @@
+.trailer-container {
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+
+  .trailer-iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .no-trailer {
+    font-size: 1.1rem;
+    color: #666;
+    text-align: center;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .trailer-container {
+    margin-bottom: 20px;
+
+    .trailer-iframe {
+      border-radius: 6px;
+    }
+
+    .no-trailer {
+      font-size: 1rem;
+      padding: 15px;
+    }
+  }
+}

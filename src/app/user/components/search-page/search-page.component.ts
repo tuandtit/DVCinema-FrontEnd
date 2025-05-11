@@ -5,12 +5,13 @@ import { ContributorService } from '../../../core/services/contributor.service';
 import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
 import { Movie } from '../../../core/models/movie/movie.model';
 import { ContributorDto } from '../../../core/models/contributor/contributor-search-result.model';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
-    selector: 'app-search-page',
-    templateUrl: './search-page.component.html',
-    styleUrls: ['./search-page.component.scss'],
-    standalone: false
+  selector: 'app-search-page',
+  templateUrl: './search-page.component.html',
+  styleUrls: ['./search-page.component.scss'],
+  standalone: false,
 })
 export class SearchPageComponent implements OnInit {
   query: string = '';
@@ -20,12 +21,16 @@ export class SearchPageComponent implements OnInit {
   totalPages: number = 0;
   currentPage: number = 1;
   pageSize: number = 12;
+  showTrailerModal: boolean = false;
+  safeTrailerUrl: SafeResourceUrl | null = null;
+  selectMovieTile: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private movieService: MovieService,
-    private contributorService: ContributorService
+    private contributorService: ContributorService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -102,5 +107,40 @@ export class SearchPageComponent implements OnInit {
   updateUrl(): void {
     const queryParams: any = { query: this.query, page: this.currentPage, type: this.searchType };
     this.router.navigate(['/search-page'], { queryParams });
+  }
+
+  viewMovieDetails(movie: Movie): void {
+    this.router.navigate(['/movies', movie.id]);
+  }
+
+  viewActorDetails(actor: ContributorDto): void {
+    this.router.navigate(['/actors', actor.id]);
+  }
+
+  playTrailer(movie: Movie): void {
+    this.selectMovieTile = movie.title;
+    if (movie?.trailer) {
+      const embedUrl = movie.trailer.replace('watch?v=', 'embed/');
+      const finalUrl = `${embedUrl}?rel=0&showinfo=0&autoplay=1`;
+      this.safeTrailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(finalUrl);
+      this.showTrailerModal = true;
+    }
+  }
+
+  watchMovie(movie: Movie): void {
+    if (movie.status === 'ONLINE') {
+      console.log('Chuyển hướng đến trang xem phim:', movie.title);
+    } else {
+      alert('Phim này hiện chưa hỗ trợ xem online. Vui lòng đặt vé để xem tại rạp!');
+    }
+  }
+
+  bookTicket(movie: Movie): void {
+    console.log('Đặt vé cho phim ' + movie.id);
+  }
+
+  closeTrailerModal(): void {
+    this.showTrailerModal = false;
+    this.safeTrailerUrl = null;
   }
 }

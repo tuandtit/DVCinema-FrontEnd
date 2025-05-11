@@ -1,30 +1,20 @@
 <div class="modal" *ngIf="showModal">
   <div class="modal-content" #modalContent>
-    <h2 class="modal-title">Xác nhận đặt vé</h2>
+    <h2 class="modal-title">Xác Nhận Đặt Vé</h2>
     <span class="close" (click)="closeModal()">×</span>
     <hr />
     <div class="booking-details">
-      <div class="detail-item">
-        <strong>Phim:</strong>
-        <span>{{ movie?.title || 'Không có thông tin' }}</span>
-      </div>
-      <div class="detail-item">
-        <strong>Rạp:</strong>
-        <span>{{ cinema?.name || 'Không có thông tin' }}</span>
-      </div>
-      <div class="detail-item">
-        <strong>Ngày chiếu:</strong>
-        <span>{{
-          showtime?.showDate ? (showtime?.showDate | date: 'dd/MM/yyyy') : 'Không có thông tin'
-        }}</span>
-      </div>
-      <div class="detail-item">
-        <strong>Giờ chiếu:</strong>
-        <span>{{ formatTime(showtime?.startTime) || 'Không có thông tin' }}</span>
-      </div>
+      <h3>Thông Tin Đặt Vé</h3>
+      <p><strong>Phim:</strong> {{ movie?.title }}</p>
+      <p><strong>Rạp:</strong> {{ cinema?.name }} - {{ cinema?.address }}, {{ cinema?.city }}</p>
+      <p>
+        <strong>Suất chiếu:</strong> {{ showtime?.showDate | date: 'dd/MM/yyyy' }} -
+        {{ formatTime(showtime?.startTime) }}
+      </p>
+      <p><strong>Giá vé:</strong> {{ showtime?.ticketPrice | currency: 'VND' }}</p>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-success" (click)="confirmBooking()">Xác nhận</button>
+      <button class="btn btn-primary" (click)="confirmBooking()">Xác Nhận</button>
       <button class="btn btn-secondary" (click)="closeModal()">Hủy</button>
     </div>
   </div>

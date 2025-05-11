@@ -1,0 +1,12 @@
+<div class="actor-results">
+  <div class="actor-item" *ngFor="let actor of actors">
+    <img alt="" [src]="actor.photoUrl" [alt]="actor.name" class="actor-image" />
+    <div class="actor-info">
+      <h4>
+        <a (click)="viewDetails.emit(actor)">{{ actor.name }}</a>
+      </h4>
+      <p>{{ actor.introduction }}</p>
+    </div>
+  </div>
+  <p *ngIf="!actors.length">Không tìm thấy diễn viên nào phù hợp.</p>
+</div>

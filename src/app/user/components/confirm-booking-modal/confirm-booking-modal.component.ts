@@ -23,7 +23,7 @@ export class ConfirmBookingModalComponent {
   @Input() cinema: Cinema | null = null;
   @Input() showtime: Showtime | null = null;
   @Output() close = new EventEmitter<void>();
-  @Output() confirm = new EventEmitter<void>();
+  @Output() confirm = new EventEmitter<{ movie: Movie; cinema: Cinema; showtime: Showtime }>();
 
   @ViewChild('modalContent') modalContent!: ElementRef;
 
@@ -37,16 +37,19 @@ export class ConfirmBookingModalComponent {
     }
   }
 
-  formatTime(time: string | undefined): string {
-    if (!time) return '';
-    return time.split(':').slice(0, 2).join(':');
-  }
-
   closeModal(): void {
     this.close.emit();
   }
 
   confirmBooking(): void {
-    this.confirm.emit();
+    if (this.movie && this.cinema && this.showtime) {
+      this.confirm.emit({ movie: this.movie, cinema: this.cinema, showtime: this.showtime });
+      this.closeModal();
+    }
+  }
+
+  formatTime(time: string | undefined): string {
+    if (!time) return '';
+    return time.split(':').slice(0, 2).join(':');
   }
 }

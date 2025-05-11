@@ -1,0 +1,14 @@
+<div class="trailer-container">
+  <ng-container *ngIf="safeTrailerUrl; else noTrailer">
+    <iframe
+      [src]="safeTrailerUrl"
+      frameborder="0"
+      allowfullscreen
+      title="Movie Trailer"
+      class="trailer-iframe"
+    ></iframe>
+  </ng-container>
+  <ng-template #noTrailer>
+    <p class="no-trailer">Không có trailer cho phim này.</p>
+  </ng-template>
+</div>

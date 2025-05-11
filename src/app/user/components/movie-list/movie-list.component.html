@@ -1,0 +1,34 @@
+<div class="row" *ngIf="!isLoading">
+  <div class="col-lg-3 col-md-6 col-sm-6" *ngFor="let movie of movies">
+    <div class="product-item">
+      <div class="poster-wrapper">
+        <img alt="" [src]="movie.poster" [alt]="movie.title" class="movie-poster" />
+        <button title="play-button" class="play-button" (click)="playTrailer.emit(movie)">
+          <i class="fa-solid fa-play"></i>
+        </button>
+      </div>
+      <h3 class="movie-title" (click)="viewDetails.emit(movie)">{{ movie.title }}</h3>
+      <p class="movie-desc">Thể loại: {{ movie.genres }}</p>
+      <p class="movie-desc">Thời lượng: {{ movie.duration }} phút</p>
+      <div class="product-actions">
+        <button
+          class="btn btn-primary"
+          (click)="watchMovie.emit(movie)"
+          *ngIf="movie?.status === 'ONLINE'"
+        >
+          Xem phim
+        </button>
+        <button
+          class="btn btn-success"
+          (click)="bookTicket.emit(movie)"
+          *ngIf="movie?.status === 'NOW_SHOWING'"
+        >
+          Đặt vé
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-item active" *ngIf="!movies.length && !isLoading">
+    Không tìm thấy phim nào.
+  </div>
+</div>

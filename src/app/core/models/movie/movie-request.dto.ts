@@ -3,7 +3,6 @@ export interface MovieRequestDto {
   description: string;
   duration: number;
   releaseDate: string;
-  isAvailableOnline: boolean;
   trailerUrl?: string;
   videoUrl?: string;
   status: 'SHOWING' | 'UPCOMING';

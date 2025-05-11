@@ -54,7 +54,6 @@ export class MovieService {
     formData.append('description', movie.description || '');
     formData.append('duration', movie.duration?.toString() || '');
     formData.append('releaseDate', movie.releaseDate?.toString() || '');
-    formData.append('isAvailableOnline', movie.isAvailableOnline?.toString() || 'false');
     formData.append('trailerUrl', movie.trailerUrl || '');
     formData.append('videoUrl', movie.videoUrl || '');
     formData.append('status', movie.status?.toString() || 'SHOWING');

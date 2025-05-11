@@ -1,0 +1,14 @@
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content" #modalTrailer>
+    <h2 class="modal-title">Trailer - {{ movieTitle }}</h2>
+    <hr />
+    <span class="close" (click)="close.emit()">×</span>
+    <iframe
+      title="Trailer"
+      [src]="trailerUrl"
+      frameborder="0"
+      allow="autoplay"
+      allowfullscreen
+    ></iframe>
+  </div>
+</div>

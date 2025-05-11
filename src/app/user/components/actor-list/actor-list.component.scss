@@ -1,0 +1,53 @@
+.actor-results {
+  .actor-item {
+    display: flex;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+
+    .actor-image {
+      width: 120px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-right: 20px;
+    }
+
+    .actor-info {
+      flex: 1;
+
+      h4 {
+        font-size: 1.3rem;
+        margin-bottom: 5px;
+
+        a {
+          color: #dc3545;
+          text-decoration: none;
+          cursor: pointer;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      p {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .actor-item {
+      flex-direction: column;
+
+      .actor-image {
+        width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+      }
+    }
+  }
+}

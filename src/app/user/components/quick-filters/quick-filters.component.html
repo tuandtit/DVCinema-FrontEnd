@@ -1,0 +1,23 @@
+<div class="quick-filters">
+  <button
+    class="btn btn-outline-primary"
+    [ngClass]="{ active: filterType === 'nowshowing' }"
+    (click)="setFilter.emit('nowshowing')"
+  >
+    Phim đang chiếu rạp
+  </button>
+  <button
+    class="btn btn-outline-primary"
+    [ngClass]="{ active: filterType === 'online' }"
+    (click)="setFilter.emit('online')"
+  >
+    Phim xem trực tuyến
+  </button>
+  <button
+    class="btn btn-outline-primary"
+    [ngClass]="{ active: filterType === 'upcoming' }"
+    (click)="setFilter.emit('upcoming')"
+  >
+    Phim sắp chiếu
+  </button>
+</div>

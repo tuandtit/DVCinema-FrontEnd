@@ -1,117 +1,37 @@
 <div class="detail-movie-container">
-  <!-- Banner phim -->
-  <div class="banner" [style.backgroundImage]="'url(' + movie?.poster + ')'">
-    <div class="overlay">
-      <div class="banner-content">
-        <h1>{{ movie?.title }}</h1>
-        <div class="banner-buttons">
-          <button class="btn btn-primary" (click)="openTrailerModal()">Xem Trailer</button>
-          <button class="btn btn-danger" (click)="bookTicket()" *ngIf="movie?.isAvailableOnline">
-            Xem Phim
-          </button>
-          <button class="btn btn-danger" (click)="bookTicket()" *ngIf="!movie?.isAvailableOnline">
-            Đặt Vé
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Trailer section -->
+  <app-trailer [movie]="movie"></app-trailer>
 
-  <!-- Modal trailer -->
-  <div class="modal" *ngIf="showTrailerModal">
-    <div class="modal-content" #modalTrailer>
-      <h2 class="modal-title">Trailer - {{ movie?.title }}</h2>
-      <hr />
-      <span class="close" (click)="closeTrailerModal()">×</span>
-      <iframe
-        title="Trailer"
-        [src]="safeTrailerUrl"
-        frameborder="0"
-        allow="autoplay"
-        allowfullscreen
-      ></iframe>
-    </div>
-  </div>
+  <!-- Movie details -->
+  <app-movie-info [movie]="movie"></app-movie-info>
 
-  <!-- Thông tin phim -->
-  <div class="movie-info">
-    <div class="container">
-      <div class="row">
-        <!-- Poster phim -->
-        <div class="col-md-4">
-          <img [src]="movie?.poster" alt="{{ movie?.title }}" class="poster-img" />
-        </div>
-        <!-- Chi tiết phim -->
-        <div class="col-md-8">
-          <h2>{{ movie?.title }}</h2>
-          <p><strong>Thể loại:</strong> {{ movie?.genres }}</p>
-          <p><strong>Đạo diễn:</strong> {{ movie?.director }}</p>
-          <p><strong>Diễn viên:</strong> {{ movie?.actors }}</p>
-          <p><strong>Thời lượng:</strong> {{ movie?.duration }} phút</p>
-          <p><strong>Ngày phát hành:</strong> {{ movie?.releaseDate | date: 'dd/MM/yyyy' }}</p>
-          <p><strong>Mô tả:</strong> {{ movie?.description }}</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Showtimes section -->
+  <app-showtimes
+    [movieId]="movie?.id || 0"
+    [status]="movie?.status || ''"
+    (bookShowtime)="onBookShowtime($event)"
+  ></app-showtimes>
 
-  <!-- Suất chiếu -->
-  <div class="showtimes-section">
-    <div class="container">
-      <h3>Suất Chiếu</h3>
-      <!-- Lọc theo thành phố và rạp -->
-      <div class="cinema-filter">
-        <div class="filter-item">
-          <label for="city-select">Chọn thành phố:</label>
-          <select id="city-select" [(ngModel)]="selectedCity" (change)="selectCity(selectedCity)">
-            <option [ngValue]="null" disabled>Chọn thành phố</option>
-            <option *ngFor="let city of cities" [value]="city.id">{{ city.name }}</option>
-          </select>
-        </div>
-        <div class="filter-item">
-          <label for="cinema-select">Chọn rạp:</label>
-          <select
-            id="cinema-select"
-            [(ngModel)]="selectedCinema"
-            (change)="selectCinema(selectedCinema)"
-            [disabled]="!selectedCity"
-          >
-            <option [ngValue]="null" disabled>Chọn rạp</option>
-            <option *ngFor="let cinema of cinemasInCity" [value]="cinema.id">
-              {{ cinema.name }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <!-- Lọc theo ngày -->
-      <div class="date-filter">
-        <button
-          *ngFor="let date of availableDates"
-          [class.active]="selectedDate === date"
-          (click)="selectDate(date)"
-        >
-          {{ date | date: 'dd/MM/yyyy' }}
-        </button>
-      </div>
-      <!-- Danh sách suất chiếu theo rạp -->
-      <div class="cinema-showtimes" *ngFor="let cinema of filteredShowtimes">
-        <h4>{{ cinema.cinemaName }}</h4>
-        <div class="showtime-list">
-          <button
-            *ngFor="let showtime of cinema.showtimes"
-            class="showtime-btn"
-            (click)="bookShowtime(showtime)"
-          >
-            {{ formatTime(showtime.startTime) }}
-          </button>
-        </div>
-      </div>
-      <p *ngIf="!filteredShowtimes?.length">Không có suất chiếu nào vào ngày này tại rạp này.</p>
-    </div>
-  </div>
+  <!-- Cinema Showtime Modal -->
+  <app-cinema-showtime-modal
+    [showModal]="showCinemaModal"
+    [movie]="movie"
+    (close)="closeCinemaModal()"
+    (proceed)="onShowtimeSelected($event)"
+  ></app-cinema-showtime-modal>
+
+  <!-- Confirm Booking Modal -->
+  <app-confirm-booking-modal
+    [showModal]="showConfirmModal"
+    [movie]="movie"
+    [cinema]="selectedCinema"
+    [showtime]="selectedShowtime"
+    (close)="closeConfirmModal()"
+    (confirm)="proceedToSeatSelection($event)"
+  ></app-confirm-booking-modal>
 
   <!-- Nút đặt vé cố định -->
   <div class="fixed-book-btn">
-    <button class="btn btn-danger" (click)="bookTicket()">Đặt Vé Ngay</button>
+    <button class="btn btn-danger" (click)="openCinemaModal()">Đặt Vé Ngay</button>
   </div>
 </div>

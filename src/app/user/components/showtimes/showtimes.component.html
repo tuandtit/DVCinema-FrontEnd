@@ -1,0 +1,53 @@
+<div class="showtimes-section">
+  <div class="container">
+    <h3>Suất Chiếu</h3>
+    <!-- Lọc theo thành phố và rạp -->
+    <div class="cinema-filter">
+      <div class="filter-item">
+        <label for="city-select">Chọn thành phố:</label>
+        <select id="city-select" [(ngModel)]="selectedCity" (change)="selectCity(selectedCity)">
+          <option [ngValue]="null" disabled>Chọn thành phố</option>
+          <option *ngFor="let city of cities" [value]="city.id">{{ city.name }}</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label for="cinema-select">Chọn rạp:</label>
+        <select
+          id="cinema-select"
+          [(ngModel)]="selectedCinema"
+          (change)="selectCinema(selectedCinema)"
+          [disabled]="!selectedCity"
+        >
+          <option [ngValue]="null" disabled>Chọn rạp</option>
+          <option *ngFor="let cinema of cinemasInCity" [value]="cinema.id">
+            {{ cinema.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <!-- Lọc theo ngày -->
+    <div class="date-filter">
+      <button
+        *ngFor="let date of availableDates"
+        [class.active]="selectedDate === date"
+        (click)="selectDate(date)"
+      >
+        {{ date | date: 'dd/MM/yyyy' }}
+      </button>
+    </div>
+    <!-- Danh sách suất chiếu theo rạp -->
+    <div class="cinema-showtimes" *ngFor="let cinema of filteredShowtimes">
+      <h4>{{ cinema.cinemaName }}</h4>
+      <div class="showtime-list">
+        <button
+          *ngFor="let showtime of cinema.showtimes"
+          class="showtime-btn"
+          (click)="emitBookShowtime(showtime)"
+        >
+          {{ formatTime(showtime.startTime) }}
+        </button>
+      </div>
+    </div>
+    <p *ngIf="!filteredShowtimes?.length">Không có suất chiếu nào vào ngày này tại rạp này.</p>
+  </div>
+</div>

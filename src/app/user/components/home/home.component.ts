@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Movie } from '../../../core/models/movie/movie.model';
 import { MovieService } from '../../../core/services/movie.service';
 import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
@@ -25,9 +25,7 @@ export class HomeComponent implements OnInit {
   safeTrailerUrl: SafeResourceUrl | null = null;
   selectMovieTile: string = '';
   isLoading: boolean = false;
-  inputPage: number = 1;
 
-  // Biến cho các modal
   showCinemaModal: boolean = false;
   showConfirmModal: boolean = false;
   selectedMovie: Movie | null = null;
@@ -41,25 +39,11 @@ export class HomeComponent implements OnInit {
     private router: Router
   ) {}
 
-  @ViewChild('modalTrailer') modalTrailer!: ElementRef;
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (this.showTrailerModal && this.modalTrailer) {
-      const clickedInside = this.modalTrailer.nativeElement.contains(target);
-      if (!clickedInside) {
-        this.showTrailerModal = false;
-      }
-    }
-  }
-
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       const page = parseInt(params['page'], 10) || 1;
-      const filter = params['filter'] || 'all';
+      const filter = params['filter'] || 'nowshowing';
       this.currentPage = page;
-      this.inputPage = page;
       this.filterType = filter;
       this.loadMovies();
     });
@@ -71,19 +55,15 @@ export class HomeComponent implements OnInit {
     let isAvailableOnline: boolean | null = null;
 
     switch (this.filterType) {
-      case 'new':
-        status = ['NOW_SHOWING'];
-        break;
-      case 'popular':
-        isAvailableOnline = true;
+      case 'online':
+        status = ['ONLINE'];
         break;
       case 'upcoming':
         status = ['COMING_SOON'];
         break;
-      case 'all':
+      case 'nowshowing':
       default:
-        status = [];
-        isAvailableOnline = null;
+        status = ['NOW_SHOWING'];
         break;
     }
 
@@ -134,37 +114,18 @@ export class HomeComponent implements OnInit {
 
   changePage(page: number): void {
     if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
-      this.inputPage = page;
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { filter: this.filterType, page: page },
         queryParamsHandling: 'merge',
       });
-    }
-  }
-
-  goToPage(): void {
-    const page = Math.floor(Number(this.inputPage));
-    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: { filter: this.filterType, page: page },
-        queryParamsHandling: 'merge',
-      });
-    } else {
-      this.inputPage = this.currentPage;
     }
   }
 
   setFilter(filterType: string): void {
     this.filterType = filterType;
     this.currentPage = 1;
-    this.inputPage = 1;
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { filter: this.filterType, page: 1 },
-      queryParamsHandling: 'merge',
-    });
+    this.loadMovies();
   }
 
   viewDetails(movie: Movie): void {
@@ -187,7 +148,7 @@ export class HomeComponent implements OnInit {
   }
 
   watchMovie(movie: Movie): void {
-    if (movie.isAvailableOnline) {
+    if (movie.status === 'ONLINE') {
       console.log('Chuyển hướng đến trang xem phim:', movie.title);
     } else {
       alert('Phim này hiện chưa hỗ trợ xem online. Vui lòng đặt vé để xem tại rạp!');
@@ -231,9 +192,5 @@ export class HomeComponent implements OnInit {
         },
       });
     }
-  }
-
-  getStars(rating: number): number[] {
-    return Array(Math.floor(rating)).fill(0);
   }
 }

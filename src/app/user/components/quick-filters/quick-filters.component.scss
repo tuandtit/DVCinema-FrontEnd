@@ -1,0 +1,32 @@
+@use 'variables' as *;
+@use 'common' as *;
+
+.quick-filters {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    cursor: pointer !important;
+
+    &.active {
+      background-color: $color-primary;
+      color: white;
+      border-color: $color-primary;
+    }
+  }
+
+  @media (max-width: 576px) {
+    gap: 8px;
+
+    .btn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
+}

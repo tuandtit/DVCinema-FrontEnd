@@ -14,53 +14,28 @@
 
     <!-- Kết quả tìm kiếm -->
     <div class="search-results">
-      <!-- Kết quả phim -->
-      <div class="movie-item" *ngFor="let movie of movies">
-        <img alt="" [src]="movie.poster" [alt]="movie.title" class="poster" />
-        <div class="movie-info">
-          <h4>
-            <a [routerLink]="['/movies', movie.id]">{{ movie.title }}</a>
-          </h4>
-          <p><strong>Thể loại:</strong> {{ movie.genres }}</p>
-          <p>
-            <strong>Năm phát hành:</strong>
-            {{ movie.releaseDate | date: 'yyyy' }}
-          </p>
-          <p>{{ movie.description }}</p>
-        </div>
-      </div>
+      <app-movie-list
+        *ngIf="searchType === 'movies'"
+        [movies]="movies"
+        (viewDetails)="viewMovieDetails($event)"
+        (playTrailer)="playTrailer($event)"
+        (watchMovie)="watchMovie($event)"
+        (bookTicket)="bookTicket($event)"
+      ></app-movie-list>
 
-      <!-- Kết quả diễn viên -->
-      <div class="actor-item" *ngFor="let actor of actors">
-        <img alt="" [src]="actor.photoUrl" [alt]="actor.name" class="actor-image" />
-        <div class="actor-info">
-          <h4>
-            <a [routerLink]="['/actors', actor.id]">{{ actor.name }}</a>
-          </h4>
-          <p>{{ actor.introduction }}</p>
-        </div>
-      </div>
-
-      <p *ngIf="!movies?.length && !actors?.length">Không tìm thấy kết quả nào phù hợp.</p>
+      <app-actor-list
+        *ngIf="searchType === 'actors'"
+        [actors]="actors"
+        (viewDetails)="viewActorDetails($event)"
+      ></app-actor-list>
     </div>
 
     <!-- Phân trang -->
-    <div class="pagination" *ngIf="totalPages > 1">
-      <button
-        class="btn btn-outline-primary"
-        [disabled]="currentPage === 1"
-        (click)="changePage(currentPage - 1)"
-      >
-        Trang trước
-      </button>
-      <span>Trang {{ currentPage }} / {{ totalPages }}</span>
-      <button
-        class="btn btn-outline-primary"
-        [disabled]="currentPage === totalPages"
-        (click)="changePage(currentPage + 1)"
-      >
-        Trang sau
-      </button>
-    </div>
+    <app-pagination
+      *ngIf="totalPages > 1"
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      (changePage)="changePage($event)"
+    ></app-pagination>
   </div>
 </div>
