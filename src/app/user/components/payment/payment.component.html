@@ -1,0 +1,20 @@
+<div class="container">
+  <h2 class="title">Thanh toán</h2>
+  <div class="payment-info">
+    <p><strong>Phim:</strong> {{ paymentData?.movieTitle || 'N/A' }}</p>
+    <p><strong>Rạp:</strong> {{ paymentData?.cinemaName || 'N/A' }}</p>
+    <p>
+      <strong>Ngày giờ chiếu:</strong> {{ paymentData?.showDate }} - {{ paymentData?.showTime }}
+    </p>
+    <p><strong>Ghế đã chọn:</strong> {{ paymentData?.selectedSeats.join(', ') || 'N/A' }}</p>
+    <p><strong>Tổng tiền:</strong> {{ paymentData?.totalAmount | currency: 'VND' }}</p>
+  </div>
+  <div class="qr-code-section" *ngIf="qrCodeUrl">
+    <p>Quét mã QR bằng ứng dụng ngân hàng để thanh toán:</p>
+    <img [src]="qrCodeUrl" alt="QR Code" class="qr-code" />
+    <button class="btn btn-success" (click)="checkPaymentStatus()">Xác nhận thanh toán</button>
+  </div>
+  <div class="actions">
+    <button class="btn btn-secondary" (click)="goBack()">Quay lại</button>
+  </div>
+</div>

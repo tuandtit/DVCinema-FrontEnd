@@ -22,6 +22,7 @@
         <option value="">Tất cả</option>
         <option value="NOW_SHOWING">Đang chiếu</option>
         <option value="COMING_SOON">Sắp chiếu</option>
+        <option value="ONLINE">Chiếu online</option>
       </select>
     </div>
     <div class="online-filter">
@@ -53,7 +54,6 @@
           <th>Diễn viên</th>
           <th>Thời lượng</th>
           <th>Ngày phát hành</th>
-          <th>Xem online</th>
           <th>Trạng thái</th>
           <th>Hành động</th>
         </tr>
@@ -68,8 +68,15 @@
           <td>{{ movie.actorNames.join(', ') || 'Chưa có' }}</td>
           <td>{{ movie.duration }} phút</td>
           <td>{{ movie.releaseDate }}</td>
-          <td>{{ movie.isAvailableOnline ? 'Có' : 'Không' }}</td>
-          <td>{{ movie.status === 'NOW_SHOWING' ? 'Đang chiếu' : 'Sắp chiếu' }}</td>
+          <td [ngSwitch]="movie.status">
+            <span *ngSwitchCase="'NOW_SHOWING'">Đang chiếu</span>
+            <span *ngSwitchCase="'COMING_SOON'">Sắp chiếu</span>
+            <span *ngSwitchCase="'ONLINE'">Online</span>
+            <span *ngSwitchCase="'ENDED'">Dừng chiếu</span>
+            <span *ngSwitchDefault>{{ movie.status }}</span>
+            <!-- fallback -->
+          </td>
+
           <td>
             <button class="edit-btn" (click)="openEditForm(movie)">Sửa</button>
             <button class="delete-btn" (click)="deleteMovie(movie.id)">Xóa</button>
@@ -200,6 +207,7 @@
           <select id="status" formControlName="status" class="custom-select">
             <option value="NOW_SHOWING">Đang chiếu</option>
             <option value="COMING_SOON">Sắp chiếu</option>
+            <option value="ONLINE">Chiếu online</option>
           </select>
         </div>
       </form>

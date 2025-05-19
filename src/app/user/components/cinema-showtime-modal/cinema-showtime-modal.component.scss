@@ -38,43 +38,5 @@
       margin: 10px 0;
       border-color: #ddd;
     }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 20px;
-
-      .btn {
-        padding: 10px 20px;
-        font-size: 1rem;
-        border-radius: 5px;
-      }
-
-      .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: white;
-
-        &:hover {
-          background-color: #0056b3;
-        }
-
-        &:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-      }
-
-      .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: white;
-
-        &:hover {
-          background-color: #5a6268;
-        }
-      }
-    }
   }
 }

@@ -8,15 +8,15 @@
       [status]="movie?.status || ''"
       (bookShowtime)="onBookShowtime($event)"
     ></app-showtimes>
-    <div class="modal-actions">
-      <button
-        class="btn btn-primary"
-        (click)="proceedToConfirm()"
-        [disabled]="!selectedCinemaObj || !selectedShowtime"
-      >
-        Tiếp tục
-      </button>
-      <button class="btn btn-secondary" (click)="closeModal()">Hủy</button>
-    </div>
   </div>
 </div>
+
+<!-- Add Confirm Booking Modal -->
+<app-confirm-booking-modal
+  [showModal]="showConfirmModal"
+  [movie]="movie"
+  [cinema]="selectedCinemaObj"
+  [showtime]="selectedShowtime"
+  (close)="onCloseConfirmModal()"
+  (confirm)="onConfirmBooking($event)"
+></app-confirm-booking-modal>

@@ -25,6 +25,9 @@ export class CinemaShowtimeModalComponent {
 
   @ViewChild('modalContent') modalContent!: ElementRef;
 
+  // Add flag to control confirm modal visibility
+  showConfirmModal: boolean = false;
+
   selectedShowtime: Showtime | null = null;
   selectedCinemaObj: Cinema | null = null;
 
@@ -41,18 +44,25 @@ export class CinemaShowtimeModalComponent {
   onBookShowtime(event: { showtime: Showtime; cinema: Cinema }): void {
     this.selectedShowtime = event.showtime;
     this.selectedCinemaObj = event.cinema;
-  }
-
-  proceedToConfirm(): void {
-    if (this.selectedCinemaObj && this.selectedShowtime) {
-      this.proceed.emit({ cinema: this.selectedCinemaObj, showtime: this.selectedShowtime });
-      this.closeModal();
-    }
+    // Open confirm modal instead of emitting immediately
+    this.showConfirmModal = true;
   }
 
   closeModal(): void {
     this.close.emit();
     this.selectedShowtime = null;
     this.selectedCinemaObj = null;
+    this.showConfirmModal = false; // Close confirm modal if open
+  }
+
+  // Handle confirmation from ConfirmBookingModal
+  onConfirmBooking(event: { movie: Movie; cinema: Cinema; showtime: Showtime }): void {
+    this.proceed.emit({ cinema: event.cinema, showtime: event.showtime });
+    this.closeModal(); // Close both modals
+  }
+
+  // Handle closing of confirm modal
+  onCloseConfirmModal(): void {
+    this.showConfirmModal = false;
   }
 }

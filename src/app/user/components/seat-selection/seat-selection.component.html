@@ -1,21 +1,30 @@
 <div class="container">
-  <h2>Chọn ghế - {{ movie?.title }}</h2>
+  <h2 class="title">Chọn ghế - {{ movie?.title }}</h2>
   <div class="booking-info">
     <p><strong>Rạp:</strong> {{ cinema?.name }}</p>
-    <p><strong>Ngày chiếu:</strong> {{ showtime?.date | date: 'dd/MM/yyyy' }}</p>
-    <p><strong>Giờ chiếu:</strong> {{ showtime?.time }}</p>
+    <p><strong>Ngày chiếu:</strong> {{ showtime?.showDate | date: 'dd/MM/yyyy' }}</p>
+    <p><strong>Giờ chiếu:</strong> {{ showtime?.startTime }}</p>
+    <div class="timer-section">
+      <p>
+        <strong>Thời gian còn lại:</strong> <span id="timer">{{ formatTime(timeLeft) }}</span>
+      </p>
+    </div>
   </div>
   <div class="seat-map">
-    <div class="screen">Màn hình</div>
+    <div class="screen">MÀN HÌNH</div>
     <div class="seats">
       <div class="row" *ngFor="let row of seats; let i = index">
         <div
           class="seat"
           *ngFor="let seat of row; let j = index"
-          [ngClass]="{ selected: seat.selected, booked: seat.booked }"
+          [ngClass]="{
+            selected: seat.selected,
+            booked: seat.isBooked,
+            available: !seat.isBooked && !seat.selected,
+          }"
           (click)="toggleSeat(i, j)"
         >
-          {{ seat.id }}
+          {{ seat.seatName }}
         </div>
       </div>
     </div>
@@ -26,8 +35,13 @@
     <span class="legend-item"><span class="seat booked"></span> Đã đặt</span>
   </div>
   <div class="booking-summary">
-    <p><strong>Ghế đã chọn:</strong> {{ getSelectedSeats() }}</p>
-    <p><strong>Tổng tiền:</strong> {{ calculateTotal() | currency: 'VND' }}</p>
+    <p>
+      <strong>Ghế đã chọn:</strong> <span class="selected-seats">{{ getSelectedSeats() }}</span>
+    </p>
+    <p>
+      <strong>Tổng tiền:</strong>
+      <span class="total-price">{{ calculateTotal() | currency: 'VND' }}</span>
+    </p>
   </div>
   <div class="actions">
     <button

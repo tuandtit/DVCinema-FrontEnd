@@ -26,6 +26,7 @@ import { TrailerModalComponent } from './components/trailer-modal/trailer-modal.
 import { TrailerComponent } from './components/trailer/trailer.component';
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
+import { PaymentComponent } from './components/payment/payment.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { UserComponent } from './user.component';
     ShowtimesComponent,
     MovieInfoComponent,
     TrailerComponent,
+    PaymentComponent,
   ],
   imports: [CommonModule, FormsModule, RouterModule, UserRoutingModule],
 })
