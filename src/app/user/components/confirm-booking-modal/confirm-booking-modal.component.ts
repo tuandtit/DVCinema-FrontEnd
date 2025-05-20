@@ -53,9 +53,10 @@ export class ConfirmBookingModalComponent {
           cinema: JSON.stringify(this.cinema),
           showtime: JSON.stringify({
             id: this.showtime.id,
-            date: this.showtime.showDate, 
+            date: this.showtime.showDate,
             time: this.showtime.startTime,
-            roomId: this.showtime.roomId
+            roomId: this.showtime.roomId,
+            roomName: this.showtime.roomName,
           }),
         },
       };

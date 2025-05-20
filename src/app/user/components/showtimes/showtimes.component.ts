@@ -68,6 +68,7 @@ export class ShowtimesComponent implements OnInit {
           id: dto.id,
           movieId: dto.movieId,
           roomId: dto.roomId,
+          roomName: dto.roomName,
           cinemaId: dto.cinemaId,
           showDate: dto.showDate,
           startTime: dto.startTime,

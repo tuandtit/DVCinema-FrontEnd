@@ -4,6 +4,7 @@
     <p><strong>Rạp:</strong> {{ cinema?.name }}</p>
     <p><strong>Ngày chiếu:</strong> {{ showtime?.showDate | date: 'dd/MM/yyyy' }}</p>
     <p><strong>Giờ chiếu:</strong> {{ showtime?.startTime }}</p>
+    <p><strong>Phòng chiếu:</strong> {{ showtime?.roomName }}</p>
     <div class="timer-section">
       <p>
         <strong>Thời gian còn lại:</strong> <span id="timer">{{ formatTime(timeLeft) }}</span>
@@ -20,7 +21,8 @@
           [ngClass]="{
             selected: seat.selected,
             booked: seat.isBooked,
-            available: !seat.isBooked && !seat.selected,
+            held: seat.isHeld && seat.selectedByUserId !== 1,
+            available: !seat.isBooked && !seat.isHeld && !seat.selected,
           }"
           (click)="toggleSeat(i, j)"
         >
@@ -32,6 +34,7 @@
   <div class="seat-legend">
     <span class="legend-item"><span class="seat available"></span> Còn trống</span>
     <span class="legend-item"><span class="seat selected"></span> Đã chọn</span>
+    <span class="legend-item"><span class="seat held"></span> Đang giữ</span>
     <span class="legend-item"><span class="seat booked"></span> Đã đặt</span>
   </div>
   <div class="booking-summary">

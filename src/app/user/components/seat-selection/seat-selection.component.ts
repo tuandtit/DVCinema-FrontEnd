@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Movie } from '../../../core/models/movie/movie.model';
 import { Showtime } from '../../../core/models/showtime/showtime.model';
 import { Cinema } from '../../../core/models/cinema/cinema.model';
@@ -19,6 +20,9 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   seats: Seat[][] = [];
   timeLeft: number = 600;
   timer: any;
+  heldSeatIds: number[] = [];
+  unselectedSeatIds: number[] = [];
+  private seatUpdateSubscription: Subscription | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,6 +41,7 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
               id: showtimeData.id,
               movieId: showtimeData.movieId || 0,
               roomId: showtimeData.roomId || 0,
+              roomName: showtimeData.roomName,
               cinemaId: showtimeData.cinemaId || 0,
               showDate: showtimeData.date,
               startTime: showtimeData.time,
@@ -52,6 +57,7 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
 
         this.loadSeats();
         this.startTimer();
+        this.subscribeToSeatUpdates();
       } catch (error) {
         console.error('Lỗi khi phân tích dữ liệu query params:', error);
         this.router.navigate(['/']);
@@ -68,15 +74,21 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
             this.router.navigate(['/']);
             return;
           }
+          debugger;
           this.seats = response.data.map((row: SeatRow) =>
             row.seats
               .sort((a, b) => a.seatId - b.seatId)
-              .map((seat) => ({
-                seatId: seat.seatId,
-                seatName: seat.seatName,
-                isBooked: seat.isBooked,
-                selected: false,
-              }))
+              .map((seat) => {
+                const existingSeat = this.seats.flat().find((s) => s.seatId === seat.seatId);
+                return {
+                  seatId: seat.seatId,
+                  seatName: seat.seatName,
+                  isHeld: seat.isHeld,
+                  isBooked: seat.isBooked,
+                  selectedByUserId: seat.selectedByUserId,
+                  selected: existingSeat?.selected || seat.selectedByUserId === 1,
+                };
+              })
           );
         },
         error: (err) => {
@@ -88,9 +100,86 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   }
 
   toggleSeat(row: number, col: number): void {
+    debugger;
     const seat = this.seats[row][col];
-    if (!seat.isBooked) {
-      seat.selected = !seat.selected;
+    if (seat.isBooked || (seat.isHeld && seat.selectedByUserId !== 1)) {
+      alert('Ghế này đã được đặt hoặc đang được giữ bởi người khác!');
+      return;
+    }
+
+    seat.selected = !seat.selected;
+    if (seat.selected) {
+      this.heldSeatIds.push(seat.seatId);
+      this.holdSelectedSeat(seat.seatId);
+    } else {
+      this.heldSeatIds = this.heldSeatIds.filter((id) => id !== seat.seatId);
+      console.log('sau khi lọc: ' + this.heldSeatIds);
+      this.unselectedSeatIds.push(seat.seatId);
+      this.unselectedSeats();
+    }
+  }
+
+  holdSelectedSeat(seatId: number): void {
+    if (seatId != null) {
+      this.seatService.holdSeat(seatId).subscribe({
+        next: () => {
+          this.loadSeats();
+        },
+        error: (err) => {
+          console.error('Lỗi khi giữ ghế:', err);
+          alert('Không thể giữ ghế, vui lòng thử lại!');
+          this.heldSeatIds = [];
+          this.loadSeats();
+        },
+      });
+    }
+  }
+
+  unselectedSeats(): void {
+    debugger;
+    if (this.unselectedSeatIds.length > 0) {
+      this.seatService.releaseSeats(this.unselectedSeatIds).subscribe({
+        next: () => {
+          debugger;
+          this.loadSeats();
+        },
+        error: (err) => {
+          console.error('Lỗi khi giải phóng ghế:', err);
+        },
+      });
+    }
+  }
+
+  releaseSelectedSeats(): void {
+    debugger;
+    if (this.heldSeatIds.length > 0) {
+      this.seatService.releaseSeats(this.heldSeatIds).subscribe({
+        next: () => {
+          this.loadSeats();
+        },
+        error: (err) => {
+          console.error('Lỗi khi giải phóng ghế:', err);
+        },
+      });
+    }
+  }
+
+  subscribeToSeatUpdates(): void {
+    if (this.showtime?.roomId) {
+      this.seatUpdateSubscription = this.seatService
+        .subscribeToSeatUpdates(this.showtime.roomId)
+        .subscribe({
+          next: (seat: Seat) => {
+            console.log('Seat updated:', seat);
+            this.loadSeats(); // Cập nhật giao diện khi nhận thông điệp
+          },
+          error: (err) => {
+            console.error('WebSocket error:', err);
+          },
+          complete: () => {
+            console.log('WebSocket connection closed');
+          },
+        });
     }
   }
 
@@ -124,12 +213,17 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
         showDate: this.showtime.showDate,
         showTime: this.showtime.startTime,
         cinemaName: this.cinema?.name,
+        heldSeatIds: this.heldSeatIds,
       };
+      clearInterval(this.timer);
+      this.seatService.disconnectWebSocket();
       this.router.navigate(['/payment'], { queryParams: { data: JSON.stringify(paymentData) } });
     }
   }
 
   goBack(): void {
+    this.releaseSelectedSeats();
+    this.seatService.disconnectWebSocket();
     this.router.navigate(['/']);
   }
 
@@ -137,13 +231,14 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     this.timer = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
-        // Cập nhật giao diện với thời gian mới
         const timerElement = document.getElementById('timer');
         if (timerElement) {
           timerElement.textContent = this.formatTime(this.timeLeft);
         }
       } else {
         clearInterval(this.timer);
+        this.releaseSelectedSeats();
+        this.seatService.disconnectWebSocket();
         this.showTimeoutPopup();
       }
     }, 1000);
@@ -165,5 +260,10 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     if (this.timer) {
       clearInterval(this.timer);
     }
+    if (this.seatUpdateSubscription) {
+      this.seatUpdateSubscription.unsubscribe();
+    }
+    this.releaseSelectedSeats();
+    this.seatService.disconnectWebSocket();
   }
 }

@@ -27,7 +27,7 @@
   .timer-section {
     margin-top: 10px;
     p {
-      color: #ef4444; // Màu đỏ để nhấn mạnh thời gian
+      color: #ef4444;
       font-weight: bold;
     }
   }
@@ -83,13 +83,20 @@
   }
 
   &.selected {
-    background: #3b82f6;
+    background: #3b82f6; // Ghế được chọn
     color: #ffffff;
     border-color: #3b82f6;
   }
 
+  &.held {
+    background: #facc15; // Ghế đang giữ
+    color: #ffffff;
+    border-color: #facc15;
+    cursor: not-allowed;
+  }
+
   &.booked {
-    background: #ef4444;
+    background: #ef4444; // Ghế đã đặt
     color: #ffffff;
     border-color: #ef4444;
     cursor: not-allowed;
@@ -122,6 +129,10 @@
 
     .selected {
       background: #3b82f6;
+    }
+
+    .held {
+      background: #facc15;
     }
 
     .booked {

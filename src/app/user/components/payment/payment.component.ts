@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { SeatService } from '../../../core/services/seat.service';
 
 @Component({
   selector: 'app-payment',
@@ -8,15 +9,19 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./payment.component.scss'],
   standalone: false,
 })
-export class PaymentComponent implements OnInit {
+export class PaymentComponent implements OnInit, OnDestroy {
   paymentData: any = null;
   qrCodeUrl: string = '';
   isPaymentSuccess: boolean = false;
+  timeLeft: number = 600; // 10 phút = 600 giây
+  timer: any;
+  heldSeatIds: number[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private seatService: SeatService
   ) {}
 
   ngOnInit(): void {
@@ -26,21 +31,22 @@ export class PaymentComponent implements OnInit {
         this.router.navigate(['/']);
         return;
       }
-      this.generateQrCode(); // Gọi API backend để tạo mã QR
+      this.heldSeatIds = this.paymentData.heldSeatIds || [];
+      this.generateQrCode();
+      this.startTimer();
     });
   }
 
   generateQrCode(): void {
-    // Gửi yêu cầu đến backend để tạo mã QR (giả lập)
     const paymentRequest = {
       amount: this.paymentData.totalAmount,
-      orderId: `ORDER_${Date.now()}`, // Tạo mã đơn hàng duy nhất
-      returnUrl: 'http://your-frontend-url/payment-callback', // URL callback (cần backend xử lý)
+      orderId: `ORDER_${Date.now()}`,
+      returnUrl: 'http://your-frontend-url/payment-callback',
     };
     this.http.post('http://your-api-base-url/api/create-payment', paymentRequest).subscribe(
       (response: any) => {
         if (response.status.code === 200) {
-          this.qrCodeUrl = response.data.qrCodeUrl; // Giả sử backend trả về URL mã QR
+          this.qrCodeUrl = response.data.qrCodeUrl;
         }
       },
       (error) => {
@@ -50,13 +56,13 @@ export class PaymentComponent implements OnInit {
   }
 
   checkPaymentStatus(): void {
-    // Kiểm tra trạng thái thanh toán (giả lập)
     this.http
       .get(`http://your-api-base-url/api/check-payment-status?orderId=ORDER_${Date.now()}`)
       .subscribe(
         (response: any) => {
           if (response.status.code === 200 && response.data.status === 'SUCCESS') {
             this.isPaymentSuccess = true;
+            this.releaseSelectedSeats(); // Giải phóng ghế sau khi thanh toán thành công
             this.showSuccessPopup();
           }
         },
@@ -66,6 +72,19 @@ export class PaymentComponent implements OnInit {
       );
   }
 
+  releaseSelectedSeats(): void {
+    if (this.heldSeatIds.length > 0) {
+      this.seatService.releaseSeats(this.heldSeatIds).subscribe({
+        next: () => {
+          this.heldSeatIds = []; // Reset danh sách ghế
+        },
+        error: (err) => {
+          console.error('Lỗi khi giải phóng ghế:', err);
+        },
+      });
+    }
+  }
+
   showSuccessPopup(): void {
     if (confirm('Thanh toán thành công! Nhấn "OK" để quay lại trang chủ.')) {
       this.router.navigate(['/']);
@@ -73,6 +92,44 @@ export class PaymentComponent implements OnInit {
   }
 
   goBack(): void {
+    this.releaseSelectedSeats();
     this.router.navigate(['/seat-selection']);
+  }
+
+  startTimer(): void {
+    this.timer = setInterval(() => {
+      if (this.timeLeft > 0) {
+        this.timeLeft--;
+        const timerElement = document.getElementById('timer');
+        if (timerElement) {
+          timerElement.textContent = this.formatTime(this.timeLeft);
+        }
+      } else {
+        clearInterval(this.timer);
+        this.releaseSelectedSeats();
+        this.showTimeoutPopup();
+      }
+    }, 1000);
+  }
+
+  formatTime(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? '0' + secs : secs}`;
+  }
+
+  showTimeoutPopup(): void {
+    if (confirm('Hết thời gian thanh toán! Nhấn "OK" để quay lại trang chủ.')) {
+      this.router.navigate(['/']);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+    if (!this.isPaymentSuccess) {
+      this.releaseSelectedSeats(); // Giải phóng ghế nếu rời trang mà chưa thanh toán thành công
+    }
   }
 }

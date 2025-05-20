@@ -14,6 +14,11 @@
     <img [src]="qrCodeUrl" alt="QR Code" class="qr-code" />
     <button class="btn btn-success" (click)="checkPaymentStatus()">Xác nhận thanh toán</button>
   </div>
+  <div class="timer-section">
+    <p>
+      <strong>Thời gian còn lại:</strong> <span id="timer">{{ formatTime(timeLeft) }}</span>
+    </p>
+  </div>
   <div class="actions">
     <button class="btn btn-secondary" (click)="goBack()">Quay lại</button>
   </div>
