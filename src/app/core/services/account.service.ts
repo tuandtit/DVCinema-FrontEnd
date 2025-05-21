@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SignInDto } from '../models/user/signin.dto';
-import { environment } from '../../environments/environment';
-import { LoginResponse } from '../models/user/login.response';
-import { Account } from '../models/user/account.model';
-import { ApiResponse } from '../models/base-response/api.response';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { ApiResponse } from '../models/base-response/api.response';
+import { LoginResponse } from '../models/user/login.response';
+import { SignInDto } from '../models/user/signin.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -22,9 +21,19 @@ export class AccountService {
 
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
+  private userIdSubject = new BehaviorSubject<number | null>(null);
+  userId$ = this.userIdSubject.asObservable();
   private returnUrl: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    // Khôi phục trạng thái từ sessionStorage
+    const token = this.getToken();
+    const userId = this.getUserIdFromStorage();
+    if (token && userId) {
+      this.isLoggedInSubject.next(true);
+      this.userIdSubject.next(userId);
+    }
+  }
 
   private createHeaders(): HttpHeaders {
     return new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -39,24 +48,45 @@ export class AccountService {
       .post<ApiResponse<LoginResponse>>(this.apiSignIn, signInDto, this.apiConfig)
       .pipe(
         tap((response) => {
-          localStorage.setItem('displayName', response.data.displayName);
-          localStorage.setItem('avatar', response.data.avatar);
+          const data = response.data;
+          sessionStorage.setItem('token', data.token);
+          sessionStorage.setItem('userId', data.userId.toString());
+          sessionStorage.setItem('displayName', data.displayName);
+          sessionStorage.setItem('avatar', data.avatar);
           this.isLoggedInSubject.next(true);
+          this.userIdSubject.next(data.userId);
         })
       );
   }
 
-  logout() {
+  logout(): Observable<any> {
     this.isLoggedInSubject.next(false);
-    this.http.post(this.apiLogOut, this.apiConfig);
+    this.userIdSubject.next(null);
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('userId');
+    sessionStorage.removeItem('displayName');
+    sessionStorage.removeItem('avatar');
+    return this.http.post(this.apiLogOut, null, this.apiConfig);
   }
 
   isLoggedIn(): boolean {
     return this.isLoggedInSubject.value;
   }
 
-  // Lưu URL để quay lại sau khi đăng nhập
-  setReturnUrl(url: string) {
+  getUserId(): number | null {
+    return this.userIdSubject.value;
+  }
+
+  getUserIdFromStorage(): number | null {
+    const userId = sessionStorage.getItem('userId');
+    return userId ? Number(userId) : null;
+  }
+
+  getToken(): string | null {
+    return sessionStorage.getItem('token');
+  }
+
+  setReturnUrl(url: string): void {
     this.returnUrl = url;
   }
 
@@ -64,11 +94,11 @@ export class AccountService {
     return this.returnUrl;
   }
 
-  clearReturnUrl() {
+  clearReturnUrl(): void {
     this.returnUrl = null;
   }
 
   getUsername(): string | null {
-    return localStorage.getItem('displayName');
+    return sessionStorage.getItem('displayName');
   }
 }

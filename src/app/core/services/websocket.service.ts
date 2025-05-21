@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
+import { Seat } from '../models/seat/seat.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebSocketService {
   private socket: WebSocket | null = null;
-  private subject: Subject<any> | null = null;
+  private subject: Subject<Seat> | null = null;
 
   constructor() {}
 
-  connect(url: string): Subject<any> {
+  connect(url: string): Subject<Seat> {
     if (
       this.socket &&
       (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)
@@ -18,22 +19,31 @@ export class WebSocketService {
       this.disconnect();
     }
 
-    this.subject = new Subject<any>();
+    this.subject = new Subject<Seat>();
     this.socket = new WebSocket(url);
 
     this.socket.onopen = () => {
-      console.log('WebSocket connected');
+      console.log('WebSocket connected to:', url);
     };
 
     this.socket.onmessage = (event) => {
-      this.subject?.next(JSON.parse(event.data));
+      try {
+        const seatUpdate = JSON.parse(event.data) as Seat;
+        console.log('WebSocket received:', seatUpdate);
+        this.subject?.next(seatUpdate);
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+        this.subject?.error(error);
+      }
     };
 
     this.socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
       this.subject?.error(error);
     };
 
     this.socket.onclose = () => {
+      console.log('WebSocket connection closed');
       this.subject?.complete();
       this.subject = null;
       this.socket = null;

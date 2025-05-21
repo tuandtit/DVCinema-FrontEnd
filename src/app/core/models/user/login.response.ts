@@ -1,4 +1,5 @@
 export interface LoginResponse {
+  userId: number;
   username: string;
   displayName: string;
   avatar: string;

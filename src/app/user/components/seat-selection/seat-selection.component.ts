@@ -6,6 +6,8 @@ import { Showtime } from '../../../core/models/showtime/showtime.model';
 import { Cinema } from '../../../core/models/cinema/cinema.model';
 import { SeatService } from '../../../core/services/seat.service';
 import { Seat, SeatRow } from '../../../core/models/seat/seat.model';
+import { AccountService } from '../../../core/services/account.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-seat-selection',
@@ -22,15 +24,20 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   timer: any;
   heldSeatIds: number[] = [];
   unselectedSeatIds: number[] = [];
+  userId: number | null = null;
   private seatUpdateSubscription: Subscription | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private accountService: AccountService,
     private seatService: SeatService
   ) {}
 
   ngOnInit(): void {
+    this.accountService.userId$.subscribe((userId) => {
+      this.userId = userId;
+    });
     this.route.queryParams.subscribe((params) => {
       try {
         this.movie = params['movie'] ? JSON.parse(params['movie']) : null;
@@ -74,7 +81,6 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
             this.router.navigate(['/']);
             return;
           }
-          debugger;
           this.seats = response.data.map((row: SeatRow) =>
             row.seats
               .sort((a, b) => a.seatId - b.seatId)
@@ -86,7 +92,7 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
                   isHeld: seat.isHeld,
                   isBooked: seat.isBooked,
                   selectedByUserId: seat.selectedByUserId,
-                  selected: existingSeat?.selected || seat.selectedByUserId === 1,
+                  selected: existingSeat?.selected || seat.selectedByUserId === this.userId,
                 };
               })
           );
@@ -100,17 +106,19 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   }
 
   toggleSeat(row: number, col: number): void {
-    debugger;
     const seat = this.seats[row][col];
-    if (seat.isBooked || (seat.isHeld && seat.selectedByUserId !== 1)) {
-      alert('Ghế này đã được đặt hoặc đang được giữ bởi người khác!');
+    if (seat.isBooked || (seat.isHeld && seat.selectedByUserId !== this.userId)) {
       return;
     }
 
     seat.selected = !seat.selected;
     if (seat.selected) {
       this.heldSeatIds.push(seat.seatId);
-      this.holdSelectedSeat(seat.seatId);
+      if (this.showtime?.id) {
+        this.holdSelectedSeat(seat.seatId, this.showtime.id);
+      } else {
+        alert('Không tìm thấy suất chiếu');
+      }
     } else {
       this.heldSeatIds = this.heldSeatIds.filter((id) => id !== seat.seatId);
       console.log('sau khi lọc: ' + this.heldSeatIds);
@@ -119,16 +127,18 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     }
   }
 
-  holdSelectedSeat(seatId: number): void {
+  holdSelectedSeat(seatId: number, showtimeId: number): void {
     if (seatId != null) {
-      this.seatService.holdSeat(seatId).subscribe({
+      this.seatService.holdSeat(seatId, showtimeId).subscribe({
         next: () => {
           this.loadSeats();
         },
-        error: (err) => {
-          console.error('Lỗi khi giữ ghế:', err);
-          alert('Không thể giữ ghế, vui lòng thử lại!');
-          this.heldSeatIds = [];
+        error: (err: HttpErrorResponse) => {
+          debugger;
+
+          const errorMessage = err?.error?.details?.service || 'Đã xảy ra lỗi';
+          console.error('Lỗi khi giữ ghế:', errorMessage);
+          alert(errorMessage);
           this.loadSeats();
         },
       });
@@ -136,7 +146,6 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   }
 
   unselectedSeats(): void {
-    debugger;
     if (this.unselectedSeatIds.length > 0) {
       this.seatService.releaseSeats(this.unselectedSeatIds).subscribe({
         next: () => {
@@ -165,13 +174,14 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   }
 
   subscribeToSeatUpdates(): void {
-    if (this.showtime?.roomId) {
+    if (this.showtime?.id) {
       this.seatUpdateSubscription = this.seatService
-        .subscribeToSeatUpdates(this.showtime.roomId)
+        .subscribeToSeatUpdates(this.showtime.id)
         .subscribe({
           next: (seat: Seat) => {
+            debugger;
             console.log('Seat updated:', seat);
-            this.loadSeats(); // Cập nhật giao diện khi nhận thông điệp
+            this.loadSeats();
           },
           error: (err) => {
             console.error('WebSocket error:', err);

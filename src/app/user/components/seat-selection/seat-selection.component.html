@@ -21,7 +21,7 @@
           [ngClass]="{
             selected: seat.selected,
             booked: seat.isBooked,
-            held: seat.isHeld && seat.selectedByUserId !== 1,
+            held: seat.isHeld && seat.selectedByUserId !== userId,
             available: !seat.isBooked && !seat.isHeld && !seat.selected,
           }"
           (click)="toggleSeat(i, j)"

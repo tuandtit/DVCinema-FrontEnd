@@ -36,7 +36,7 @@ const routes: Routes = [
       { path: 'news', component: HomeComponent },
       { path: 'detail-movie/:id', component: DetailMovieComponent },
       { path: 'showtimes', component: OrderComponent, canActivate: [AuthGuard] },
-      { path: 'seat-selection', component: SeatSelectionComponent },
+      { path: 'seat-selection', component: SeatSelectionComponent, canActivate: [AuthGuard] },
       { path: 'payment', component: PaymentComponent },
     ],
   },
