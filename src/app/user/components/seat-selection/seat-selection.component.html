@@ -19,10 +19,10 @@
           class="seat"
           *ngFor="let seat of row; let j = index"
           [ngClass]="{
-            selected: seat.selected,
-            booked: seat.isBooked,
-            held: seat.isHeld && seat.selectedByUserId !== userId,
-            available: !seat.isBooked && !seat.isHeld && !seat.selected,
+            selected: seat.status === 'HOLD' && seat.selectedByUserId === userId,
+            booked: seat.status === 'BOOKED',
+            held: seat.status === 'HOLD' && seat.selectedByUserId !== userId,
+            available: seat.status === 'AVAILABLE',
           }"
           (click)="toggleSeat(i, j)"
         >

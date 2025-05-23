@@ -62,7 +62,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response.status.code === 200 && response.data.status === 'SUCCESS') {
             this.isPaymentSuccess = true;
-            this.releaseSelectedSeats(); // Giải phóng ghế sau khi thanh toán thành công
+            // this.releaseSelectedSeats(); // Giải phóng ghế sau khi thanh toán thành công
             this.showSuccessPopup();
           }
         },
@@ -72,18 +72,18 @@ export class PaymentComponent implements OnInit, OnDestroy {
       );
   }
 
-  releaseSelectedSeats(): void {
-    if (this.heldSeatIds.length > 0) {
-      this.seatService.releaseSeats(this.heldSeatIds).subscribe({
-        next: () => {
-          this.heldSeatIds = []; // Reset danh sách ghế
-        },
-        error: (err) => {
-          console.error('Lỗi khi giải phóng ghế:', err);
-        },
-      });
-    }
-  }
+  // releaseSelectedSeats(): void {
+  //   if (this.heldSeatIds.length > 0) {
+  //     this.seatService.releaseSeats(this.heldSeatIds).subscribe({
+  //       next: () => {
+  //         this.heldSeatIds = []; // Reset danh sách ghế
+  //       },
+  //       error: (err) => {
+  //         console.error('Lỗi khi giải phóng ghế:', err);
+  //       },
+  //     });
+  //   }
+  // }
 
   showSuccessPopup(): void {
     if (confirm('Thanh toán thành công! Nhấn "OK" để quay lại trang chủ.')) {
@@ -92,7 +92,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.releaseSelectedSeats();
+    // this.releaseSelectedSeats();
     this.router.navigate(['/seat-selection']);
   }
 
@@ -106,7 +106,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
         }
       } else {
         clearInterval(this.timer);
-        this.releaseSelectedSeats();
+        // this.releaseSelectedSeats();
         this.showTimeoutPopup();
       }
     }, 1000);
@@ -129,7 +129,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
       clearInterval(this.timer);
     }
     if (!this.isPaymentSuccess) {
-      this.releaseSelectedSeats(); // Giải phóng ghế nếu rời trang mà chưa thanh toán thành công
+      // this.releaseSelectedSeats(); // Giải phóng ghế nếu rời trang mà chưa thanh toán thành công
     }
   }
 }

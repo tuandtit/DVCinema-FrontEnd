@@ -8,6 +8,7 @@ import { SeatService } from '../../../core/services/seat.service';
 import { Seat, SeatRow } from '../../../core/models/seat/seat.model';
 import { AccountService } from '../../../core/services/account.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SeatStatus } from '../../../core/models/seat/seat-status.enum';
 
 @Component({
   selector: 'app-seat-selection',
@@ -73,26 +74,27 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   }
 
   loadSeats(): void {
-    if (this.showtime?.roomId) {
-      this.seatService.getSeatsByRoomId(this.showtime.roomId).subscribe({
+    if (this.showtime?.id) {
+      this.seatService.getSeatsByShowtimeId(this.showtime.id).subscribe({
         next: (response) => {
           if (response.status.code !== 200) {
             console.error('Lỗi từ API:', response.status.timestamp);
             this.router.navigate(['/']);
             return;
           }
+          debugger;
           this.seats = response.data.map((row: SeatRow) =>
             row.seats
               .sort((a, b) => a.seatId - b.seatId)
               .map((seat) => {
-                const existingSeat = this.seats.flat().find((s) => s.seatId === seat.seatId);
+                if (seat.status === SeatStatus.HOLD && seat.selectedByUserId === this.userId) {
+                  this.heldSeatIds.push(seat.seatId);
+                }
                 return {
                   seatId: seat.seatId,
                   seatName: seat.seatName,
-                  isHeld: seat.isHeld,
-                  isBooked: seat.isBooked,
-                  selectedByUserId: seat.selectedByUserId,
-                  selected: existingSeat?.selected || seat.selectedByUserId === this.userId,
+                  status: seat.status,
+                  selectedByUserId: seat.selectedByUserId ?? -1,
                 };
               })
           );
@@ -107,12 +109,15 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
 
   toggleSeat(row: number, col: number): void {
     const seat = this.seats[row][col];
-    if (seat.isBooked || (seat.isHeld && seat.selectedByUserId !== this.userId)) {
+    debugger;
+    if (
+      seat.status === SeatStatus.BOOKED.toString() ||
+      (seat.status === SeatStatus.HOLD.toString() && seat.selectedByUserId !== this.userId)
+    ) {
       return;
     }
 
-    seat.selected = !seat.selected;
-    if (seat.selected) {
+    if (seat.status === SeatStatus.AVAILABLE) {
       this.heldSeatIds.push(seat.seatId);
       if (this.showtime?.id) {
         this.holdSelectedSeat(seat.seatId, this.showtime.id);
@@ -123,7 +128,11 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
       this.heldSeatIds = this.heldSeatIds.filter((id) => id !== seat.seatId);
       console.log('sau khi lọc: ' + this.heldSeatIds);
       this.unselectedSeatIds.push(seat.seatId);
-      this.unselectedSeats();
+      if (this.showtime?.id) {
+        this.unselectedSeats(this.showtime?.id);
+      } else {
+        alert('Không tìm thấy suất chiếu');
+      }
     }
   }
 
@@ -145,9 +154,9 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     }
   }
 
-  unselectedSeats(): void {
+  unselectedSeats(showtimeId: number): void {
     if (this.unselectedSeatIds.length > 0) {
-      this.seatService.releaseSeats(this.unselectedSeatIds).subscribe({
+      this.seatService.releaseSeats(this.unselectedSeatIds, showtimeId).subscribe({
         next: () => {
           debugger;
           this.loadSeats();
@@ -159,10 +168,10 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     }
   }
 
-  releaseSelectedSeats(): void {
+  releaseSelectedSeats(showtimeId: number): void {
     debugger;
     if (this.heldSeatIds.length > 0) {
-      this.seatService.releaseSeats(this.heldSeatIds).subscribe({
+      this.seatService.releaseSeats(this.heldSeatIds, showtimeId).subscribe({
         next: () => {
           this.loadSeats();
         },
@@ -180,7 +189,7 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (seat: Seat) => {
             debugger;
-            console.log('Seat updated:', seat);
+            console.log('Seat updated:', seat.seatId);
             this.loadSeats();
           },
           error: (err) => {
@@ -197,7 +206,7 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     const selected: string[] = [];
     this.seats.forEach((row) => {
       row.forEach((seat) => {
-        if (seat.selected) selected.push(seat.seatName);
+        if (seat.status == SeatStatus.HOLD.toString()) selected.push(seat.seatName);
       });
     });
     return selected.join(', ');
@@ -232,7 +241,11 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.releaseSelectedSeats();
+    if (this.showtime?.id) {
+      this.releaseSelectedSeats(this.showtime?.id);
+    } else {
+      alert('Không tìm thấy suất chiếu');
+    }
     this.seatService.disconnectWebSocket();
     this.router.navigate(['/']);
   }
@@ -247,7 +260,11 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
         }
       } else {
         clearInterval(this.timer);
-        this.releaseSelectedSeats();
+        if (this.showtime?.id) {
+          this.releaseSelectedSeats(this.showtime?.id);
+        } else {
+          alert('Không tìm thấy suất chiếu');
+        }
         this.seatService.disconnectWebSocket();
         this.showTimeoutPopup();
       }
@@ -273,7 +290,12 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     if (this.seatUpdateSubscription) {
       this.seatUpdateSubscription.unsubscribe();
     }
-    this.releaseSelectedSeats();
+
+    if (this.showtime?.id) {
+      this.releaseSelectedSeats(this.showtime?.id);
+    } else {
+      alert('Không tìm thấy suất chiếu');
+    }
     this.seatService.disconnectWebSocket();
   }
 }

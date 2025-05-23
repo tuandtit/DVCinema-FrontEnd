@@ -34,18 +34,40 @@
   color: rgba(255, 153, 0, 0.5);
 }
 
+.or-text {
+  display: block; /* Đảm bảo chiếm 100% chiều ngang */
+  text-align: center; /* Căn giữa chữ */
+  margin: 10px 0; /* Thêm khoảng cách trên/dưới nếu cần */
+  font-weight: bold;
+  color: #555;
+}
+
 .login-button {
   background: linear-gradient(to right, #2b6cb0, #3182ce);
   color: white;
-  border-radius: 30px;
+  border-radius: 20px;
   width: 100%;
   padding: 10px 0;
-  margin-top: 20px;
+  margin-top: 30px;
   border: none;
 }
 
 .login-button:hover {
   background: linear-gradient(to right, #225a9b, #2b6cb0);
+  cursor: pointer;
+}
+
+.login-google-button {
+  background: linear-gradient(to left, #ca83ee, #e36de5);
+  color: white;
+  border-radius: 20px;
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+}
+
+.login-google-button:hover {
+  background: linear-gradient(to left, #b576d4, #c41fc7);
   cursor: pointer;
 }
 

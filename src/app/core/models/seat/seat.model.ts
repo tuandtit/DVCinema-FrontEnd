@@ -1,14 +1,11 @@
 export interface Seat {
   seatId: number;
   seatName: string;
-  isBooked: boolean;
-  isHeld: boolean;
-  selected?: boolean;
+  status: string;
   selectedByUserId?: number;
 }
 
 export interface SeatRow {
   rowId: number;
-  roomName: string;
   seats: Seat[];
 }

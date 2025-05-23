@@ -11,7 +11,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class SeatService {
-  private apiRoom = `${environment.apiBaseUrl}/api/rooms`;
+  private apiSeatByShowtime = `${environment.apiBaseUrl}/api/seat-by-showtime`;
   private apiSeat = `${environment.apiBaseUrl}/api/seats`;
   private wsBaseUrl = `${environment.apiBaseUrl}/ws/seat-updates`;
   private webSocketSubject: Subject<Seat> = new Subject<Seat>();
@@ -23,9 +23,11 @@ export class SeatService {
     private accountService: AccountService
   ) {}
 
-  getSeatsByRoomId(roomId: number): Observable<ApiResponse<SeatRow[]>> {
-    const params = new HttpParams().set('roomId', roomId.toString());
-    return this.http.get<ApiResponse<SeatRow[]>>(`${this.apiRoom}/seats-of-room`, { params });
+  getSeatsByShowtimeId(showtimeId: number): Observable<ApiResponse<SeatRow[]>> {
+    const params = new HttpParams().set('showtimeId', showtimeId.toString());
+    return this.http.get<ApiResponse<SeatRow[]>>(`${this.apiSeatByShowtime}/seats-of-showtime`, {
+      params,
+    });
   }
 
   holdSeat(seatId: number, showtimeId: number): Observable<any> {
@@ -37,17 +39,14 @@ export class SeatService {
       .set('userId', userId.toString())
       .set('showtimeId', showtimeId.toString())
       .set('seatId', seatId.toString());
-    return this.http.post(`${this.apiSeat}/hold-seat`, null, { params });
+    return this.http.post(`${this.apiSeatByShowtime}/hold-seat`, null, { params });
   }
 
-  releaseSeat(seatId: number): Observable<any> {
-    const params = new HttpParams().set('seatId', seatId.toString());
-    return this.http.post(`${this.apiSeat}/release-seat`, null, { params });
-  }
-
-  releaseSeats(seatIds: number[]): Observable<any> {
-    const params = new HttpParams().set('seatIds', seatIds.join(','));
-    return this.http.post(`${this.apiSeat}/release-seats`, null, { params });
+  releaseSeats(seatIds: number[], showtimeId: number): Observable<any> {
+    const params = new HttpParams()
+      .set('seatIds', seatIds.join(','))
+      .set('showtimeId', showtimeId.toString());
+    return this.http.post(`${this.apiSeatByShowtime}/release-seats`, null, { params });
   }
 
   subscribeToSeatUpdates(showtimeId: number): Observable<Seat> {
