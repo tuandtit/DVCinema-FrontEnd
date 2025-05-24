@@ -11,6 +11,7 @@ import { SearchPageComponent } from './components/search-page/search-page.compon
 import { TopicComponent } from './components/topic/topic.component';
 import { SeatSelectionComponent } from './components/seat-selection/seat-selection.component';
 import { PaymentComponent } from './components/payment/payment.component';
+import { RedirectIfLoggedInGuard } from '../core/guards/redirect-if-logged-in.guard';
 
 const routes: Routes = [
   {
@@ -18,7 +19,7 @@ const routes: Routes = [
     component: UserComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'login', component: LoginComponent },
+      { path: 'login', component: LoginComponent, canActivate: [RedirectIfLoggedInGuard] },
       { path: 'register', component: RegisterComponent },
       { path: 'topics', component: TopicComponent },
       { path: 'search-page', component: SearchPageComponent },

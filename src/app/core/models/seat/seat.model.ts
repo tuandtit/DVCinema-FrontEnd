@@ -1,4 +1,5 @@
 export interface Seat {
+  seatShowtimeId: number;
   seatId: number;
   seatName: string;
   status: string;

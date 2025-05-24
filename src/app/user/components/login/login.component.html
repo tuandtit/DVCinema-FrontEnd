@@ -40,7 +40,9 @@
           </div>
           <button type="submit" class="login-button">Đăng nhập</button>
           <span class="or-text">Hoặc</span>
-          <button type="submit" class="login-google-button">Đăng nhập với google</button>
+          <button type="button" (click)="signInWithGoogle()" class="login-google-button">
+            Đăng nhập với google
+          </button>
           <p class="forgot-password">
             <a href="#">Quên mật khẩu?</a>
           </p>

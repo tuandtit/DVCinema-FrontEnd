@@ -7,11 +7,11 @@ import { Seat } from '../models/seat/seat.model';
 })
 export class WebSocketService {
   private socket: WebSocket | null = null;
-  private subject: Subject<Seat> | null = null;
+  private subject: Subject<Seat[]> | null = null;
 
   constructor() {}
 
-  connect(url: string): Subject<Seat> {
+  connect(url: string): Subject<Seat[]> {
     if (
       this.socket &&
       (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)
@@ -19,7 +19,7 @@ export class WebSocketService {
       this.disconnect();
     }
 
-    this.subject = new Subject<Seat>();
+    this.subject = new Subject<Seat[]>();
     this.socket = new WebSocket(url);
 
     this.socket.onopen = () => {
@@ -28,7 +28,7 @@ export class WebSocketService {
 
     this.socket.onmessage = (event) => {
       try {
-        const seatUpdate = JSON.parse(event.data) as Seat;
+        const seatUpdate = JSON.parse(event.data) as Seat[];
         console.log('WebSocket received:', seatUpdate);
         this.subject?.next(seatUpdate);
       } catch (error) {

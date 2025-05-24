@@ -8,10 +8,10 @@ import { AccountService } from '../../../core/services/account.service';
 import { TokenService } from '../../../core/services/token.service';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.scss',
-    standalone: false
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+  standalone: false,
 })
 export class LoginComponent {
   @ViewChild('loginForm') loginForm!: NgForm;
@@ -72,6 +72,23 @@ export class LoginComponent {
         }
 
         alert(`Cannot sign in: ${errorMessage}`);
+      },
+    });
+  }
+
+  signInWithGoogle(): void {
+    debugger;
+    this.accountService.signInWithGoogle().subscribe({
+      next: () => {
+        debugger;
+        const returnUrl = this.accountService.getReturnUrl() || '/';
+        this.accountService.clearReturnUrl();
+        this.router.navigate([returnUrl]);
+      },
+      error: (error) => {
+        debugger;
+        console.error('Google Sign-In failed', error);
+        alert('Có lỗi hệ thống, xin vui lòng thử lại sau!');
       },
     });
   }

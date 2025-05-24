@@ -12,14 +12,14 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    debugger;
     if (this.accountService.isLoggedIn()) {
       return true; // Cho phép truy cập nếu đã đăng nhập
     }
-    debugger;
-    // Lưu URL hiện tại để quay lại sau khi đăng nhập
+
+    // Lưu URL đầy đủ mà người dùng đang cố gắng truy cập
     this.accountService.setReturnUrl(state.url);
-    this.router.navigate(['/login']);
+    // Chuyển hướng đến trang đăng nhập, truyền URL hiện tại như query param (tùy chọn)
+    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
     return false; // Chặn truy cập nếu chưa đăng nhập
   }
 }

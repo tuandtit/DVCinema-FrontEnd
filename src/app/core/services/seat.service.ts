@@ -6,6 +6,7 @@ import { Seat, SeatRow } from '../models/seat/seat.model';
 import { WebSocketService } from './websocket.service';
 import { AccountService } from './account.service';
 import { environment } from '../../environments/environment';
+import { BaseDto } from '../models/base-response/base.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ export class SeatService {
   private apiSeatByShowtime = `${environment.apiBaseUrl}/api/seat-by-showtime`;
   private apiSeat = `${environment.apiBaseUrl}/api/seats`;
   private wsBaseUrl = `${environment.apiBaseUrl}/ws/seat-updates`;
-  private webSocketSubject: Subject<Seat> = new Subject<Seat>();
+  private webSocketSubject: Subject<Seat[]> = new Subject<Seat[]>();
   private currentRoomId: number | null = null;
 
   constructor(
@@ -30,7 +31,7 @@ export class SeatService {
     });
   }
 
-  holdSeat(seatId: number, showtimeId: number): Observable<any> {
+  holdSeat(seatId: number, showtimeId: number): Observable<ApiResponse<BaseDto>> {
     const userId = this.accountService.getUserId();
     if (!userId) {
       return throwError(() => new Error('Vui lòng đăng nhập để giữ ghế!'));
@@ -39,17 +40,19 @@ export class SeatService {
       .set('userId', userId.toString())
       .set('showtimeId', showtimeId.toString())
       .set('seatId', seatId.toString());
-    return this.http.post(`${this.apiSeatByShowtime}/hold-seat`, null, { params });
+    return this.http.post<ApiResponse<BaseDto>>(`${this.apiSeatByShowtime}/hold-seat`, null, {
+      params,
+    });
   }
 
   releaseSeats(seatIds: number[], showtimeId: number): Observable<any> {
     const params = new HttpParams()
-      .set('seatIds', seatIds.join(','))
+      .set('seatShowtimeIds', seatIds.join(','))
       .set('showtimeId', showtimeId.toString());
     return this.http.post(`${this.apiSeatByShowtime}/release-seats`, null, { params });
   }
 
-  subscribeToSeatUpdates(showtimeId: number): Observable<Seat> {
+  subscribeToSeatUpdates(showtimeId: number): Observable<Seat[]> {
     if (this.currentRoomId !== showtimeId) {
       this.disconnectWebSocket();
       this.currentRoomId = showtimeId;
@@ -61,7 +64,7 @@ export class SeatService {
 
   disconnectWebSocket(): void {
     this.webSocketService.disconnect();
-    this.webSocketSubject = new Subject<Seat>();
+    this.webSocketSubject = new Subject<Seat[]>();
     this.currentRoomId = null;
   }
 }

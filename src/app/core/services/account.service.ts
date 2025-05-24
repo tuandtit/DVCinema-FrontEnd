@@ -1,11 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/base-response/api.response';
 import { LoginResponse } from '../models/user/login.response';
 import { SignInDto } from '../models/user/signin.dto';
+import { firebaseAuth } from '../config/FirebaseConfig';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +16,7 @@ export class AccountService {
   private apiSignUp = `${environment.apiBaseUrl}/sign-up`;
   private apiSignIn = `${environment.apiBaseUrl}/sign-in`;
   private apiLogOut = `${environment.apiBaseUrl}/logout`;
+  private apiSignInGoogle = `${environment.apiBaseUrl}/google/sign-in`;
 
   private apiConfig = {
     headers: this.createHeaders(),
@@ -57,6 +60,40 @@ export class AccountService {
           this.userIdSubject.next(data.userId);
         })
       );
+  }
+
+  signInWithGoogle(): Observable<ApiResponse<LoginResponse>> {
+    const provider = new GoogleAuthProvider();
+    return from(signInWithPopup(firebaseAuth, provider)).pipe(
+      switchMap((result) => {
+        const user = result.user;
+        return from(user.getIdToken()).pipe(
+          switchMap((idToken) => {
+            const signInGoogleDto = {
+              googleToken: idToken,
+              email: user.email,
+              avatar: user.photoURL,
+              displayName: user.displayName,
+            };
+            return this.http
+              .post<
+                ApiResponse<LoginResponse>
+              >(this.apiSignInGoogle, signInGoogleDto, this.apiConfig)
+              .pipe(
+                tap((response) => {
+                  const data = response.data;
+                  sessionStorage.setItem('token', data.token);
+                  sessionStorage.setItem('userId', data.userId.toString());
+                  sessionStorage.setItem('displayName', data.displayName);
+                  sessionStorage.setItem('avatar', data.avatar);
+                  this.isLoggedInSubject.next(true);
+                  this.userIdSubject.next(data.userId);
+                })
+              );
+          })
+        );
+      })
+    );
   }
 
   logout(): Observable<any> {
