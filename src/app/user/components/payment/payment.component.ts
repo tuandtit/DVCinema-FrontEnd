@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { SeatService } from '../../../core/services/seat.service';
+import { DataSharingService } from '../../../core/services/data-sharing.service';
 
 @Component({
   selector: 'app-payment',
@@ -13,7 +14,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   paymentData: any = null;
   qrCodeUrl: string = '';
   isPaymentSuccess: boolean = false;
-  timeLeft: number = 600; 
+  timeLeft: number = 600;
   timer: any;
   heldSeatIds: number[] = [];
 
@@ -21,20 +22,20 @@ export class PaymentComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private seatService: SeatService
+    private seatService: SeatService,
+    private dataSharingService: DataSharingService
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      this.paymentData = params['data'] ? JSON.parse(params['data']) : null;
-      if (!this.paymentData) {
-        this.router.navigate(['/']);
-        return;
-      }
-      this.heldSeatIds = this.paymentData.heldSeatIds || [];
-      this.generateQrCode();
-      this.startTimer();
-    });
+    debugger;
+    this.paymentData = this.dataSharingService.getData('paymentData') || history.state.bookingData;
+    if (!this.paymentData) {
+      this.router.navigate(['/']);
+      return;
+    }
+    this.heldSeatIds = this.paymentData.heldSeatIds || [];
+    this.generateQrCode();
+    this.startTimer();
   }
 
   generateQrCode(): void {

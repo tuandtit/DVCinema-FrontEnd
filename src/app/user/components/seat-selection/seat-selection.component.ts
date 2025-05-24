@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SeatStatus } from '../../../core/models/seat/seat-status.enum';
 import { DataSharingService } from '../../../core/services/data-sharing.service';
 import { BookingData } from '../../../core/models/data/booking-data';
+import { PaymentData } from '../../../core/models/data/payment-data';
 
 @Component({
   selector: 'app-seat-selection',
@@ -267,22 +268,23 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const paymentData = {
+    const paymentData: PaymentData = {
       showtimeId: this.showtime.id,
       cinemaId: this.cinema.id,
       selectedSeats: this.getSelectedSeats(),
       totalAmount: this.calculateTotal(),
-      movieTitle: this.movie?.title,
+      movieTitle: this.movie?.title || '',
       showDate: this.showtime.showDate,
       startTime: this.showtime.startTime,
       cinemaName: this.cinema.name,
-      heldSeatIds: Array.from(this.heldSeatIds), // Convert Set to array for payment data
+      heldSeatIds: Array.from(this.heldSeatIds),
     };
 
     clearInterval(this.timer);
     this.isPayment = true;
     this.seatService.disconnectWebSocket();
-    this.router.navigate(['/payment'], { queryParams: { data: JSON.stringify(paymentData) } });
+    this.dataSharingService.setData('paymentData', paymentData);
+    this.router.navigate(['/payment'], { state: { paymentData: paymentData } });
   }
 
   goBack(): void {
@@ -334,11 +336,12 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
       this.seatUpdateSubscription.unsubscribe();
     }
     if (this.showtime?.id) {
-      if (!this.isPayment) this.releaseSelectedSeats(this.showtime.id);
-      else this.extendSeatHoldTime(this.showtime.id);
+      if (!this.isPayment) {
+        this.releaseSelectedSeats(this.showtime.id);
+        this.dataSharingService.clearData('bookingData');
+      } else this.extendSeatHoldTime(this.showtime.id);
     }
     this.seatService.disconnectWebSocket();
-    this.dataSharingService.clearData('bookingData');
     console.log('SeatSelectionComponent destroyed');
   }
 }
