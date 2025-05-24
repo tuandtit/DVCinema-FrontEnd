@@ -40,9 +40,9 @@ export class LoginComponent {
 
     this.accountService.signin(signInData).subscribe({
       next: (response: ApiResponse<LoginResponse>) => {
-        // debugger;
         // Xử lý khi kết quả trả về khi đăng nhập thành công
         if (response && (response.status.code === 200 || response.status.code === 201)) {
+          debugger;
           const result = response.data;
           const token = result.token;
           this.tokenService.setToken(token);
@@ -50,8 +50,7 @@ export class LoginComponent {
           const returnUrl = this.accountService.getReturnUrl() || '/';
           this.accountService.clearReturnUrl();
 
-          // Chuyển hướng về trang trước đó
-          this.navigate(returnUrl);
+          this.accountService.loginSuccess();
         } else {
         }
       },
@@ -94,6 +93,8 @@ export class LoginComponent {
   }
 
   navigate(route: string): void {
+    debugger;
+    console.log(route);
     this.router.navigate([route]);
     // Đóng menu mobile nếu đang mở
     const navbarCollapse = document.querySelector('#navbarSupportedContent');

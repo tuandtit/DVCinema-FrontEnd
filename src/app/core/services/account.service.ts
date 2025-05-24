@@ -8,6 +8,8 @@ import { LoginResponse } from '../models/user/login.response';
 import { SignInDto } from '../models/user/signin.dto';
 import { firebaseAuth } from '../config/FirebaseConfig';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { DataSharingService } from './data-sharing.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +30,11 @@ export class AccountService {
   userId$ = this.userIdSubject.asObservable();
   private returnUrl: string | null = null;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private dataSharingService: DataSharingService
+  ) {
     // Khôi phục trạng thái từ sessionStorage
     const token = this.getToken();
     const userId = this.getUserIdFromStorage();
@@ -104,6 +110,13 @@ export class AccountService {
     sessionStorage.removeItem('displayName');
     sessionStorage.removeItem('avatar');
     return this.http.post(this.apiLogOut, null, this.apiConfig);
+  }
+
+  loginSuccess(): void {
+    const redirectUrl = this.returnUrl || '/';
+    const sharedData = this.dataSharingService.getData('sharedData');
+    this.returnUrl = null; 
+    this.router.navigate([redirectUrl], { state: { sharedData } });
   }
 
   isLoggedIn(): boolean {

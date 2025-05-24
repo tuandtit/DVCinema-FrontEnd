@@ -11,6 +11,8 @@ import { Router } from '@angular/router'; // Thêm Router
 import { Movie } from '../../../core/models/movie/movie.model';
 import { Cinema } from '../../../core/models/cinema/cinema.model';
 import { Showtime } from '../../../core/models/showtime/showtime.model';
+import { DataSharingService } from '../../../core/services/data-sharing.service';
+import { BookingData } from '../../../core/models/data/booking-data';
 
 @Component({
   selector: 'app-confirm-booking-modal',
@@ -28,7 +30,10 @@ export class ConfirmBookingModalComponent {
 
   @ViewChild('modalContent') modalContent!: ElementRef;
 
-  constructor(private router: Router) {} // Thêm Router vào constructor
+  constructor(
+    private router: Router,
+    private dataSharingService: DataSharingService
+  ) {} // Thêm Router vào constructor
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
@@ -47,22 +52,16 @@ export class ConfirmBookingModalComponent {
   confirmBooking(): void {
     if (this.movie && this.cinema && this.showtime) {
       // Chuẩn bị dữ liệu để gửi qua query parameters
-      const navigationExtras = {
-        queryParams: {
-          movie: JSON.stringify(this.movie),
-          cinema: JSON.stringify(this.cinema),
-          showtime: JSON.stringify({
-            id: this.showtime.id,
-            date: this.showtime.showDate,
-            time: this.showtime.startTime,
-            roomId: this.showtime.roomId,
-            roomName: this.showtime.roomName,
-          }),
-        },
+
+      const bookingData: BookingData = {
+        movie: { ...this.movie },
+        cinema: { ...this.cinema },
+        showtime: { ...this.showtime },
       };
 
-      // Chuyển hướng đến trang chọn ghế
-      this.router.navigate(['/seat-selection'], navigationExtras);
+      this.dataSharingService.setData('bookingData', bookingData);
+      // Chuyển hướng đến trang seat-selection
+      this.router.navigate(['/seat-selection'], { state: { bookingData: bookingData } });
       this.closeModal();
     }
   }

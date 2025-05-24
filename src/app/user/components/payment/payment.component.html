@@ -6,7 +6,7 @@
     <p>
       <strong>Ngày giờ chiếu:</strong> {{ paymentData?.showDate }} - {{ paymentData?.showTime }}
     </p>
-    <p><strong>Ghế đã chọn:</strong> {{ paymentData?.selectedSeats.join(', ') || 'N/A' }}</p>
+    <p><strong>Ghế đã chọn:</strong> {{ paymentData?.selectedSeats || 'N/A' }}</p>
     <p><strong>Tổng tiền:</strong> {{ paymentData?.totalAmount | currency: 'VND' }}</p>
   </div>
   <div class="qr-code-section" *ngIf="qrCodeUrl">

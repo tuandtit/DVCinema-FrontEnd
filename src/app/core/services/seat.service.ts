@@ -1,19 +1,19 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable, Subject, throwError } from 'rxjs';
-import { ApiResponse } from '../models/base-response/api.response';
-import { Seat, SeatRow } from '../models/seat/seat.model';
-import { WebSocketService } from './websocket.service';
-import { AccountService } from './account.service';
 import { environment } from '../../environments/environment';
+import { ApiResponse } from '../models/base-response/api.response';
 import { BaseDto } from '../models/base-response/base.dto';
+import { Seat, SeatRow } from '../models/seat/seat.model';
+import { AccountService } from './account.service';
+import { WebSocketService } from './websocket.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SeatService {
+  
   private apiSeatByShowtime = `${environment.apiBaseUrl}/api/seat-by-showtime`;
-  private apiSeat = `${environment.apiBaseUrl}/api/seats`;
   private wsBaseUrl = `${environment.apiBaseUrl}/ws/seat-updates`;
   private webSocketSubject: Subject<Seat[]> = new Subject<Seat[]>();
   private currentRoomId: number | null = null;
@@ -50,6 +50,13 @@ export class SeatService {
       .set('seatShowtimeIds', seatIds.join(','))
       .set('showtimeId', showtimeId.toString());
     return this.http.post(`${this.apiSeatByShowtime}/release-seats`, null, { params });
+  }
+
+  extendSeatHoldTime(seatIds: number[], showtimeId: number): Observable<any> {
+    const params = new HttpParams()
+      .set('seatShowtimeIds', seatIds.join(','))
+      .set('showtimeId', showtimeId.toString());
+    return this.http.post(`${this.apiSeatByShowtime}/extend-seat-hold-time`, null, { params });
   }
 
   subscribeToSeatUpdates(showtimeId: number): Observable<Seat[]> {

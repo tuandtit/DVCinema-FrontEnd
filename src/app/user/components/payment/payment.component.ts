@@ -13,7 +13,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   paymentData: any = null;
   qrCodeUrl: string = '';
   isPaymentSuccess: boolean = false;
-  timeLeft: number = 600; // 10 phút = 600 giây
+  timeLeft: number = 600; 
   timer: any;
   heldSeatIds: number[] = [];
 
@@ -72,18 +72,19 @@ export class PaymentComponent implements OnInit, OnDestroy {
       );
   }
 
-  // releaseSelectedSeats(): void {
-  //   if (this.heldSeatIds.length > 0) {
-  //     this.seatService.releaseSeats(this.heldSeatIds).subscribe({
-  //       next: () => {
-  //         this.heldSeatIds = []; // Reset danh sách ghế
-  //       },
-  //       error: (err) => {
-  //         console.error('Lỗi khi giải phóng ghế:', err);
-  //       },
-  //     });
-  //   }
-  // }
+  releaseSelectedSeats(): void {
+    if (this.paymentData.showtimeId == null || this.heldSeatIds.length === 0) return;
+    if (this.heldSeatIds.length > 0) {
+      this.seatService.releaseSeats(this.heldSeatIds, this.paymentData.showtimeId).subscribe({
+        next: () => {
+          this.heldSeatIds = [];
+        },
+        error: (err) => {
+          console.error('Lỗi khi giải phóng ghế:', err);
+        },
+      });
+    }
+  }
 
   showSuccessPopup(): void {
     if (confirm('Thanh toán thành công! Nhấn "OK" để quay lại trang chủ.')) {

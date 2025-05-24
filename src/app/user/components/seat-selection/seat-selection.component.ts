@@ -9,6 +9,8 @@ import { Seat, SeatRow } from '../../../core/models/seat/seat.model';
 import { AccountService } from '../../../core/services/account.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SeatStatus } from '../../../core/models/seat/seat-status.enum';
+import { DataSharingService } from '../../../core/services/data-sharing.service';
+import { BookingData } from '../../../core/models/data/booking-data';
 
 @Component({
   selector: 'app-seat-selection',
@@ -17,6 +19,7 @@ import { SeatStatus } from '../../../core/models/seat/seat-status.enum';
   standalone: false,
 })
 export class SeatSelectionComponent implements OnInit, OnDestroy {
+  bookingData: BookingData | null = null;
   movie: Movie | null = null;
   cinema: Cinema | null = null;
   showtime: Showtime | null = null;
@@ -26,7 +29,7 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   heldSeatIds: Set<number> = new Set();
   unselectedSeatIds: Set<number> = new Set();
   userId: number | null = null;
-  cofirmPayment: boolean = false;
+  isPayment: boolean = false;
   private seatUpdateSubscription: Subscription | null = null;
   private readonly MAX_SEATS = 8; // Maximum number of seats that can be selected
 
@@ -34,48 +37,49 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private accountService: AccountService,
-    private seatService: SeatService
+    private seatService: SeatService,
+    private dataSharingService: DataSharingService
   ) {}
 
   ngOnInit(): void {
+    // Lấy userId từ AccountService
     this.accountService.userId$.subscribe((userId) => {
       this.userId = userId;
     });
 
-    this.route.queryParams.subscribe((params) => {
-      try {
-        this.movie = params['movie'] ? JSON.parse(params['movie']) : null;
-        this.cinema = params['cinema'] ? JSON.parse(params['cinema']) : null;
-        const showtimeData = params['showtime'] ? JSON.parse(params['showtime']) : null;
-        this.showtime = showtimeData
-          ? {
-              id: showtimeData.id,
-              movieId: showtimeData.movieId || 0,
-              roomId: showtimeData.roomId || 0,
-              roomName: showtimeData.roomName,
-              cinemaId: showtimeData.cinemaId || 0,
-              showDate: showtimeData.date,
-              startTime: showtimeData.time,
-              ticketPrice: showtimeData.ticketPrice || 85000,
-            }
-          : null;
+    // Lấy dữ liệu từ DataSharingService hoặc history.state
+    this.bookingData = this.dataSharingService.getData('bookingData') || history.state.bookingData;
 
-        if (!this.movie || !this.cinema || !this.showtime || !this.showtime.roomId) {
-          this.handleMissingData();
-          return;
-        }
+    // Kiểm tra dữ liệu hợp lệ
+    if (!this.isValidBookingData(this.bookingData)) {
+      this.handleMissingData('Invalid or missing booking data');
+      return;
+    }
 
-        this.loadSeats();
-        this.startTimer();
-        this.subscribeToSeatUpdates();
-      } catch (error) {
-        this.handleMissingData('Error parsing query parameters');
-      }
-    });
+    if (this.bookingData?.showtime) this.showtime = this.bookingData?.showtime;
+    if (this.bookingData?.cinema) this.cinema = this.bookingData?.cinema;
+    if (this.bookingData?.movie) this.movie = this.bookingData?.movie;
+
+    // Thực hiện các tác vụ
+    this.loadSeats();
+    this.startTimer();
+    this.subscribeToSeatUpdates();
+  }
+
+  private isValidBookingData(data: BookingData | null): boolean {
+    return (
+      !!data &&
+      !!data.movie &&
+      !!data.cinema &&
+      !!data.showtime &&
+      !!data.showtime.roomId &&
+      !!data.showtime.id
+    );
   }
 
   private handleMissingData(errorMessage: string = 'Missing required data'): void {
     alert(errorMessage);
+    console.log('Lỗi thiếu data');
     this.router.navigate(['/']);
   }
 
@@ -198,6 +202,23 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     });
   }
 
+  extendSeatHoldTime(id: number) {
+    if (this.heldSeatIds.size === 0 || !id) {
+      alert('Vui lòng chọn ghế và suất chiếu');
+    }
+
+    const seatIds = Array.from(this.heldSeatIds); // Convert Set to array for API call
+    this.seatService.extendSeatHoldTime(seatIds, id).subscribe({
+      next: () => {
+        this.heldSeatIds.clear();
+        this.loadSeats();
+      },
+      error: (err: HttpErrorResponse) => {
+        alert(err.message);
+      },
+    });
+  }
+
   subscribeToSeatUpdates(): void {
     if (!this.showtime?.id) {
       return;
@@ -249,19 +270,17 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     const paymentData = {
       showtimeId: this.showtime.id,
       cinemaId: this.cinema.id,
-      selectedSeats: this.getSelectedSeats()
-        .split(', ')
-        .filter((s) => s)
-        .map((seat) => ({ seatName: seat })),
+      selectedSeats: this.getSelectedSeats(),
       totalAmount: this.calculateTotal(),
       movieTitle: this.movie?.title,
       showDate: this.showtime.showDate,
-      showTime: this.showtime.startTime,
+      startTime: this.showtime.startTime,
       cinemaName: this.cinema.name,
       heldSeatIds: Array.from(this.heldSeatIds), // Convert Set to array for payment data
     };
 
     clearInterval(this.timer);
+    this.isPayment = true;
     this.seatService.disconnectWebSocket();
     this.router.navigate(['/payment'], { queryParams: { data: JSON.stringify(paymentData) } });
   }
@@ -314,9 +333,12 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     if (this.seatUpdateSubscription) {
       this.seatUpdateSubscription.unsubscribe();
     }
-    if (this.showtime?.id && !this.confirmPayment) {
-      this.releaseSelectedSeats(this.showtime.id);
+    if (this.showtime?.id) {
+      if (!this.isPayment) this.releaseSelectedSeats(this.showtime.id);
+      else this.extendSeatHoldTime(this.showtime.id);
     }
     this.seatService.disconnectWebSocket();
+    this.dataSharingService.clearData('bookingData');
+    console.log('SeatSelectionComponent destroyed');
   }
 }
