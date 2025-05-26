@@ -12,6 +12,8 @@ import { TopicComponent } from './components/topic/topic.component';
 import { SeatSelectionComponent } from './components/seat-selection/seat-selection.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { RedirectIfLoggedInGuard } from '../core/guards/redirect-if-logged-in.guard';
+import { SuccessComponent } from './components/success/success.component';
+import { CancelComponent } from './components/cancel/cancel.component';
 
 const routes: Routes = [
   {
@@ -39,6 +41,8 @@ const routes: Routes = [
       { path: 'showtimes', component: OrderComponent, canActivate: [AuthGuard] },
       { path: 'seat-selection', component: SeatSelectionComponent, canActivate: [AuthGuard] },
       { path: 'payment', component: PaymentComponent },
+      { path: 'success', component: SuccessComponent },
+      { path: 'cancel', component: CancelComponent },
     ],
   },
 ];

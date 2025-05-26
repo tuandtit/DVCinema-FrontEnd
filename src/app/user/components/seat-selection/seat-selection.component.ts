@@ -136,7 +136,7 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
         return;
       }
       if (this.showtime?.id) {
-        this.holdSelectedSeat(seat.seatId, this.showtime.id);
+        this.holdSelectedSeat(seat.seatId, this.showtime.id, this.showtime.ticketPrice);
       } else {
         this.handleMissingData('No showtime available');
       }
@@ -151,13 +151,13 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
     }
   }
 
-  holdSelectedSeat(seatId: number, showtimeId: number): void {
-    if (!seatId || !showtimeId) {
+  holdSelectedSeat(seatId: number, showtimeId: number, ticketPrice: number): void {
+    if (!seatId || !showtimeId || ticketPrice < 0) {
       this.handleMissingData('Invalid seat or showtime ID');
       return;
     }
 
-    this.seatService.holdSeat(seatId, showtimeId).subscribe({
+    this.seatService.holdSeat(seatId, showtimeId, ticketPrice).subscribe({
       next: (response) => {
         this.heldSeatIds.add(response.data.id);
         this.loadSeats();
@@ -254,10 +254,11 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   }
 
   calculateTotal(): number {
-    const selectedCount = this.getSelectedSeats()
-      .split(', ')
-      .filter((s) => s).length;
-    return selectedCount * (this.showtime?.ticketPrice || 85000);
+    // const selectedCount = this.getSelectedSeats()
+    //   .split(', ')
+    //   .filter((s) => s).length;
+    // return selectedCount * (this.showtime?.ticketPrice || 85000);
+    return 5000;
   }
 
   confirmPayment(): void {

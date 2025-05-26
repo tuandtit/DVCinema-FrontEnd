@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { SeatService } from '../../../core/services/seat.service';
+import { AccountService } from '../../../core/services/account.service';
 import { DataSharingService } from '../../../core/services/data-sharing.service';
+import { PaymentService } from '../../../core/services/payment.service';
+import { SeatService } from '../../../core/services/seat.service';
 
 @Component({
   selector: 'app-payment',
@@ -11,66 +12,64 @@ import { DataSharingService } from '../../../core/services/data-sharing.service'
   standalone: false,
 })
 export class PaymentComponent implements OnInit, OnDestroy {
-  paymentData: any = null;
+  paymentData: any;
   qrCodeUrl: string = '';
+  checkoutUrl: string = '';
   isPaymentSuccess: boolean = false;
-  timeLeft: number = 600;
+  timeLeft: number = 600; // 10 phút
   timer: any;
   heldSeatIds: number[] = [];
+  orderCode: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
+    private accountService: AccountService,
+    private paymentService: PaymentService,
     private seatService: SeatService,
     private dataSharingService: DataSharingService
   ) {}
 
   ngOnInit(): void {
-    debugger;
-    this.paymentData = this.dataSharingService.getData('paymentData') || history.state.bookingData;
+    this.paymentData = this.dataSharingService.getData('paymentData') || history.state.paymentData;
     if (!this.paymentData) {
       this.router.navigate(['/']);
       return;
     }
     this.heldSeatIds = this.paymentData.heldSeatIds || [];
-    this.generateQrCode();
     this.startTimer();
   }
 
-  generateQrCode(): void {
-    const paymentRequest = {
-      amount: this.paymentData.totalAmount,
-      orderId: `ORDER_${Date.now()}`,
-      returnUrl: 'http://your-frontend-url/payment-callback',
-    };
-    this.http.post('http://your-api-base-url/api/create-payment', paymentRequest).subscribe(
-      (response: any) => {
-        if (response.status.code === 200) {
-          this.qrCodeUrl = response.data.qrCodeUrl;
-        }
-      },
-      (error) => {
-        console.error('Lỗi khi tạo mã QR:', error);
-      }
-    );
-  }
-
-  checkPaymentStatus(): void {
-    this.http
-      .get(`http://your-api-base-url/api/check-payment-status?orderId=ORDER_${Date.now()}`)
+  initiatePayment() {
+    debugger;
+    const description = this.accountService.getUsername() || '';
+    const productName = 'Vé xem phim - ' + this.paymentData.movieTitle;
+    const quantity = this.paymentData.heldSeatIds.length;
+    const showtimeId = this.paymentData.showtimeId;
+    this.paymentService
+      .createPayment(
+        this.paymentData.totalAmount,
+        description,
+        productName,
+        quantity,
+        this.paymentData.heldSeatIds,
+        showtimeId
+      )
       .subscribe(
-        (response: any) => {
-          if (response.status.code === 200 && response.data.status === 'SUCCESS') {
-            this.isPaymentSuccess = true;
-            // this.releaseSelectedSeats(); // Giải phóng ghế sau khi thanh toán thành công
-            this.showSuccessPopup();
-          }
+        (paymentResponse) => {
+          this.dataSharingService.setData('paymentResponse', paymentResponse);
+          window.location.href = paymentResponse.data.checkoutUrl;
         },
         (error) => {
-          console.error('Lỗi khi kiểm tra trạng thái:', error);
+          console.error('Payment initiation failed', error);
         }
       );
+  }
+
+  openCheckoutUrl(): void {
+    if (this.checkoutUrl) {
+      window.location.href = this.checkoutUrl;
+    }
   }
 
   releaseSelectedSeats(): void {
@@ -93,8 +92,14 @@ export class PaymentComponent implements OnInit, OnDestroy {
     }
   }
 
+  showErrorPopup(message: string): void {
+    if (confirm(`${message} Nhấn "OK" để quay lại trang chọn ghế.`)) {
+      this.router.navigate(['/seat-selection']);
+    }
+  }
+
   goBack(): void {
-    // this.releaseSelectedSeats();
+    this.releaseSelectedSeats();
     this.router.navigate(['/seat-selection']);
   }
 
@@ -108,7 +113,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
         }
       } else {
         clearInterval(this.timer);
-        // this.releaseSelectedSeats();
+        this.releaseSelectedSeats();
         this.showTimeoutPopup();
       }
     }, 1000);
@@ -131,7 +136,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
       clearInterval(this.timer);
     }
     if (!this.isPaymentSuccess) {
-      // this.releaseSelectedSeats(); // Giải phóng ghế nếu rời trang mà chưa thanh toán thành công
+      this.releaseSelectedSeats();
     }
   }
 }

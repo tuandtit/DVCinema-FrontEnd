@@ -12,7 +12,6 @@ import { WebSocketService } from './websocket.service';
   providedIn: 'root',
 })
 export class SeatService {
-  
   private apiSeatByShowtime = `${environment.apiBaseUrl}/api/seat-by-showtime`;
   private wsBaseUrl = `${environment.apiBaseUrl}/ws/seat-updates`;
   private webSocketSubject: Subject<Seat[]> = new Subject<Seat[]>();
@@ -31,7 +30,11 @@ export class SeatService {
     });
   }
 
-  holdSeat(seatId: number, showtimeId: number): Observable<ApiResponse<BaseDto>> {
+  holdSeat(
+    seatId: number,
+    showtimeId: number,
+    ticketPrice: number
+  ): Observable<ApiResponse<BaseDto>> {
     const userId = this.accountService.getUserId();
     if (!userId) {
       return throwError(() => new Error('Vui lòng đăng nhập để giữ ghế!'));
@@ -39,7 +42,8 @@ export class SeatService {
     const params = new HttpParams()
       .set('userId', userId.toString())
       .set('showtimeId', showtimeId.toString())
-      .set('seatId', seatId.toString());
+      .set('seatId', seatId.toString())
+      .set('ticketPrice', '5000');
     return this.http.post<ApiResponse<BaseDto>>(`${this.apiSeatByShowtime}/hold-seat`, null, {
       params,
     });
