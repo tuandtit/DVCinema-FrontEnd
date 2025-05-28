@@ -1,11 +1,10 @@
-// Đã chỉnh sửa và tối ưu mã nguồn
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MovieRequestDto } from '../../../core/models/movie/movie-request.dto';
 import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
-import { ContributorService } from '../../../core/services/contributor.service';
 import { GenreService } from '../../../core/services/genre.service';
 import { MovieService } from '../../../core/services/movie.service';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: false,
@@ -20,64 +19,47 @@ export class MoviesComponent implements OnInit {
   size = 10;
   query = '';
   statusFilter = '';
-  isAvailableOnline: boolean | null = null;
 
   showAddForm = false;
   showEditForm = false;
   selectedPoster: File | null = null;
 
-  directors: any[] = [];
-  actors: any[] = [];
   genres: any[] = [];
-
   movieForm: FormGroup;
   editMovie: MovieResponseDto | null = null;
 
-  showDirectorList = false;
-  showActorList = false;
   showGenreList = false;
-  showEditDirectorList = false;
-  showEditActorList = false;
   showEditGenreList = false;
-
-  directorSearch = '';
-  actorSearch = '';
   genreSearch = '';
-  editDirectorSearch = '';
-  editActorSearch = '';
   editGenreSearch = '';
 
   constructor(
     private movieService: MovieService,
-    private contributorService: ContributorService,
     private genreService: GenreService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.movieForm = this.fb.group({
       title: ['', Validators.required],
-      description: ['', Validators.required],
       duration: ['', [Validators.required, Validators.min(1)]],
       releaseDate: ['', Validators.required],
+      endDate: [''],
       isAvailableOnline: [false],
       trailerUrl: [''],
       videoUrl: [''],
-      status: ['SHOWING', Validators.required],
-      directorId: [0, Validators.required],
-      actorIds: [[]],
+      status: ['NOW_SHOWING', Validators.required],
       genreIds: [[]],
     });
   }
 
   ngOnInit(): void {
     this.loadMovies();
-    this.loadContributors('DIRECTOR');
-    this.loadContributors('ACTOR');
     this.loadGenres('');
   }
 
   loadMovies(): void {
     this.movieService
-      .getMovies(this.page, this.size, this.query, this.statusFilter ? [this.statusFilter] : [], this.isAvailableOnline)
+      .getMovies(this.page, this.size, this.query, this.statusFilter ? [this.statusFilter] : [])
       .subscribe({
         next: (response) => {
           if (response.data) {
@@ -87,19 +69,6 @@ export class MoviesComponent implements OnInit {
         },
         error: (err) => console.error('Lỗi khi tải danh sách phim:', err),
       });
-  }
-
-  loadContributors(type: 'DIRECTOR' | 'ACTOR'): void {
-    const search = type === 'DIRECTOR' ? this.directorSearch : this.actorSearch;
-    this.contributorService.getContributors(this.page, this.size, search, type).subscribe({
-      next: (response) => {
-        if (response.data) {
-          if (type === 'DIRECTOR') this.directors = response.data.contents;
-          else this.actors = response.data.contents;
-        }
-      },
-      error: (err) => console.error('Lỗi khi tải contributors:', err),
-    });
   }
 
   loadGenres(query: string): void {
@@ -150,38 +119,29 @@ export class MoviesComponent implements OnInit {
 
   openEditForm(movie: MovieResponseDto): void {
     this.editMovie = { ...movie };
-    const director = this.directors.find((d: any) => d.name === movie.directorName);
-    const actorIds = movie.actorNames
-      .map((name: string) => this.actors.find((a: any) => a.name === name)?.id || 0)
-      .filter((id: number) => id);
     const genreIds = movie.genreNames
       .map((name: string) => this.genres.find((g: any) => g.name === name)?.id || 0)
       .filter((id: number) => id);
     this.movieForm.patchValue({
       title: movie.title,
-      description: movie.description,
       duration: movie.duration,
       releaseDate: movie.releaseDate,
+      endDate: movie.endDate || '',
       isAvailableOnline: movie.isAvailableOnline,
       trailerUrl: movie.trailerUrl,
       videoUrl: movie.videoUrl || '',
-      status: movie.status || 'SHOWING',
-      directorId: director ? director.id : 0,
-      actorIds: actorIds,
+      status: movie.status || 'NOW_SHOWING',
       genreIds: genreIds,
     });
-    this.editDirectorSearch = director ? director.name : '';
-    this.editActorSearch = movie.actorNames.join(', ');
     this.editGenreSearch = movie.genreNames.join(', ');
     this.showEditForm = true;
   }
 
   updateMovie(): void {
     if (this.movieForm.invalid || !this.editMovie) return;
-
     const movie: MovieRequestDto = this.movieForm.value;
     this.movieService.updateMovie(this.editMovie.id, movie).subscribe({
-      next: (response: any) => {
+      next: () => {
         this.loadMovies();
         this.cancelForm();
       },
@@ -198,136 +158,49 @@ export class MoviesComponent implements OnInit {
     }
   }
 
+  viewMovieDetails(id: number): void {
+    this.router.navigate([`/movies/${id}`]);
+  }
+
   cancelForm(): void {
     this.showAddForm = false;
     this.showEditForm = false;
     this.movieForm.reset({
       title: '',
-      description: '',
       duration: '',
       releaseDate: '',
+      endDate: '',
       isAvailableOnline: false,
       trailerUrl: '',
       videoUrl: '',
-      status: 'SHOWING',
-      directorId: 0,
-      actorIds: [],
+      status: 'NOW_SHOWING',
       genreIds: [],
     });
     this.selectedPoster = null;
     this.editMovie = null;
-    this.directorSearch = '';
-    this.actorSearch = '';
     this.genreSearch = '';
-    this.editDirectorSearch = '';
-    this.editActorSearch = '';
     this.editGenreSearch = '';
-    this.showDirectorList = false;
-    this.showActorList = false;
     this.showGenreList = false;
-    this.showEditDirectorList = false;
-    this.showEditActorList = false;
     this.showEditGenreList = false;
   }
 
   filterMovies(): void {
-    debugger;
-    this.page = 1; // Reset về trang 1 khi lọc
-    this.loadMovies(); // Gọi lại loadMovies với các tham số lọc đã cập nhật
+    this.page = 1;
+    this.loadMovies();
   }
 
-  // Autocomplete handlers
   onInputFocus(type: string, isEdit: boolean = false): void {
-    if (isEdit) {
-      switch (type) {
-        case 'director':
-          this.showEditDirectorList = true;
-          break;
-        case 'actor':
-          this.showEditActorList = true;
-          break;
-        case 'genre':
-          this.showEditGenreList = true;
-          break;
-      }
-    } else {
-      switch (type) {
-        case 'director':
-          this.showDirectorList = true;
-          break;
-        case 'actor':
-          this.showActorList = true;
-          break;
-        case 'genre':
-          this.showGenreList = true;
-          break;
-      }
+    if (type === 'genre') {
+      isEdit ? (this.showEditGenreList = true) : (this.showGenreList = true);
     }
   }
 
   onInputBlur(type: string, isEdit: boolean = false): void {
     setTimeout(() => {
-      if (isEdit) {
-        switch (type) {
-          case 'director':
-            this.showEditDirectorList = false;
-            break;
-          case 'actor':
-            this.showEditActorList = false;
-            break;
-          case 'genre':
-            this.showEditGenreList = false;
-            break;
-        }
-      } else {
-        switch (type) {
-          case 'director':
-            this.showDirectorList = false;
-            break;
-          case 'actor':
-            this.showActorList = false;
-            break;
-          case 'genre':
-            this.showGenreList = false;
-            break;
-        }
+      if (type === 'genre') {
+        isEdit ? (this.showEditGenreList = false) : (this.showGenreList = false);
       }
     }, 200);
-  }
-
-  selectDirector(director: any, isEdit: boolean = false): void {
-    if (isEdit) {
-      this.movieForm.get('directorId')?.setValue(director.id);
-      this.editDirectorSearch = director.name;
-      this.showEditDirectorList = false;
-    } else {
-      this.movieForm.get('directorId')?.setValue(director.id);
-      this.directorSearch = director.name;
-      this.showDirectorList = false;
-    }
-  }
-
-  selectActor(actor: any, isEdit: boolean = false): void {
-    const actorIds = isEdit
-      ? this.movieForm.get('actorIds')?.value
-      : this.movieForm.get('actorIds')?.value;
-    if (!actorIds.includes(actor.id)) {
-      actorIds.push(actor.id);
-      this.movieForm.get('actorIds')?.setValue([...actorIds]);
-    }
-    if (isEdit) {
-      this.editActorSearch = actorIds
-        .map((id: number) => this.actors.find((a: any) => a.id === id)?.name)
-        .filter((name: string | undefined) => name)
-        .join(', ');
-      this.showEditActorList = false;
-    } else {
-      this.actorSearch = actorIds
-        .map((id: number) => this.actors.find((a: any) => a.id === id)?.name)
-        .filter((name: string | undefined) => name)
-        .join(', ');
-      this.showActorList = false;
-    }
   }
 
   selectGenre(genre: any, isEdit: boolean = false): void {
@@ -353,19 +226,6 @@ export class MoviesComponent implements OnInit {
     }
   }
 
-  removeActor(actorId: number): void {
-    const actorIds = this.movieForm.get('actorIds')?.value.filter((id: number) => id !== actorId);
-    this.movieForm.get('actorIds')?.setValue(actorIds);
-    this.actorSearch = actorIds
-      .map((id: number) => this.actors.find((a: any) => a.id === id)?.name)
-      .filter((name: string | undefined) => name)
-      .join(', ');
-    this.editActorSearch = actorIds
-      .map((id: number) => this.actors.find((a: any) => a.id === id)?.name)
-      .filter((name: string | undefined) => name)
-      .join(', ');
-  }
-
   removeGenre(genreId: number): void {
     const genreIds = this.movieForm.get('genreIds')?.value.filter((id: number) => id !== genreId);
     this.movieForm.get('genreIds')?.setValue(genreIds);
@@ -381,10 +241,6 @@ export class MoviesComponent implements OnInit {
 
   getGenreNameById(id: number): string | undefined {
     return this.genres.find((g: any) => g.id === id)?.name;
-  }
-
-  getActorNameById(id: number): string | undefined {
-    return this.actors.find((a: any) => a.id === id)?.name;
   }
 
   getTotalPages(): number {

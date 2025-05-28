@@ -1,13 +1,8 @@
 <header class="public-header">
   <div class="header-content">
-    <div class="logo">
-      <a [routerLink]="['/dashboard']"><h1>DVCinema</h1></a>
-    </div>
-    <nav class="menu">
-      <a [routerLink]="['/dashboard']" routerLinkActive="active">Trang Chủ</a>
-      <a [routerLink]="['/movies/theater']" routerLinkActive="active">Phim Đang Chiếu</a>
-      <a [routerLink]="['/bookings']" routerLinkActive="active">Đặt Vé</a>
-    </nav>
+    <a class="navbar-brand" [routerLink]="['/admin']">
+      <img src="assets/image/logo_dvcinema.jpg" alt="logo_dvcinema" class="logo-img" />
+    </a>
     <div class="user-info">
       <span *ngIf="isLoggedIn">Xin chào, {{ userName }}</span>
       <button *ngIf="isLoggedIn" class="btn btn-danger btn-sm" (click)="logout()">Đăng Xuất</button>

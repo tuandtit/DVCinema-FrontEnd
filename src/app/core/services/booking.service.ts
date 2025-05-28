@@ -19,5 +19,9 @@ export class BookingService {
       .get<{ data: BookingResponseDto }>(this.apiUrl, { params })
       .pipe(map((response) => response.data));
   }
-}
 
+  deleteBookingByCode(bookingCode: string): Observable<void> {
+    const params = new HttpParams().set('bookingCode', bookingCode);
+    return this.http.delete<void>(this.apiUrl, { params });
+  }
+}

@@ -14,10 +14,10 @@ import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto'
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss'],
-    standalone: false
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
+  standalone: false,
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
   searchQuery: string = '';
@@ -117,7 +117,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
           this.currentPage = 1;
           this.suggestions = [];
           this.canLoadMore = true;
-          return this.movieService.getMovies(this.currentPage, this.pageSize, query, [], null);
+          return this.movieService.getMovies(this.currentPage, this.pageSize, query, []);
         })
       )
       .subscribe({
@@ -184,31 +184,29 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.isLoadingMore = true;
     this.currentPage++;
 
-    this.movieService
-      .getMovies(this.currentPage, this.pageSize, this.searchQuery, [], null)
-      .subscribe({
-        next: (response) => {
-          if (response.status.code !== 200) {
-            console.error('Lỗi từ API:', response.status.timestamp);
-            this.isLoadingMore = false;
-            return;
-          }
-
-          const newSuggestions = response.data.contents.map((dto: MovieResponseDto) => ({
-            id: dto.id,
-            title: dto.title,
-            genre: dto.genreNames.join(', '),
-          }));
-
-          this.suggestions = [...this.suggestions, ...newSuggestions];
-          this.canLoadMore = this.currentPage < this.totalPages - 1;
+    this.movieService.getMovies(this.currentPage, this.pageSize, this.searchQuery, []).subscribe({
+      next: (response) => {
+        if (response.status.code !== 200) {
+          console.error('Lỗi từ API:', response.status.timestamp);
           this.isLoadingMore = false;
-        },
-        error: (err) => {
-          console.error('Lỗi khi load thêm gợi ý:', err);
-          this.isLoadingMore = false;
-        },
-      });
+          return;
+        }
+
+        const newSuggestions = response.data.contents.map((dto: MovieResponseDto) => ({
+          id: dto.id,
+          title: dto.title,
+          genre: dto.genreNames.join(', '),
+        }));
+
+        this.suggestions = [...this.suggestions, ...newSuggestions];
+        this.canLoadMore = this.currentPage < this.totalPages - 1;
+        this.isLoadingMore = false;
+      },
+      error: (err) => {
+        console.error('Lỗi khi load thêm gợi ý:', err);
+        this.isLoadingMore = false;
+      },
+    });
   }
 
   onSearchEnter(): void {
@@ -273,5 +271,10 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.showUserDropdown = !this.showUserDropdown;
     this.showMoviesDropdown = false;
     event?.stopPropagation();
+  }
+
+  onImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = 'assets/image/logo_dvcinema.jpg';
   }
 }

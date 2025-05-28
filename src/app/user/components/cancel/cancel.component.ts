@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BookingService } from '../../../core/services/booking.service';
 import { DataSharingService } from '../../../core/services/data-sharing.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { DataSharingService } from '../../../core/services/data-sharing.service'
         <p>Thanh toán của bạn đã bị hủy. Vui lòng thử lại.</p>
       </div>
       <div class="actions">
-        <button class="btn btn-primary" (click)="goToSeatSelection()">Quay lại chọn ghế</button>
+        <button class="btn btn-primary" (click)="goToHome()">Quay lại trang chủ</button>
       </div>
     </div>
   `,
@@ -28,7 +29,7 @@ import { DataSharingService } from '../../../core/services/data-sharing.service'
       }
       .title {
         text-align: center;
-        color: #1e3a8a;
+        color: red;
         margin-bottom: 20px;
         font-size: 24px;
       }
@@ -66,15 +67,28 @@ import { DataSharingService } from '../../../core/services/data-sharing.service'
 })
 export class CancelComponent implements OnInit {
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
-    private dataSharingService: DataSharingService
+    private dataSharingService: DataSharingService,
+    private bookingService: BookingService
   ) {}
 
   ngOnInit(): void {
-    this.dataSharingService.clearData('paymentData'); // Xóa dữ liệu tạm
+    debugger;
+    const orderCode = this.route.snapshot.queryParamMap.get('orderCode') || 'N/A';
+    this.dataSharingService.clearData('paymentData');
+    this.bookingService.deleteBookingByCode(orderCode).subscribe({
+      next: () => {
+        console.log('Booking đã được xóa');
+        // Có thể gọi lại danh sách booking ở đây nếu cần
+      },
+      error: (err) => {
+        console.error('Lỗi khi xóa booking:', err);
+      },
+    });
   }
 
-  goToSeatSelection(): void {
-    this.router.navigate(['/seat-selection']);
+  goToHome(): void {
+    this.router.navigate(['/']);
   }
 }

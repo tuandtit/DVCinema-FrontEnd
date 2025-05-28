@@ -20,8 +20,7 @@ export class MovieService {
     page: number,
     size: number,
     query: string,
-    status: string[],
-    isAvailableOnline: boolean | null
+    status: string[]
   ): Observable<ApiResponse<PagingResponse<MovieResponseDto>>> {
     const request: MovieSearchRequest = {
       paging: {
@@ -33,7 +32,6 @@ export class MovieService {
       },
       query: query,
       status: status,
-      isAvailableOnline: isAvailableOnline,
     };
 
     return this.http.post<ApiResponse<PagingResponse<MovieResponseDto>>>(

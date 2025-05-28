@@ -12,12 +12,12 @@ export class SidebarComponent {
   isCollapsed: boolean = false;
 
   menuItems = [
-    { label: 'Thống Kê', path: '/dashboard/statistics', icon: 'fas fa-chart-bar' },
-    { label: 'Quản Lý Phim', path: '/dashboard/movies', icon: 'fas fa-film' },
-    { label: 'Quản Lý Rạp', path: '/dashboard/cinemas', icon: 'fas fa-theater-masks' },
-    { label: 'Quản Lý Đặt Vé', path: '/dashboard/bookings', icon: 'fas fa-ticket-alt' },
-    { label: 'Quản Lý Suất Chiếu', path: '/dashboard/showtimes', icon: 'fas fa-clock' },
-    { label: 'Quản Lý Người Dùng', path: '/dashboard/users', icon: 'fas fa-users' },
+    { label: 'Thống Kê', path: '/admin/statistics', icon: 'fas fa-chart-bar' },
+    { label: 'Quản Lý Phim', path: '/admin/movies', icon: 'fas fa-film' },
+    { label: 'Quản Lý Rạp', path: '/admin/cinemas', icon: 'fas fa-theater-masks' },
+    { label: 'Quản Lý Đặt Vé', path: '/admin/bookings', icon: 'fas fa-ticket-alt' },
+    { label: 'Quản Lý Suất Chiếu', path: '/admin/showtimes', icon: 'fas fa-clock' },
+    { label: 'Quản Lý Người Dùng', path: '/admin/users', icon: 'fas fa-users' },
   ];
 
   toggleSidebar(): void {

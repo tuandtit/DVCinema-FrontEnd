@@ -6,5 +6,4 @@ export interface MovieSearchRequest {
   };
   query: string;
   status: string[];
-  isAvailableOnline: boolean | null;
 }

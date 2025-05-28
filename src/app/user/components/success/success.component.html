@@ -1,29 +1,34 @@
 <div class="container">
-  <h2 class="title">Thanh toán thành công</h2>
-  <div class="qr-section">
-    <h3 class="qr-title">Mã QR vé của bạn</h3>
-    <div class="qr-container">
-      <img
-        *ngIf="bookingData?.bookingUrl"
-        [src]="bookingData?.bookingUrl"
-        alt="QR Code for Ticket"
-        class="qr-image"
-        (error)="handleImageError()"
-      />
-      <p *ngIf="!bookingData?.bookingUrl" class="qr-error">
-        Không thể tải mã QR. Vui lòng sử dụng mã đơn hàng bên dưới.
-      </p>
+  <app-loading-spinner [isLoading]="isLoading"></app-loading-spinner>
+  <ng-container *ngIf="!isLoading">
+    <div class="success-container">
+      <h2 class="title">Đặt vé thành công</h2>
+      <div class="qr-section">
+        <h3 class="qr-title">Mã QR vé của bạn</h3>
+        <div class="qr-code">
+          <img
+            *ngIf="bookingData?.bookingUrl"
+            [src]="bookingData?.bookingUrl"
+            alt="QR Code for Ticket"
+            class="qr-image"
+            (error)="handleImageError()"
+          />
+          <p *ngIf="!bookingData?.bookingUrl" class="qr-error">
+            Không thể tải mã QR. Vui lòng sử dụng mã đơn hàng bên dưới.
+          </p>
+        </div>
+        <p class="order-code"><strong>Mã đơn hàng:</strong> {{ orderCode || 'N/A' }}</p>
+      </div>
+      <div class="booking-details">
+        <p><strong>Nhà cung cấp:</strong> {{ bookingData?.cinemaName || 'PayOS' }}</p>
+        <p><strong>Phim:</strong> {{ bookingData?.movieTitle || 'N/A' }}</p>
+        <p><strong>Ngày giờ chiếu:</strong> {{ bookingData?.showtime }}</p>
+        <p><strong>Ghế đã chọn:</strong> {{ bookingData?.seatName }}</p>
+        <p><strong>Tổng tiền:</strong> {{ bookingData?.totalPrice }}</p>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" (click)="goToHome()">Quay lại trang chủ</button>
+      </div>
     </div>
-    <p class="order-code"><strong>Mã đơn hàng:</strong> {{ orderCode || 'N/A' }}</p>
-  </div>
-  <div class="payment-info">
-    <p><strong>Nhà cung cấp:</strong> {{ bookingData?.cinemaName || 'PayOS' }}</p>
-    <p><strong>Phim:</strong> {{ bookingData?.movieTitle || 'N/A' }}</p>
-    <p><strong>Ngày giờ chiếu:</strong> {{ bookingData?.showtime }}</p>
-    <p><strong>Ghế đã chọn:</strong> {{ bookingData?.seatName }}</p>
-    <p><strong>Tổng tiền:</strong> {{ bookingData?.totalPrice }}</p>
-  </div>
-  <div class="actions">
-    <button class="btn btn-primary" (click)="goToHome()">Quay lại trang chủ</button>
-  </div>
+  </ng-container>
 </div>

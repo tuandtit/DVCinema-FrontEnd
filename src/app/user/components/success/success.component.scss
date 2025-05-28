@@ -1,85 +1,73 @@
+@use 'variables' as *;
+@use 'common' as *;
+
 .container {
   max-width: 800px;
-  margin: 20px auto;
+  margin: 0 auto;
   padding: 20px;
+}
+
+.success-container {
+  text-align: center;
   background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.title {
-  text-align: center;
-  color: #1e3a8a;
-  margin-bottom: 20px;
-  font-size: 24px;
-}
-
-.qr-section {
-  text-align: center;
+h2 {
+  font-size: 28px;
+  color: #10b981;
   margin-bottom: 20px;
 }
 
-.qr-title {
-  color: #374151;
-  font-size: 18px;
-  margin-bottom: 10px;
+.booking-details {
+  margin-bottom: 30px;
+  text-align: left;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+
+  p {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #333;
+
+    strong {
+      color: #1e3a8a;
+    }
+  }
 }
 
-.qr-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-}
+.qr-code {
+  margin: 20px 0;
 
-.qr-image {
-  max-width: 200px;
-  max-height: 200px;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-}
+  img {
+    max-width: 200px;
+    height: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
 
-.qr-error {
-  color: #dc2626;
-  font-size: 14px;
-}
-
-.order-code {
-  margin-top: 10px;
-  font-size: 16px;
-  color: #374151;
-}
-
-.payment-info {
-  background: #f3f4f6;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.payment-info p {
-  margin: 5px 0;
-  color: #374151;
+  p {
+    color: #ef4444;
+    font-size: 16px;
+  }
 }
 
 .actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
+  .btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 8px;
+    background: #10b981;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease;
 
-.btn-primary {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  background: #3b82f6;
-  color: #ffffff;
-  transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-  background: #2563eb;
+    &:hover {
+      background: #059669;
+    }
+  }
 }

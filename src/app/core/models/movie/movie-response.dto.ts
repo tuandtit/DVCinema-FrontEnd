@@ -7,6 +7,7 @@ export interface MovieResponseDto {
   posterUrl: string;
   duration: number;
   releaseDate: string;
+  endDate: string;
   isAvailableOnline: boolean;
   status: string | null;
   genreNames: string[];

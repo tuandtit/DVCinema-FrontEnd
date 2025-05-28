@@ -69,7 +69,7 @@ export class HomeComponent implements OnInit {
       }
 
       const response = await this.movieService
-        .getMovies(this.currentPage, this.pageSize, '', status, isAvailableOnline)
+        .getMovies(this.currentPage, this.pageSize, '', status)
         .toPromise();
 
       if (response.status.code !== 200) {

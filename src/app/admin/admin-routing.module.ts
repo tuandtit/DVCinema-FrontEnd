@@ -13,13 +13,13 @@ const routes: Routes = [
     path: '',
     component: AdminComponent,
     children: [
-      { path: 'statistics', component: AdminDashboardComponent },
+      { path: 'report', component: AdminDashboardComponent },
       { path: 'movies', component: MoviesComponent },
       { path: 'cinemas', component: CinemasComponent },
       { path: 'bookings', component: BookingsComponent },
       { path: 'showtimes', component: ShowtimesComponent },
       { path: 'users', component: UsersComponent },
-      { path: '', redirectTo: 'statistics', pathMatch: 'full' }, // Mặc định vào trang thống kê
+      { path: '', redirectTo: 'report', pathMatch: 'full' }, // Mặc định vào trang thống kê
     ],
   },
 ];

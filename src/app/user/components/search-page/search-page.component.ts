@@ -49,7 +49,7 @@ export class SearchPageComponent implements OnInit {
     try {
       if (this.searchType === 'movies') {
         const response = await this.movieService
-          .getMovies(this.currentPage, this.pageSize, this.query, [], null)
+          .getMovies(this.currentPage, this.pageSize, this.query, [])
           .toPromise();
 
         if (response.status.code !== 200) {

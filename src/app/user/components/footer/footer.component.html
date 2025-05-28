@@ -1,9 +1,14 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-top">
-      <div class="footer-logo">
-        <img src="assets\image\logo_dvcinema.jpg" alt="Logo" class="logo-img" />
-      </div>
+      <a class="footer-logo" [routerLink]="['/']">
+        <img
+          src="https://res.cloudinary.com/dt8idd99e/image/upload/v1748446227/logo_dvcinema_pxoanh.jpg"
+          alt="logo_dvcinema"
+          class="logo-img"
+          (error)="onImageError($event)"
+        />
+      </a>
       <div class="footer-links">
         <a href="#">Giới thiệu</a>
         <a href="#">Liên hệ</a>
