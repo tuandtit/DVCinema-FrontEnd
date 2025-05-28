@@ -1,41 +1,52 @@
 <div class="search-page-container">
   <div class="container">
-    <h2>Kết Quả Tìm Kiếm: "{{ query }}"</h2>
+    <app-loading-spinner [isLoading]="isLoading"></app-loading-spinner>
 
-    <!-- Quick Filter -->
-    <div class="quick-filter">
-      <button [class.active]="searchType === 'movies'" (click)="setSearchType('movies')">
-        Phim
-      </button>
-      <button [class.active]="searchType === 'actors'" (click)="setSearchType('actors')">
-        Diễn viên
-      </button>
-    </div>
+    <ng-container *ngIf="!isLoading">
+      <h2>Kết Quả Tìm Kiếm: "{{ query }}"</h2>
 
-    <!-- Kết quả tìm kiếm -->
-    <div class="search-results">
-      <app-movie-list
-        *ngIf="searchType === 'movies'"
-        [movies]="movies"
-        (viewDetails)="viewMovieDetails($event)"
-        (playTrailer)="playTrailer($event)"
-        (watchMovie)="watchMovie($event)"
-        (bookTicket)="bookTicket($event)"
-      ></app-movie-list>
+      <!-- Quick Filter -->
+      <div class="quick-filter">
+        <button [class.active]="searchType === 'movies'" (click)="setSearchType('movies')">
+          Phim
+        </button>
+        <button [class.active]="searchType === 'actors'" (click)="setSearchType('actors')">
+          Diễn viên
+        </button>
+      </div>
 
-      <app-actor-list
-        *ngIf="searchType === 'actors'"
-        [actors]="actors"
-        (viewDetails)="viewActorDetails($event)"
-      ></app-actor-list>
-    </div>
+      <!-- Kết quả tìm kiếm -->
+      <div class="search-results">
+        <app-movie-list
+          *ngIf="searchType === 'movies'"
+          [movies]="movies"
+          (viewDetails)="viewMovieDetails($event)"
+          (playTrailer)="playTrailer($event)"
+          (watchMovie)="watchMovie($event)"
+          (bookTicket)="bookTicket($event)"
+        ></app-movie-list>
 
-    <!-- Phân trang -->
-    <app-pagination
-      *ngIf="totalPages > 1"
-      [currentPage]="currentPage"
-      [totalPages]="totalPages"
-      (changePage)="changePage($event)"
-    ></app-pagination>
+        <app-actor-list
+          *ngIf="searchType === 'actors'"
+          [actors]="actors"
+          (viewDetails)="viewActorDetails($event)"
+        ></app-actor-list>
+      </div>
+
+      <!-- Phân trang -->
+      <app-pagination
+        *ngIf="totalPages > 1"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (changePage)="changePage($event)"
+      ></app-pagination>
+
+      <app-trailer-modal
+        [showModal]="showTrailerModal"
+        [movieTitle]="selectMovieTile"
+        [trailerUrl]="safeTrailerUrl"
+        (close)="closeTrailerModal()"
+      ></app-trailer-modal>
+    </ng-container>
   </div>
 </div>

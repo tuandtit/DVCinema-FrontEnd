@@ -28,6 +28,7 @@ import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { SuccessComponent } from './components/success/success.component';
+import { LoadingSpinnerComponent } from '../shared/components/loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { SuccessComponent } from './components/success/success.component';
     MovieInfoComponent,
     TrailerComponent,
     PaymentComponent,
-    SuccessComponent
+    SuccessComponent,
+    LoadingSpinnerComponent
   ],
   imports: [CommonModule, FormsModule, RouterModule, UserRoutingModule],
 })

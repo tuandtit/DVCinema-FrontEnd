@@ -1,50 +1,55 @@
 <div class="container">
-  <app-movie-carousel
-    [featuredMovies]="featuredMovies"
-    [isLoading]="isLoading"
-    (viewDetails)="viewDetails($event)"
-  ></app-movie-carousel>
+  <app-loading-spinner [isLoading]="isLoading"></app-loading-spinner>
 
-  <div class="loading" *ngIf="isLoading">Đang tải dữ liệu...</div>
+  <ng-container *ngIf="!isLoading">
+    <app-movie-carousel
+      [featuredMovies]="featuredMovies"
+      [isLoading]="isLoading"
+      (viewDetails)="viewDetails($event)"
+    ></app-movie-carousel>
 
-  <app-quick-filters [filterType]="filterType" (setFilter)="setFilter($event)"></app-quick-filters>
+    <app-quick-filters
+      [filterType]="filterType"
+      (setFilter)="setFilter($event)"
+    ></app-quick-filters>
 
-  <app-movie-list
-    [movies]="getPaginatedMovies()"
-    [isLoading]="isLoading"
-    (playTrailer)="playTrailer($event)"
-    (viewDetails)="viewDetails($event)"
-    (watchMovie)="watchMovie($event)"
-    (bookTicket)="bookTicket($event)"
-  ></app-movie-list>
+    <app-movie-list
+      [movies]="getPaginatedMovies()"
+      [isLoading]="isLoading"
+      (playTrailer)="playTrailer($event)"
+      (viewDetails)="viewDetails($event)"
+      (watchMovie)="watchMovie($event)"
+      (bookTicket)="bookTicket($event)"
+    ></app-movie-list>
 
-  <app-pagination
-    [currentPage]="currentPage"
-    [totalPages]="totalPages"
-    [isLoading]="isLoading"
-    (changePage)="changePage($event)"
-  ></app-pagination>
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      [isLoading]="isLoading"
+      (changePage)="changePage($event)"
+    ></app-pagination>
 
-  <app-trailer-modal
-    [showModal]="showTrailerModal"
-    [movieTitle]="selectMovieTile"
-    [trailerUrl]="safeTrailerUrl"
-    (close)="closeTrailerModal()"
-  ></app-trailer-modal>
+    <app-trailer-modal
+      [showModal]="showTrailerModal"
+      [movieTitle]="selectMovieTile"
+      [trailerUrl]="safeTrailerUrl"
+      (close)="closeTrailerModal()"
+    ></app-trailer-modal>
 
-  <app-cinema-showtime-modal
-    [movie]="selectedMovie"
-    [showModal]="showCinemaModal"
-    (close)="closeCinemaModal()"
-    (proceed)="openConfirmModal($event)"
-  ></app-cinema-showtime-modal>
+    <app-cinema-showtime-modal
+      [movie]="selectedMovie"
+      [showModal]="showCinemaModal"
+      (close)="closeCinemaModal()"
+      (proceed)="openConfirmModal($event)"
+    ></app-cinema-showtime-modal>
 
-  <app-confirm-booking-modal
-    [showModal]="showConfirmModal"
-    [movie]="selectedMovie"
-    [cinema]="selectedCinema"
-    [showtime]="selectedShowtime"
-    (close)="closeConfirmModal()"
-    (confirm)="proceedToSeatSelection()"
-  ></app-confirm-booking-modal>
+    <app-confirm-booking-modal
+      [showModal]="showConfirmModal"
+      [movie]="selectedMovie"
+      [cinema]="selectedCinema"
+      [showtime]="selectedShowtime"
+      (close)="closeConfirmModal()"
+      (confirm)="proceedToSeatSelection()"
+    ></app-confirm-booking-modal>
+  </ng-container>
 </div>

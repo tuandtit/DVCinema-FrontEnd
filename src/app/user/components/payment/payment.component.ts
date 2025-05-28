@@ -20,6 +20,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   timer: any;
   heldSeatIds: number[] = [];
   orderCode: string = '';
+  isLoading: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,17 +32,27 @@ export class PaymentComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.paymentData = this.dataSharingService.getData('paymentData') || history.state.paymentData;
-    if (!this.paymentData) {
-      this.router.navigate(['/']);
-      return;
+    this.loadPaymentData();
+  }
+
+  async loadPaymentData(): Promise<void> {
+    this.isLoading = true;
+    try {
+      this.paymentData =
+        this.dataSharingService.getData('paymentData') || history.state.paymentData;
+      if (!this.paymentData) {
+        this.router.navigate(['/']);
+        return;
+      }
+      this.heldSeatIds = this.paymentData.heldSeatIds || [];
+      this.startTimer();
+    } finally {
+      this.isLoading = false;
     }
-    this.heldSeatIds = this.paymentData.heldSeatIds || [];
-    this.startTimer();
   }
 
   initiatePayment() {
-    debugger;
+    this.isLoading = true;
     const description = this.accountService.getUsername() || '';
     const productName = 'Vé xem phim - ' + this.paymentData.movieTitle;
     const quantity = this.paymentData.heldSeatIds.length;
@@ -61,7 +72,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
           window.location.href = paymentResponse.data.checkoutUrl;
         },
         (error) => {
-          console.error('Payment initiation failed', error);
+          console.error('Thanh toán thất bại', error);
+          this.isLoading = false;
         }
       );
   }

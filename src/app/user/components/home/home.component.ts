@@ -49,59 +49,57 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  loadMovies(): void {
+  async loadMovies(): Promise<void> {
     this.isLoading = true;
-    let status: string[] = [];
-    let isAvailableOnline: boolean | null = null;
+    try {
+      let status: string[] = [];
+      let isAvailableOnline: boolean | null = null;
 
-    switch (this.filterType) {
-      case 'online':
-        status = ['ONLINE'];
-        break;
-      case 'upcoming':
-        status = ['COMING_SOON'];
-        break;
-      case 'nowshowing':
-      default:
-        status = ['NOW_SHOWING'];
-        break;
+      switch (this.filterType) {
+        case 'online':
+          status = ['ONLINE'];
+          break;
+        case 'upcoming':
+          status = ['COMING_SOON'];
+          break;
+        case 'nowshowing':
+        default:
+          status = ['NOW_SHOWING'];
+          break;
+      }
+
+      const response = await this.movieService
+        .getMovies(this.currentPage, this.pageSize, '', status, isAvailableOnline)
+        .toPromise();
+
+      if (response.status.code !== 200) {
+        console.error('Lỗi từ API:', response.status.timestamp);
+        return;
+      }
+
+      this.movies = response.data.contents.map((dto: MovieResponseDto) => ({
+        id: dto.id,
+        title: dto.title,
+        poster: dto.posterUrl,
+        trailer: dto.trailerUrl,
+        description: dto.description,
+        genres: dto.genreNames.join(', '),
+        director: dto.directorName,
+        actors: dto.actorNames.join(', '),
+        duration: dto.duration,
+        isAvailableOnline: dto.isAvailableOnline,
+        releaseDate: dto.releaseDate,
+        status: dto.status || '',
+      }));
+
+      this.totalPages = response.data.paging.totalPage;
+      this.filteredMovies = this.movies;
+      this.loadFeaturedMovies();
+    } catch (err) {
+      console.error('Lỗi khi lấy danh sách phim:', err);
+    } finally {
+      this.isLoading = false;
     }
-
-    this.movieService
-      .getMovies(this.currentPage, this.pageSize, '', status, isAvailableOnline)
-      .subscribe({
-        next: (response) => {
-          if (response.status.code !== 200) {
-            console.error('Lỗi từ API:', response.status.timestamp);
-            this.isLoading = false;
-            return;
-          }
-
-          this.movies = response.data.contents.map((dto: MovieResponseDto) => ({
-            id: dto.id,
-            title: dto.title,
-            poster: dto.posterUrl,
-            trailer: dto.trailerUrl,
-            description: dto.description,
-            genres: dto.genreNames.join(', '),
-            director: dto.directorName,
-            actors: dto.actorNames.join(', '),
-            duration: dto.duration,
-            isAvailableOnline: dto.isAvailableOnline,
-            releaseDate: dto.releaseDate,
-            status: dto.status || '',
-          }));
-
-          this.totalPages = response.data.paging.totalPage;
-          this.filteredMovies = this.movies;
-          this.loadFeaturedMovies();
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Lỗi khi lấy danh sách phim:', err);
-          this.isLoading = false;
-        },
-      });
   }
 
   loadFeaturedMovies(): void {
@@ -114,6 +112,7 @@ export class HomeComponent implements OnInit {
 
   changePage(page: number): void {
     if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.isLoading = true;
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { filter: this.filterType, page: page },
@@ -125,6 +124,7 @@ export class HomeComponent implements OnInit {
   setFilter(filterType: string): void {
     this.filterType = filterType;
     this.currentPage = 1;
+    this.isLoading = true;
     this.loadMovies();
   }
 

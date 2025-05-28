@@ -24,6 +24,7 @@ export class SearchPageComponent implements OnInit {
   showTrailerModal: boolean = false;
   safeTrailerUrl: SafeResourceUrl | null = null;
   selectMovieTile: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,58 +43,64 @@ export class SearchPageComponent implements OnInit {
     });
   }
 
-  search(): void {
-    if (this.searchType === 'movies') {
-      this.movieService.getMovies(this.currentPage, this.pageSize, this.query, [], null).subscribe({
-        next: (response) => {
-          if (response.status.code !== 200) {
-            console.error('Lỗi từ API:', response.status.timestamp);
-            return;
-          }
-          this.movies = response.data.contents.map((dto: MovieResponseDto) => ({
-            id: dto.id,
-            title: dto.title,
-            poster: dto.posterUrl,
-            trailer: dto.trailerUrl,
-            description: dto.description,
-            genres: dto.genreNames.join(', '),
-            director: dto.directorName,
-            actors: dto.actorNames.join(', '),
-            duration: dto.duration,
-            isAvailableOnline: dto.isAvailableOnline,
-            releaseDate: dto.releaseDate,
-            status: dto.status || '',
-          }));
-          this.actors = [];
-          this.totalPages = response.data.paging.totalPage || 0;
-        },
-        error: (err) => {
-          console.error('Lỗi khi tìm kiếm phim:', err);
-        },
-      });
-    } else {
-      this.contributorService
-        .getContributors(this.currentPage, this.pageSize, this.query, 'ACTOR')
-        .subscribe({
-          next: (response) => {
-            if (response.status.code !== 200) {
-              console.error('Lỗi từ API:', response.status.timestamp);
-              return;
-            }
-            this.actors = response.data.contents;
-            this.movies = [];
-            this.totalPages = response.data.paging.totalPage || 0;
-          },
-          error: (err) => {
-            console.error('Lỗi khi tìm kiếm diễn viên:', err);
-          },
-        });
+  async search(): Promise<void> {
+    console.log('search started, isLoading:', this.isLoading);
+    this.isLoading = true;
+    try {
+      if (this.searchType === 'movies') {
+        const response = await this.movieService
+          .getMovies(this.currentPage, this.pageSize, this.query, [], null)
+          .toPromise();
+
+        if (response.status.code !== 200) {
+          console.error('Lỗi từ API:', response.status.timestamp);
+          return;
+        }
+        this.movies = response.data.contents.map((dto: MovieResponseDto) => ({
+          id: dto.id,
+          title: dto.title,
+          poster: dto.posterUrl,
+          trailer: dto.trailerUrl,
+          description: dto.description,
+          genres: dto.genreNames.join(', '),
+          director: dto.directorName,
+          actors: dto.actorNames.join(', '),
+          duration: dto.duration,
+          isAvailableOnline: dto.isAvailableOnline,
+          releaseDate: dto.releaseDate,
+          status: dto.status || '',
+        }));
+        this.actors = [];
+        this.totalPages = response.data.paging.totalPage || 0;
+      } else {
+        const response = await this.contributorService
+          .getContributors(this.currentPage, this.pageSize, this.query, 'ACTOR')
+          .toPromise();
+
+        if (response.status.code !== 200) {
+          console.error('Lỗi từ API:', response.status.timestamp);
+          return;
+        }
+        this.actors = response.data.contents;
+        this.movies = [];
+        this.totalPages = response.data.paging.totalPage || 0;
+      }
+    } catch (err) {
+      console.error(
+        `Lỗi khi tìm kiếm ${this.searchType === 'movies' ? 'phim' : 'diễn viên'}:`,
+        err
+      );
+    } finally {
+      this.isLoading = false;
+      console.log('search finished, isLoading:', this.isLoading);
     }
   }
 
   changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.currentPage = page;
+      this.isLoading = true;
+      console.log('changePage, isLoading:', this.isLoading);
       this.updateUrl();
     }
   }
@@ -101,6 +108,8 @@ export class SearchPageComponent implements OnInit {
   setSearchType(type: 'movies' | 'actors'): void {
     this.searchType = type;
     this.currentPage = 1;
+    this.isLoading = true;
+    console.log('setSearchType, isLoading:', this.isLoading);
     this.updateUrl();
   }
 

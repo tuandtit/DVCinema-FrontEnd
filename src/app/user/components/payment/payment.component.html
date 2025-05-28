@@ -1,27 +1,30 @@
 <div class="container">
-  <h2 class="title">Thanh toán</h2>
-  <div class="payment-info">
-    <p><strong>Nhà cung cấp:</strong> {{ paymentData?.cinemaName || 'PayOS' }}</p>
-    <p><strong>Phim:</strong> {{ paymentData?.movieTitle || 'N/A' }}</p>
-    <p>
-      <strong>Ngày giờ chiếu:</strong> {{ paymentData?.showDate }} - {{ paymentData?.showTime }}
-    </p>
-    <p><strong>Ghế đã chọn:</strong> {{ paymentData?.selectedSeats || 'N/A' }}</p>
-    <p>
-      <strong>Mô tả:</strong> Thanh toán vé xem phim: {{ paymentData?.movieTitle }} -
-      {{ paymentData?.selectedSeats }}
-    </p>
-    <p><strong>Tổng tiền:</strong> {{ paymentData?.totalAmount | currency: 'VND' }}</p>
-  </div>
-  <div class="actions">
-    <button class="btn btn-success" (click)="initiatePayment()">
-      Thanh toán
-    </button>
-    <button class="btn btn-secondary" (click)="goBack()">Quay lại</button>
-  </div>
-  <div class="timer-section">
-    <p>
-      <strong>Thời gian còn lại:</strong> <span id="timer">{{ formatTime(timeLeft) }}</span>
-    </p>
-  </div>
+  <app-loading-spinner [isLoading]="isLoading"></app-loading-spinner>
+  <ng-container *ngIf="!isLoading">
+    <h2 class="title">Thanh toán</h2>
+    <div class="payment-info">
+      <p><strong>Nhà cung cấp:</strong> {{ paymentData?.cinemaName || 'PayOS' }}</p>
+      <p><strong>Phim:</strong> {{ paymentData?.movieTitle || 'N/A' }}</p>
+      <p>
+        <strong>Ngày giờ chiếu:</strong> {{ paymentData?.showDate }} - {{ paymentData?.showTime }}
+      </p>
+      <p><strong>Ghế đã chọn:</strong> {{ paymentData?.selectedSeats || 'N/A' }}</p>
+      <p>
+        <strong>Mô tả:</strong> Thanh toán vé xem phim: {{ paymentData?.movieTitle }} -
+        {{ paymentData?.selectedSeats }}
+      </p>
+      <p><strong>Tổng tiền:</strong> {{ paymentData?.totalAmount | currency: 'VND' }}</p>
+    </div>
+    <div class="actions">
+      <button class="btn btn-success" (click)="initiatePayment()" [disabled]="isLoading">
+        Thanh toán
+      </button>
+      <button class="btn btn-secondary" (click)="goBack()" [disabled]="isLoading">Quay lại</button>
+    </div>
+    <div class="timer-section">
+      <p>
+        <strong>Thời gian còn lại:</strong> <span id="timer">{{ formatTime(timeLeft) }}</span>
+      </p>
+    </div>
+  </ng-container>
 </div>
