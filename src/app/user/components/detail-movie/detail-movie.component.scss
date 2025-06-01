@@ -1,3 +1,5 @@
+@use 'variables' as *;
+@use 'sass:color';
 .detail-movie-container {
   padding: 20px;
   max-width: 1200px;
@@ -12,6 +14,48 @@
       padding: 12px 24px;
       font-size: 1.2rem;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+  // Nút Xem phim
+  .watch-movie-btn {
+    background-color: $color-primary;
+    border: none;
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 16px;
+    color: #ffffff;
+    border-radius: 8px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; // Khoảng cách giữa biểu tượng và chữ
+    transition:
+      background-color 0.3s ease,
+      box-shadow 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+      background-color: color.scale($color-primary, $lightness: -10%);
+      box-shadow: $box-shadow-light;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px $color-primary-light;
+    }
+
+    .play-icon {
+      font-size: 18px;
+    }
+
+    @media (max-width: 576px) {
+      padding: 10px 20px;
+      font-size: 14px;
+
+      .play-icon {
+        font-size: 16px;
+      }
     }
   }
 }

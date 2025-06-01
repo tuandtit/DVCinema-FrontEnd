@@ -1,126 +1,179 @@
+@use 'variables' as *;
+@use 'sass:color';
+
 .container {
-  color: #222;
-  height: 100vh;
   margin-top: 20px;
 }
 
-.register-form {
-  background: linear-gradient(to bottom right, #e0f7fa, #f3e5f5);
-  border-radius: 10px;
-  padding: 20px;
-  max-width: 500px;
-  border: 1px solid #dbe2f5;
-  align-items: center;
-  justify-content: center;
-}
-
-.register-header {
+h2 {
+  font-size: 32px;
+  color: $color-text-dark;
+  margin-bottom: 24px;
   text-align: center;
-  color: #3a8ddb; /* xanh biển sáng */
-  margin-bottom: 20px;
+  font-weight: 600;
+
+  @media (max-width: 991px) {
+    font-size: 28px;
+  }
+
+  @media (max-width: 576px) {
+    font-size: 24px;
+  }
 }
 
-.form-control {
-  background-color: transparent;
+h3 {
+  font-size: 20px;
+  color: $color-text-dark;
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: 14px;
+  color: #4a4a4a;
+  margin-bottom: 16px;
+}
+
+// Buttons (từ file SCSS trước, cập nhật màu xanh)
+.btn-primary {
+  background-color: $color-primary;
   border: none;
-  color: #333;
+  padding: 12px 24px;
+  font-size: 16px;
+  color: #ffffff;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  font-weight: 500;
+
+  &:hover {
+    background-color: color.scale($color-primary, $lightness: -10%);
+  }
 }
 
-.form-control:focus {
-  color: #333;
-  background-color: transparent;
-  outline: none;
-  border-color: transparent;
+.btn-outline-primary {
+  border-color: $color-primary;
+  color: $color-primary;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+
+  &:hover {
+    background-color: $color-primary;
+    color: #ffffff;
+  }
 }
 
-.diviser-nospace {
-  border: 1px solid #ccc;
+.btn-success {
+  background-color: $color-accent;
+  border: none;
+  color: $color-text-dark;
+  border-radius: 8px;
+  padding: 12px 24px;
+
+  &:hover {
+    background-color: color.scale($color-accent, $lightness: -10%);
+  }
+}
+
+// Form-specific styles
+.register-form {
+  background-color: $color-dropdown-search-box-bg;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: $box-shadow-deep;
+  max-width: 500px;
+  margin: 0 auto;
+
+  @media (max-width: 576px) {
+    padding: 24px;
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    font-size: 14px;
+    color: $color-text-dark;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .form-control {
+    border: 1px solid #d1d5db; // Xám nhạt
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+      border-color: $color-primary;
+      box-shadow: 0 0 0 3px $color-primary-light;
+      outline: none;
+    }
+  }
 }
 
 .password-feild {
   position: relative;
+
+  .password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 70%;
+    transform: translateY(-50%);
+    color: $color-primary;
+    cursor: pointer;
+    font-size: 16px;
+  }
 }
 
-.password-toggle {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(20%);
-  color: #3a8ddb;
-  cursor: pointer;
-}
-
-.checkbox-text {
-  color: #e67300;
+.form-check {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
+
+  .form-check-input {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    accent-color: $color-primary; // Màu checkbox đồng bộ với xanh
+  }
+
+  .form-check-label {
+    font-size: 14px;
+    color: $color-text-dark;
+  }
 }
 
-.checkbox-text input[type='checkbox']:checked {
-  border-color: white;
-  background-color: #ffa1cf;
-}
-
-.form-check-input {
-  margin-right: 5px;
+.text-danger {
+  font-size: 12px;
+  margin-top: 4px;
 }
 
 .login-link {
-  color: #3a8ddb;
+  color: $color-primary;
   text-decoration: none;
-  cursor: pointer;
-}
+  font-weight: 500;
 
-.access-right {
-  margin-top: 20px;
-  width: 200px;
-  color: #444;
-  border: 1px solid #ffa1cf;
-}
-
-.access-right:hover {
-  border: 1px solid #ffa1cf;
-  cursor: pointer;
-}
-
-.access-right option {
-  background-color: #f0f4ff;
-  color: #333;
-}
-
-.form-control::placeholder {
-  color: rgba(255, 153, 0, 0.5);
-  opacity: 1;
-}
-
-.form-control:-ms-input-placeholder {
-  color: rgba(255, 153, 0, 0.5);
-}
-
-.form-control::-ms-input-placeholder {
-  color: rgba(255, 153, 0, 0.5);
-}
-
-.register-button {
-  background: linear-gradient(to right, #2b6cb0, #3182ce);
-  color: white;
-  border-radius: 30px;
-  width: 100%;
-  padding: 10px 0;
-  margin-top: 20px;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.register-button:hover {
-  background: linear-gradient(to right, #225a9b, #2b6cb0);
-  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .divider {
   height: 1px;
-  background-color: #ffb84d;
-  margin: 20px;
+  background-color: #d1d5db;
+  margin: 24px 0;
+}
+
+.diviser-nospace {
+  height: 1px;
+  background-color: #d1d5db;
+  margin-top: 8px;
+}
+
+.register-button {
+  @extend .btn-primary;
 }

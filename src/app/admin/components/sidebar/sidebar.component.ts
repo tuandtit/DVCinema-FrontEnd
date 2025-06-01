@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-    selector: 'app-admin-sidebar',
-    templateUrl: './sidebar.component.html',
-    styleUrls: ['./sidebar.component.scss'],
-    standalone: false
+  selector: 'app-admin-sidebar',
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.scss'],
+  standalone: false,
 })
 export class SidebarComponent {
   @Output() toggle = new EventEmitter<boolean>();
@@ -12,7 +12,7 @@ export class SidebarComponent {
   isCollapsed: boolean = false;
 
   menuItems = [
-    { label: 'Thống Kê', path: '/admin/statistics', icon: 'fas fa-chart-bar' },
+    { label: 'Trang chủ', path: '/admin/report', icon: 'fas fa-chart-bar' },
     { label: 'Quản Lý Phim', path: '/admin/movies', icon: 'fas fa-film' },
     { label: 'Quản Lý Rạp', path: '/admin/cinemas', icon: 'fas fa-theater-masks' },
     { label: 'Quản Lý Đặt Vé', path: '/admin/bookings', icon: 'fas fa-ticket-alt' },

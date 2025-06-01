@@ -25,7 +25,7 @@ h3 {
 
 p {
   font-size: 14px;
-  color: #666;
+  color: #4a4a4a; // Xám đậm để nổi trên nền trắng
   margin-bottom: 16px;
 }
 
@@ -35,28 +35,32 @@ p {
   border: none;
   padding: 10px 16px;
   font-size: 14px;
+  color: #ffffff; // Chữ trắng để tương phản với nút tím đậm
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: color.scale($color-primary, $lightness: -10%);
+    background-color: color.scale($color-primary, $lightness: -10%); // Đậm hơn khi hover
   }
 }
 
 .btn-outline-primary {
   border-color: $color-primary;
   color: $color-primary;
+  background-color: #ffffff; // Nền trắng để hòa với nền chính
 
   &:hover {
     background-color: $color-primary;
-    color: white;
+    color: #ffffff; // Chữ trắng khi hover
   }
 }
 
 .btn-success {
   background-color: $color-accent;
   border: none;
+  color: #ffffff; // Chữ trắng để tương phản
+  transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: color.scale($color-accent, $lightness: -5%);
+    background-color: color.scale($color-accent, $lightness: -10%); // Đậm hơn khi hover
   }
 }

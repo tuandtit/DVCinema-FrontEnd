@@ -12,6 +12,9 @@ import { MovieService } from '../../../core/services/movie.service';
   standalone: false,
 })
 export class DetailMovieComponent implements OnInit {
+watchMovie() {
+throw new Error('Method not implemented.');
+}
   movie: Movie | null = null;
   showCinemaModal: boolean = false;
   showConfirmModal: boolean = false;

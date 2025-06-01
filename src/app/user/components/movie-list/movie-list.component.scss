@@ -2,12 +2,12 @@
 @use 'common' as *;
 
 .product-item {
-  background: linear-gradient(to bottom right, #e0f7fa, #f3e5f5);
+  background: #faf7f7;
   border: 1px solid #dbe2f5;
   border-radius: 20px;
   padding: 10px;
   margin-bottom: 20px;
-  color: #333;
+  color: #151515;
   box-shadow: $box-shadow-light;
   transition: transform 0.3s ease;
 
@@ -83,7 +83,7 @@
   }
 
   .movie-desc {
-    color: rgb(244, 98, 205);
+    color: black;
     font-size: 14px;
     margin-bottom: 8px;
     white-space: nowrap;

@@ -1,106 +1,148 @@
+@use 'variables' as *;
+@use 'sass:color';
+
 .container {
-  color: white;
-  height: 100vh;
-  margin-top: 50px;
+  margin-top: 25px;
 }
 
-.login-form {
-  background: linear-gradient(to bottom right, #e0f7fa, #f3e5f5); // giống form đăng ký
-  border-radius: 10px;
-  padding: 20px;
-  max-width: 500px;
-  border: 1px solid #dbe2f5;
-  color: #333;
-}
-
-.login-header {
+h2 {
+  font-size: 32px;
+  color: $color-text-dark;
+  margin-bottom: 24px;
   text-align: center;
-  color: #3a8ddb;
+  font-weight: 600;
+
+  @media (max-width: 991px) {
+    font-size: 28px;
+  }
+
+  @media (max-width: 576px) {
+    font-size: 24px;
+  }
+}
+
+p {
+  font-size: 14px;
+  color: #4a4a4a;
+  margin-bottom: 16px;
+}
+
+// Form-specific styles
+.login-form {
+  background-color: $color-dropdown-search-box-bg;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: $box-shadow-deep;
+  max-width: 500px;
+  margin: 0 auto;
+
+  @media (max-width: 576px) {
+    padding: 24px;
+  }
+}
+
+.form-group {
   margin-bottom: 20px;
-}
 
-.register-link {
-  text-decoration: none;
-  cursor: pointer;
-}
+  label {
+    font-size: 14px;
+    color: $color-text-dark;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+  }
 
-.form-control {
-  background-color: transparent;
-  border: none;
-  color: #333;
-}
+  .form-control {
+    border: 1px solid #d1d5db; // Xám nhạt
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
 
-.form-control::placeholder {
-  color: rgba(255, 153, 0, 0.5);
-}
-
-.or-text {
-  display: block; /* Đảm bảo chiếm 100% chiều ngang */
-  text-align: center; /* Căn giữa chữ */
-  margin: 10px 0; /* Thêm khoảng cách trên/dưới nếu cần */
-  font-weight: bold;
-  color: #555;
-}
-
-.login-button {
-  background: linear-gradient(to right, #2b6cb0, #3182ce);
-  color: white;
-  border-radius: 20px;
-  width: 100%;
-  padding: 10px 0;
-  margin-top: 30px;
-  border: none;
-}
-
-.login-button:hover {
-  background: linear-gradient(to right, #225a9b, #2b6cb0);
-  cursor: pointer;
-}
-
-.login-google-button {
-  background: linear-gradient(to left, #ca83ee, #e36de5);
-  color: white;
-  border-radius: 20px;
-  width: 100%;
-  padding: 10px 0;
-  border: none;
-}
-
-.login-google-button:hover {
-  background: linear-gradient(to left, #b576d4, #c41fc7);
-  cursor: pointer;
+    &:focus {
+      border-color: $color-primary;
+      box-shadow: 0 0 0 3px $color-primary-light;
+      outline: none;
+    }
+  }
 }
 
 .password-feild {
   position: relative;
+
+  .password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 70%;
+    transform: translateY(-50%);
+    color: $color-primary;
+    cursor: pointer;
+    font-size: 16px;
+  }
 }
 
-.password-toggle {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(0%);
-  color: #3a8ddb;
-  cursor: pointer;
+.login-button {
+  background-color: $color-primary;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  color: #ffffff;
+  border-radius: 8px;
+  width: 100%;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: color.scale($color-primary, $lightness: -10%);
+  }
+}
+
+.login-google-button {
+  background-color: #e7f5ff;
+  border: 1px solid #d1d5db;
+  color: $color-text-dark;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  width: 100%;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  margin-top: 12px;
+
+  &:hover {
+    background-color: color.scale($color-accent, $lightness: -10%);
+  }
+}
+
+.divider {
+  height: 1px;
+  background-color: #d1d5db;
+  margin: 24px 0;
+}
+
+.or-text {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  color: #4a4a4a;
+  margin-top: 5px;
+}
+
+.register-link,
+.forgot-password a {
+  color: $color-primary;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .diviser-nospace {
   height: 1px;
-  margin: 10px;
-  border: 1px solid #ccc;
-}
-
-.forgot-password {
-  text-align: center;
-  margin-top: 10px;
-
-  a {
-    color: #222;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-      color: #3182ce;
-    }
-  }
+  background-color: #d1d5db;
+  margin-top: 8px;
 }

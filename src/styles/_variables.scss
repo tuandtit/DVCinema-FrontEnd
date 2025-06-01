@@ -1,8 +1,9 @@
-// Biến màu dùng chung
-$color-primary: #7f44ff;
-$color-primary-light: rgba(127, 68, 255, 0.1);
-$color-text-dark: #222;
-$color-accent: #3a8ddb;
-$color-dropdown-search-box-bg: #e8f1f7;
-$box-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
-$box-shadow-deep: 0 4px 12px rgba(0, 0, 0, 0.1);
+// Biến màu dùng chung (cập nhật để phù hợp với tông xanh của X beta)
+$color-primary: #1da1f2; // Xanh dương của X beta
+$color-primary-light: rgba(29, 161, 242, 0.15); // Xanh nhạt trong suốt
+$color-text-dark: #1a1a1a; // Gần đen để nổi trên nền trắng
+$color-accent: #1da1f2; // Xanh rất nhạt cho các thành phần phụ
+$color-dropdown-search-box-bg: #ffffff; // Nền trắng tinh
+$box-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.12); // Bóng nhẹ
+$box-shadow-deep: 0 4px 12px rgba(0, 0, 0, 0.15); // Bóng đậm hơn
+$border-color: #d1d5db;

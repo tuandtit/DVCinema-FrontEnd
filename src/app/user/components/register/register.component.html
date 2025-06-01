@@ -9,6 +9,7 @@
             <div class="form-group">
               <label for="display-name">Tên hiển thị</label>
               <input
+                placeholder="Nhập tên hiển thị"
                 #displayNameInput
                 type="text"
                 class="form-control"
@@ -19,12 +20,13 @@
                 required
               />
             </div>
-            <div class="diviser-nospace"></div>
           </div>
+
           <div class="mt-3">
             <div class="form-group">
               <label for="username">Email</label>
               <input
+                placeholder="Nhập email của bạn"
                 #usernameInput
                 type="email"
                 class="form-control"
@@ -35,20 +37,22 @@
                 required
                 email
               />
-              <div class="diviser-nospace"></div>
+              <p
+                class="text-danger"
+                *ngIf="
+                  usernameCtrl.invalid && usernameCtrl.touched && usernameCtrl.errors?.['email']
+                "
+              >
+                Email không đúng định dạng
+              </p>
             </div>
-            <p
-              class="text-danger"
-              *ngIf="usernameCtrl.invalid && usernameCtrl.touched && usernameCtrl.errors?.['email']"
-            >
-              <span>Email không đúng định dạng</span>
-            </p>
           </div>
 
           <div class="mt-3">
             <div class="form-group password-feild">
               <label for="password">Mật khẩu</label>
               <input
+                placeholder="Nhập mật khẩu"
                 #passwordInput
                 type="password"
                 class="form-control"
@@ -60,22 +64,22 @@
                 minlength="3"
               />
               <i class="password-toggle fa-solid fa-eye-slash"></i>
-              <div class="diviser-nospace"></div>
+              <p
+                class="text-danger"
+                *ngIf="
+                  passwordCtrl.invalid && passwordCtrl.touched && passwordCtrl.errors?.['minlength']
+                "
+              >
+                Mật khẩu phải có ít nhất 3 ký tự
+              </p>
             </div>
-            <p
-              class="text-danger"
-              *ngIf="
-                passwordCtrl.invalid && passwordCtrl.touched && passwordCtrl.errors?.['minlength']
-              "
-            >
-              <span>Mật khẩu phải có ít nhất 3 ký tự</span>
-            </p>
           </div>
 
           <div class="mt-3">
             <div class="form-group password-feild">
               <label for="retype-password">Nhập lại mật khẩu</label>
               <input
+                placeholder="Nhập lại mật khẩu"
                 #retypePasswordInput
                 type="password"
                 class="form-control"
@@ -87,35 +91,34 @@
                 (input)="checkPasswordMatch()"
               />
               <i class="password-toggle fa-solid fa-eye-slash"></i>
-              <div class="diviser-nospace"></div>
+              <p class="text-danger" *ngIf="passwordMismatch && retypePasswordCtrl.touched">
+                Mật khẩu không khớp
+              </p>
             </div>
-            <p class="text-danger" *ngIf="passwordMismatch && retypePasswordCtrl.touched">
-              Mật khẩu không khớp
-            </p>
           </div>
+
           <div class="mt-3">
             <div class="form-group">
               <div class="form-check checkbox-text">
-                <span>
-                  <input
-                    type="checkbox"
-                    name="isAccepted"
-                    class="form-check-input"
-                    [(ngModel)]="isAccepted"
-                    id="remember"
-                  />
-                  <label for="remember" class="form-check-label text-start">
-                    Tôi đồng ý với các điều khoản điều kiện</label
-                  >
-                </span>
+                <input
+                  type="checkbox"
+                  name="isAccepted"
+                  class="form-check-input"
+                  [(ngModel)]="isAccepted"
+                  id="remember"
+                />
+                <label for="remember" class="form-check-label">
+                  Tôi đồng ý với các điều khoản điều kiện
+                </label>
               </div>
             </div>
           </div>
+
           <button type="submit" class="register-button">Đăng ký</button>
           <div class="divider"></div>
           <p class="text-center">
             Bạn đã có tài khoản?
-            <span><a (click)="navigate('/login')" class="login-link">Đăng nhập</a></span>
+            <a (click)="navigate('/login')" class="login-link">Đăng nhập</a>
           </p>
         </div>
       </div>

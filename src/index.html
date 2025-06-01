@@ -10,58 +10,56 @@
       type="image/x-icon"
       href="https://res.cloudinary.com/dt8idd99e/image/upload/v1748446227/logo_dvcinema_pxoanh.jpg"
     />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body {
+        background-color: #562727; /* Nền trắng tinh */
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        overflow-x: hidden;
+      }
+
+      html::-webkit-scrollbar {
+        width: 15px;
+      }
+
+      html::-webkit-scrollbar-track {
+        background: #f5f5f5; /* Xám rất nhạt để tương phản nhẹ với nền trắng */
+        border-radius: 10px;
+      }
+
+      html::-webkit-scrollbar-thumb {
+        background-color: #ccc; /* Tím đậm để nổi bật */
+        border: 2px solid transparent;
+        background-clip: content-box;
+        cursor: pointer;
+      }
+
+      html::-webkit-scrollbar-thumb:hover {
+        background-color: #47bdfd; /* Tím đậm hơn khi hover */
+        background-clip: content-box;
+      }
+
+      app-header,
+      app-footer {
+        flex-shrink: 0;
+      }
+
+      .container {
+        flex: 1;
+        padding: 10px 0 10px 0;
+      }
+    </style>
   </head>
-  <style>
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      padding: 30px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    body {
-      background: linear-gradient(to bottom, #d0eafc, #e5d4f3);
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: cover;
-      overflow-x: hidden;
-    }
-
-    html::-webkit-scrollbar {
-      width: 15px;
-    }
-
-    html::-webkit-scrollbar-track {
-      background: linear-gradient(to bottom, #e0f7fa, #f3e5f5);
-      border-radius: 10px;
-    }
-
-    html::-webkit-scrollbar-thumb {
-      background-color: #d8cfea;
-      /* border-radius: 10px; */
-      border: 2px solid transparent;
-      background-clip: content-box;
-      cursor: pointer;
-    }
-
-    html::-webkit-scrollbar-thumb:hover {
-      background-color: #bfabe8;
-      background-clip: content-box;
-    }
-
-    app-header,
-    app-footer {
-      flex-shrink: 0;
-    }
-
-    .container {
-      flex: 1;
-      padding: 10px 0 10px 0;
-    }
-  </style>
-
   <body>
     <div class="page-wrapper">
       <app-root></app-root>
