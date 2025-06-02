@@ -115,7 +115,7 @@ export class AccountService {
   loginSuccess(): void {
     const redirectUrl = this.returnUrl || '/';
     const sharedData = this.dataSharingService.getData('sharedData');
-    this.returnUrl = null; 
+    this.returnUrl = null;
     this.router.navigate([redirectUrl], { state: { sharedData } });
   }
 
@@ -150,5 +150,9 @@ export class AccountService {
 
   getUsername(): string | null {
     return sessionStorage.getItem('displayName');
+  }
+
+  getAvatar(): string | null {
+    return sessionStorage.getItem('avatar');
   }
 }

@@ -18,6 +18,7 @@ export class SidebarComponent {
     { label: 'Quản Lý Đặt Vé', path: '/admin/bookings', icon: 'fas fa-ticket-alt' },
     { label: 'Quản Lý Suất Chiếu', path: '/admin/showtimes', icon: 'fas fa-clock' },
     { label: 'Quản Lý Người Dùng', path: '/admin/users', icon: 'fas fa-users' },
+    { label: 'Checkin', path: '/admin/checkin', icon: 'fas fa-users' },
   ];
 
   toggleSidebar(): void {

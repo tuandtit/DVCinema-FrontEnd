@@ -31,6 +31,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   canLoadMore: boolean = true;
   isLoggedIn: boolean = false;
   username: string | null = null;
+  avatar: string | null = null;
   showMoviesDropdown: boolean = false;
   showUserDropdown: boolean = false;
   // Danh sách các route yêu cầu đăng nhập
@@ -102,6 +103,9 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.isLoggedIn = loggedIn;
       if (loggedIn) {
         this.username = this.accountService.getUsername() || 'Người dùng'; // Giả lập
+        this.avatar =
+          this.accountService.getAvatar() ||
+          'https://files.betacorp.vn/media%2fimages%2f2025%2f03%2f28%2f400x633%2D114754%2D280325%2D84.jpg';
       } else {
         this.username = null;
         this.showUserDropdown = false; // Đóng dropdown khi đăng xuất

@@ -152,11 +152,7 @@
           <ng-container *ngIf="isLoggedIn">
             <div class="nav-item dropdown user-menu">
               <div class="nav-link user-info" (click)="toggleUserDropdown()">
-                <img
-                  src="https://files.betacorp.vn/media%2fimages%2f2025%2f03%2f28%2f400x633%2D114754%2D280325%2D84.jpg"
-                  alt="ảnh"
-                  class="user-avatar-mobile"
-                />
+                <img src="{{ avatar }}" alt="ảnh" class="user-avatar-mobile" />
                 <span>{{ username || 'Người dùng' }}</span>
               </div>
               <ul class="user-dropdown" [ngClass]="{ show: showUserDropdown }">

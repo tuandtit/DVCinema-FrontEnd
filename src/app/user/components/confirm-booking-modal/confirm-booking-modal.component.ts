@@ -1,18 +1,10 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild,
-  ElementRef,
-  HostListener,
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router'; // Thêm Router
-import { Movie } from '../../../core/models/movie/movie.model';
 import { Cinema } from '../../../core/models/cinema/cinema.model';
+import { BookingData } from '../../../core/models/data/booking-data';
+import { Movie } from '../../../core/models/movie/movie.model';
 import { Showtime } from '../../../core/models/showtime/showtime.model';
 import { DataSharingService } from '../../../core/services/data-sharing.service';
-import { BookingData } from '../../../core/models/data/booking-data';
 
 @Component({
   selector: 'app-confirm-booking-modal',
@@ -34,16 +26,6 @@ export class ConfirmBookingModalComponent {
     private router: Router,
     private dataSharingService: DataSharingService
   ) {} // Thêm Router vào constructor
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent) {
-    if (this.showModal && this.modalContent) {
-      const clickedInside = this.modalContent.nativeElement.contains(event.target);
-      if (!clickedInside) {
-        this.closeModal();
-      }
-    }
-  }
 
   closeModal(): void {
     this.close.emit();

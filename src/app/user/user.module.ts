@@ -16,18 +16,18 @@ import { MovieListComponent } from './components/movie-list/movie-list.component
 import { OrderConfirmComponent } from './components/order-confirm/order-confirm.component';
 import { OrderComponent } from './components/order/order.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
+import { PaymentComponent } from './components/payment/payment.component';
 import { QuickFiltersComponent } from './components/quick-filters/quick-filters.component';
 import { RegisterComponent } from './components/register/register.component';
 import { SearchPageComponent } from './components/search-page/search-page.component';
 import { SeatSelectionComponent } from './components/seat-selection/seat-selection.component';
 import { ShowtimesComponent } from './components/showtimes/showtimes.component';
+import { SuccessComponent } from './components/success/success.component';
 import { TopicComponent } from './components/topic/topic.component';
 import { TrailerModalComponent } from './components/trailer-modal/trailer-modal.component';
 import { TrailerComponent } from './components/trailer/trailer.component';
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
-import { PaymentComponent } from './components/payment/payment.component';
-import { SuccessComponent } from './components/success/success.component';
 import { LoadingSpinnerComponent } from '../shared/components/loading-spinner/loading-spinner.component';
 
 @NgModule({

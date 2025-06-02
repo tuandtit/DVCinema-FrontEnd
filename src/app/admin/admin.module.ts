@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgChartsModule } from 'ng2-charts';
 import { SharedModule } from '../shared/shared.module'; // SharedModule đã được import đúng
 import { AdminRoutingModule } from './admin-routing.module'; // AdminRoutingModule quản lý routes
 import { AdminComponent } from './admin.component';
@@ -8,12 +9,15 @@ import { AdminDashboardComponent } from './components/admin-dashboard/admin-dash
 import { BookingsComponent } from './components/bookings/bookings.component';
 import { CinemasComponent } from './components/cinemas/cinemas.component';
 import { HeaderComponent } from './components/header/header.component';
+import { MoviesComponent } from './components/movies/movies.component';
+import { QrScannerComponent } from './components/qr-scanner/qr-scanner.component';
 import { ShowtimesComponent } from './components/showtimes/showtimes.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UsersComponent } from './components/users/users.component';
-import { MoviesComponent } from './components/movies/movies.component';
-import { NgChartsModule } from 'ng2-charts';
+import { NgxScannerQrcodeComponent, LOAD_WASM } from 'ngx-scanner-qrcode';
+import { TicketDisplayComponent } from './components/ticket-display/ticket-display.component';
 
+LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
 @NgModule({
   declarations: [
     AdminComponent,
@@ -25,6 +29,8 @@ import { NgChartsModule } from 'ng2-charts';
     ShowtimesComponent,
     UsersComponent,
     AdminDashboardComponent,
+    QrScannerComponent,
+    TicketDisplayComponent,
   ],
   imports: [
     CommonModule,
@@ -33,6 +39,7 @@ import { NgChartsModule } from 'ng2-charts';
     ReactiveFormsModule,
     SharedModule,
     NgChartsModule,
+    NgxScannerQrcodeComponent,
     // Nếu bạn muốn sử dụng NgChartsModule, hãy đảm bảo rằng module này đã được import chính xác
   ],
 })

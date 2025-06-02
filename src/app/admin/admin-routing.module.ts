@@ -7,6 +7,8 @@ import { UsersComponent } from './components/users/users.component';
 import { BookingsComponent } from './components/bookings/bookings.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 import { RouterModule, Routes } from '@angular/router';
+import { QrScannerComponent } from './components/qr-scanner/qr-scanner.component';
+import { TicketDisplayComponent } from './components/ticket-display/ticket-display.component';
 
 const routes: Routes = [
   {
@@ -19,6 +21,8 @@ const routes: Routes = [
       { path: 'bookings', component: BookingsComponent },
       { path: 'showtimes', component: ShowtimesComponent },
       { path: 'users', component: UsersComponent },
+      { path: 'checkin', component: QrScannerComponent },
+      { path: 'ticket', component: TicketDisplayComponent },
       { path: '', redirectTo: 'report', pathMatch: 'full' }, // Mặc định vào trang thống kê
     ],
   },

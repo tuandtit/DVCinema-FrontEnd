@@ -5,7 +5,6 @@ import { ApiResponse } from '../../../core/models/base-response/api.response';
 import { LoginResponse } from '../../../core/models/user/login.response';
 import { SignInDto } from '../../../core/models/user/signin.dto';
 import { AccountService } from '../../../core/services/account.service';
-import { TokenService } from '../../../core/services/token.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +20,6 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private accountService: AccountService,
-    private tokenService: TokenService
   ) {
     this.username = '';
     this.password = '';
@@ -43,11 +41,7 @@ export class LoginComponent {
         // Xử lý khi kết quả trả về khi đăng nhập thành công
         if (response && (response.status.code === 200 || response.status.code === 201)) {
           debugger;
-          const result = response.data;
-          const token = result.token;
-          this.tokenService.setToken(token);
           console.log('true');
-          const returnUrl = this.accountService.getReturnUrl() || '/';
           this.accountService.clearReturnUrl();
 
           this.accountService.loginSuccess();

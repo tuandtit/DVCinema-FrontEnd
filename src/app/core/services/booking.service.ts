@@ -1,9 +1,11 @@
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BookingResponseDto } from '../models/booking/booking-response.dto';
 import { environment } from '../../environments/environment';
+import { ApiResponse } from '../models/base-response/api.response';
+import { BookingResponseDto } from '../models/booking/booking-response.dto';
+import { TicketDto } from '../models/booking/ticket.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,5 +25,18 @@ export class BookingService {
   deleteBookingByCode(bookingCode: string): Observable<void> {
     const params = new HttpParams().set('bookingCode', bookingCode);
     return this.http.delete<void>(this.apiUrl, { params });
+  }
+
+  checkin(bookingCode: number): Observable<ApiResponse<TicketDto[]>> {
+    return this.http.get<ApiResponse<TicketDto[]>>(`${this.apiUrl}/checkin`, {
+      params: { bookingCode },
+    });
+  }
+
+  generatePdf(bookingCode: string): Observable<HttpResponse<Blob>> {
+    return this.http.post(`${this.apiUrl}/generate-pdf`, { bookingCode }, {
+      observe: 'response',
+      responseType: 'blob'
+    });
   }
 }

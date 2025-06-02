@@ -159,6 +159,7 @@ export class ShowtimesComponent implements OnInit {
   }
 
   emitBookShowtime(showtime: Showtime): void {
+    debugger;
     const cinema = this.cinemasInCity.find((c) => c.id === showtime.cinemaId);
     if (cinema) {
       this.bookShowtime.emit({ showtime, cinema });

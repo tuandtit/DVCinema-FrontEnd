@@ -1,49 +1,55 @@
-<div class="detail-movie-container">
-  <!-- Trailer section -->
-  <app-trailer [movie]="movie"></app-trailer>
-
-  <!-- Movie details -->
-  <app-movie-info [movie]="movie"></app-movie-info>
-
-  <button
-    *ngIf="movie?.status === 'ONLINE'"
-    type="button"
-    class="watch-movie-btn"
-    (click)="watchMovie()"
-  >
-    <i class="play-icon fa-solid fa-play"></i>
-    Xem phim
-  </button>
-
-  <div *ngIf="movie?.status === 'NOW_SHOWING'">
-    <!-- Showtimes section -->
-    <app-showtimes
-      [movieId]="movie?.id || 0"
-      [status]="movie?.status || ''"
-      (bookShowtime)="onBookShowtime($event)"
-    ></app-showtimes>
-
-    <!-- Cinema Showtime Modal -->
-    <app-cinema-showtime-modal
-      [showModal]="showCinemaModal"
-      [movie]="movie"
-      (close)="closeCinemaModal()"
-      (proceed)="onShowtimeSelected($event)"
-    ></app-cinema-showtime-modal>
-
-    <!-- Confirm Booking Modal -->
-    <app-confirm-booking-modal
-      [showModal]="showConfirmModal"
-      [movie]="movie"
-      [cinema]="selectedCinema"
-      [showtime]="selectedShowtime"
-      (close)="closeConfirmModal()"
-      (confirm)="proceedToSeatSelection($event)"
-    ></app-confirm-booking-modal>
-
-    <!-- Nút đặt vé cố định -->
-    <div class="fixed-book-btn">
-      <button class="btn btn-danger" (click)="openCinemaModal()">Đặt Vé Ngay</button>
-    </div>
+<div class="container">
+  <app-loading-spinner [isLoading]="isLoading"></app-loading-spinner>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
   </div>
+  <ng-container *ngIf="!isLoading">
+    <div class="detail-movie-container">
+      <!-- Trailer section -->
+      <app-trailer [movie]="movie"></app-trailer>
+
+      <!-- Movie details -->
+      <app-movie-info [movie]="movie"></app-movie-info>
+
+      <button
+        *ngIf="movie?.status === 'ONLINE'"
+        type="button"
+        class="watch-movie-btn"
+        (click)="watchMovie()"
+      >
+        <i class="play-icon fa-solid fa-play"></i>
+        Xem phim
+      </button>
+
+      <div *ngIf="movie?.status === 'NOW_SHOWING'">
+        <!-- Showtimes section -->
+        <app-showtimes
+          [movieId]="movie?.id || 0"
+          [status]="movie?.status || ''"
+          (bookShowtime)="onBookShowtime($event)"
+        ></app-showtimes>
+
+        <app-cinema-showtime-modal
+          [movie]="movie"
+          [showModal]="showCinemaModal"
+          (close)="closeCinemaModal()"
+          (proceed)="openConfirmModal($event)"
+        ></app-cinema-showtime-modal>
+
+        <app-confirm-booking-modal
+          [showModal]="showConfirmModal"
+          [movie]="movie"
+          [cinema]="selectedCinema"
+          [showtime]="selectedShowtime"
+          (close)="closeConfirmModal()"
+          (confirm)="proceedToSeatSelection()"
+        ></app-confirm-booking-modal>
+
+        <!-- Nút đặt vé cố định -->
+        <div class="fixed-book-btn">
+          <button class="btn btn-danger" (click)="openCinemaModal()">Đặt Vé Ngay</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 </div>

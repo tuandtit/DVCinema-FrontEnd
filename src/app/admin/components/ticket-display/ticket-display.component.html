@@ -1,0 +1,46 @@
+<!-- src/app/ticket-display/ticket-display.component.html -->
+<div class="ticket-container">
+  <h2>Thông Tin Vé</h2>
+
+  <div *ngIf="isLoading" class="loading-overlay text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang tải...</span>
+    </div>
+    <p class="text-white">Đang tải thông tin vé...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger text-center" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="bookingCode && !isLoading && !errorMessage">
+    <p><strong>Mã Đặt Vé:</strong> {{ bookingCode }}</p>
+  </div>
+
+  <div *ngIf="tickets.length > 0 && !isLoading && !errorMessage; else noTickets">
+    <div class="ticket-card" *ngFor="let ticket of tickets">
+      <p><strong>Tên Rạp:</strong> {{ ticket.cinemaName }}</p>
+      <p><strong>Phòng:</strong> {{ ticket.roomName }}</p>
+      <p><strong>Ghế:</strong> {{ ticket.seatName }}</p>
+      <p><strong>Tên Phim:</strong> {{ ticket.movieTitle }}</p>
+      <p><strong>Thời Gian Chiếu:</strong> {{ ticket.showtime }}</p>
+      <p><strong>Địa Chỉ:</strong> {{ ticket.address }}</p>
+      <p><strong>Giá:</strong> {{ ticket.price | currency: 'USD' }}</p>
+    </div>
+  </div>
+
+  <ng-template #noTickets>
+    <p *ngIf="!isLoading && !errorMessage">Không có vé nào để hiển thị.</p>
+  </ng-template>
+
+  <div class="action-buttons">
+    <button
+      class="btn btn-primary mr-2"
+      (click)="generatePDF()"
+      [disabled]="isLoading || tickets.length === 0"
+    >
+      Tải PDF
+    </button>
+    <button class="btn btn-secondary" (click)="goBack()" [disabled]="isLoading">Quay Lại</button>
+  </div>
+</div>
