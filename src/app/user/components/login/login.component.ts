@@ -30,7 +30,6 @@ export class LoginComponent {
 
   login() {
     const message = `username: ${this.username}` + `password: ${this.password};`;
-    // debugger;
     const signInData: SignInDto = {
       username: this.username,
       password: this.password,
@@ -70,16 +69,13 @@ export class LoginComponent {
   }
 
   signInWithGoogle(): void {
-    debugger;
     this.accountService.signInWithGoogle().subscribe({
       next: () => {
-        debugger;
         const returnUrl = this.accountService.getReturnUrl() || '/';
         this.accountService.clearReturnUrl();
         this.router.navigate([returnUrl]);
       },
       error: (error) => {
-        debugger;
         console.error('Google Sign-In failed', error);
         alert('Có lỗi hệ thống, xin vui lòng thử lại sau!');
       },
@@ -87,7 +83,6 @@ export class LoginComponent {
   }
 
   navigate(route: string): void {
-    debugger;
     console.log(route);
     this.router.navigate([route]);
     // Đóng menu mobile nếu đang mở

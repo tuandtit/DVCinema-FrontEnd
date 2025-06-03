@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { LoadingSpinnerComponent } from '../shared/components/loading-spinner/loading-spinner.component';
 import { ActorListComponent } from './components/actor-list/actor-list.component';
 import { CinemaShowtimeModalComponent } from './components/cinema-showtime-modal/cinema-showtime-modal.component';
 import { ConfirmBookingModalComponent } from './components/confirm-booking-modal/confirm-booking-modal.component';
@@ -28,7 +29,7 @@ import { TrailerModalComponent } from './components/trailer-modal/trailer-modal.
 import { TrailerComponent } from './components/trailer/trailer.component';
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
-import { LoadingSpinnerComponent } from '../shared/components/loading-spinner/loading-spinner.component';
+import { AccountInfoComponent } from './components/account-info/account-info.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { LoadingSpinnerComponent } from '../shared/components/loading-spinner/lo
     TrailerComponent,
     PaymentComponent,
     SuccessComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    AccountInfoComponent,
   ],
   imports: [CommonModule, FormsModule, RouterModule, UserRoutingModule],
 })

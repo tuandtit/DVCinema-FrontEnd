@@ -12,6 +12,9 @@ import { MovieService } from '../../../core/services/movie.service';
 import { AccountService } from '../../../core/services/account.service';
 import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
 import { Router } from '@angular/router';
+import { UserService } from '../../../core/services/user.service';
+import { ApiResponse } from '../../../core/models/base-response/api.response';
+import { UserInfo } from '../../../core/models/user/user.model';
 
 @Component({
   selector: 'app-header',
@@ -31,7 +34,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   canLoadMore: boolean = true;
   isLoggedIn: boolean = false;
   username: string | null = null;
-  avatar: string | null = null;
+  avatar: string =
+    'http://res.cloudinary.com/dt8idd99e/image/upload/v1/dvcinema/04444ec4-6e3e-4f15-98f6-4b09ed29bba6_images.png';
   showMoviesDropdown: boolean = false;
   showUserDropdown: boolean = false;
   // Danh sách các route yêu cầu đăng nhập
@@ -52,7 +56,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   constructor(
     private movieService: MovieService,
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private userService: UserService
   ) {}
 
   @HostListener('window:scroll', ['$event'])
@@ -101,11 +106,9 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.accountService.isLoggedIn$.subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
+      const userId = this.accountService.getUserIdFromStorage();
       if (loggedIn) {
-        this.username = this.accountService.getUsername() || 'Người dùng'; // Giả lập
-        this.avatar =
-          this.accountService.getAvatar() ||
-          'https://files.betacorp.vn/media%2fimages%2f2025%2f03%2f28%2f400x633%2D114754%2D280325%2D84.jpg';
+        this.loadUserInfo(userId);
       } else {
         this.username = null;
         this.showUserDropdown = false; // Đóng dropdown khi đăng xuất
@@ -151,6 +154,27 @@ export class HeaderComponent implements OnInit, AfterViewInit {
           this.isLoading = false;
         },
       });
+  }
+  loadUserInfo(userId: number | null) {
+    if (userId == null) {
+      alert('Bạn chưa đăng nhập');
+      return;
+    }
+
+    this.userService.getAccountInfo(userId).subscribe({
+      next: (response: ApiResponse<UserInfo>) => {
+        debugger;
+        this.username = response.data.displayName;
+        this.avatar = response.data.avatar;
+      },
+      error: (err) => {
+        debugger;
+        console.error('error:', err);
+      },
+      complete: () => {
+        console.log('Truy vấn userId: ' + userId);
+      },
+    });
   }
 
   ngAfterViewInit(): void {

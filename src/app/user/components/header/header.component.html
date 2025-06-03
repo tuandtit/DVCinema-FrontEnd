@@ -102,25 +102,17 @@
           <li *ngIf="isLoggedIn">
             <div class="nav-item d-lg-none user-menu-mobile">
               <div class="nav-link user-info" (click)="toggleUserDropdown()">
-                <img
-                  src="https://files.betacorp.vn/media%2fimages%2f2025%2f03%2f28%2f400x633%2D114754%2D280325%2D84.jpg"
-                  alt="User Avatar"
-                  class="user-avatar-mobile"
-                />
+                <img src="{{ avatar }}" alt="User Avatar" class="user-avatar-mobile" />
                 <span>{{ username || 'Người dùng' }}</span>
               </div>
               <ul class="user-dropdown" [ngClass]="{ show: showUserDropdown }">
                 <li>
-                  <a class="dropdown-item" (click)="navigate('/favorites')">Yêu thích</a>
+                  <a class="dropdown-item" (click)="navigate('/history-booking')">Lịch sử đặt vé</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" (click)="navigate('/lists')">Danh sách</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" (click)="navigate('/continue-watching')">Xem tiếp</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" (click)="navigate('/account')">Tài khoản</a>
+                  <a class="dropdown-item" (click)="navigate('/account-info')"
+                    >Thông tin tài khoản</a
+                  >
                 </li>
                 <li>
                   <a class="dropdown-item" (click)="logout()">Thoát</a>
@@ -157,16 +149,12 @@
               </div>
               <ul class="user-dropdown" [ngClass]="{ show: showUserDropdown }">
                 <li>
-                  <a class="dropdown-item" (click)="navigate('/favorites')">Yêu thích</a>
+                  <a class="dropdown-item" (click)="navigate('/history-booking')">Lịch sử đặt vé</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" (click)="navigate('/lists')">Danh sách</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" (click)="navigate('/continue-watching')">Xem tiếp</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" (click)="navigate('/account')">Tài khoản</a>
+                  <a class="dropdown-item" (click)="navigate('/account-info')"
+                    >Thông tin tài khoản</a
+                  >
                 </li>
                 <li>
                   <a class="dropdown-item" (click)="logout()">Thoát</a>

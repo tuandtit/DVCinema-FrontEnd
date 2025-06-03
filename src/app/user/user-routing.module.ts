@@ -1,19 +1,20 @@
 import { NgModule } from '@angular/core';
-import { ExtraOptions, RouterModule, Routes } from '@angular/router';
-import { UserComponent } from './user.component';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../core/guards/auth.gard';
+import { RedirectIfLoggedInGuard } from '../core/guards/redirect-if-logged-in.guard';
+import { AccountInfoComponent } from './components/account-info/account-info.component';
+import { CancelComponent } from './components/cancel/cancel.component';
+import { DetailMovieComponent } from './components/detail-movie/detail-movie.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { DetailMovieComponent } from './components/detail-movie/detail-movie.component';
 import { OrderComponent } from './components/order/order.component';
-import { AuthGuard } from '../core/guards/auth.gard';
-import { SearchPageComponent } from './components/search-page/search-page.component';
-import { TopicComponent } from './components/topic/topic.component';
-import { SeatSelectionComponent } from './components/seat-selection/seat-selection.component';
 import { PaymentComponent } from './components/payment/payment.component';
-import { RedirectIfLoggedInGuard } from '../core/guards/redirect-if-logged-in.guard';
+import { RegisterComponent } from './components/register/register.component';
+import { SearchPageComponent } from './components/search-page/search-page.component';
+import { SeatSelectionComponent } from './components/seat-selection/seat-selection.component';
 import { SuccessComponent } from './components/success/success.component';
-import { CancelComponent } from './components/cancel/cancel.component';
+import { TopicComponent } from './components/topic/topic.component';
+import { UserComponent } from './user.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'login', component: LoginComponent, canActivate: [RedirectIfLoggedInGuard] },
       { path: 'register', component: RegisterComponent },
+      { path: 'account-info', component: AccountInfoComponent },
       { path: 'topics', component: TopicComponent },
       { path: 'search-page', component: SearchPageComponent },
       {
