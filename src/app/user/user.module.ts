@@ -30,6 +30,7 @@ import { TrailerComponent } from './components/trailer/trailer.component';
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
 import { AccountInfoComponent } from './components/account-info/account-info.component';
+import { HistoryBookingComponent } from './components/history-booking/history-booking.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { AccountInfoComponent } from './components/account-info/account-info.com
     SuccessComponent,
     LoadingSpinnerComponent,
     AccountInfoComponent,
+    HistoryBookingComponent,
   ],
   imports: [CommonModule, FormsModule, RouterModule, UserRoutingModule],
 })

@@ -1,55 +1,115 @@
 .qr-scanner-container {
-  max-width: 400px;
+  max-width: 500px;
   margin: 2rem auto;
-  padding: 1rem;
-  border: 2px solid #007bff; /* viền màu xanh dương */
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border: 2px solid #007bff;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+.scanner-section,
+.manual-input-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
   text-align: center;
-  font-family: Arial, sans-serif;
+}
 
-  ngx-scanner-qrcode {
-    display: block;
-    width: 100%;
-    height: 300px;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
-    margin-bottom: 1rem;
-  }
+ngx-scanner-qrcode {
+  display: block;
+  width: 100%;
+  height: 320px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+  margin-bottom: 1rem;
+}
 
-  span {
-    display: block;
-    font-size: 0.9rem;
-    color: #333;
-    word-break: break-word;
-    margin-bottom: 0.5rem;
-    min-height: 1.2em;
-  }
+.scanner-controls {
+  text-align: center;
+  margin-bottom: 1rem;
+}
 
-  p {
-    font-style: italic;
-    color: #666;
-    margin-bottom: 1rem;
-  }
+.scanned-data {
+  background-color: #f1f5f9;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
 
-  button {
-    background-color: #007bff;
-    border: none;
-    color: white;
-    padding: 0.6rem 1.4rem;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.scanned-data h3 {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
 
-    &:hover {
-      background-color: #0056b3;
-    }
+.scanned-data span {
+  display: block;
+  font-size: 0.9rem;
+  color: #1a1a1a;
+  word-break: break-word;
+}
 
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
-    }
-  }
+.loading-text {
+  font-style: italic;
+  color: #666;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.booking-input {
+  flex: 1;
+  padding: 0.7rem;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+.booking-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.action-btn {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.1s ease;
+}
+
+.action-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.action-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.action-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  transform: none;
 }

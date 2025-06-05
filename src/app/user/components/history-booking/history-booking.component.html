@@ -1,0 +1,27 @@
+<div class="history-container">
+  <h2>Lịch sử đặt vé</h2>
+  <table class="booking-table">
+    <thead>
+      <tr>
+        <th>Mã hóa đơn</th>
+        <th>Phim</th>
+        <th>Rạp chiếu</th>
+        <th>Suất chiếu</th>
+        <th>Ghế đã đặt</th>
+        <th>Ngày đặt</th>
+        <th>Vé</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let booking of bookings">
+        <td>{{ booking.bookingCode }}</td>
+        <td>{{ booking.movieName }}</td>
+        <td>{{ booking.cinemaName }}</td>
+        <td>{{ booking.showDateTime }}</td>
+        <td>{{ booking.seat }}</td>
+        <td>{{ booking.bookingDate }}</td>
+        <td><img [src]="booking.bookingUrl" alt="Vé" *ngIf="booking.bookingUrl" /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

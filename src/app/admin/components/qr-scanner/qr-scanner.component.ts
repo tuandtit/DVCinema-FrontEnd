@@ -1,5 +1,4 @@
-// src/app/qr-scanner/qr-scanner.component.ts
-import { Component, ViewChild, AfterViewInit, NgZone } from '@angular/core';
+import { AfterViewInit, Component, NgZone, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxScannerQrcodeComponent, ScannerQRCodeResult } from 'ngx-scanner-qrcode';
 
@@ -13,7 +12,8 @@ export class QrScannerComponent implements AfterViewInit {
   @ViewChild('action') scannerComponent!: NgxScannerQrcodeComponent;
 
   scannedData: ScannerQRCodeResult[] = [];
-  private isScanned = false; // Để tránh navigate nhiều lần
+  manualBookingCode: string = '';
+  private isScanned = false;
 
   constructor(
     private router: Router,
@@ -21,7 +21,6 @@ export class QrScannerComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    // Dùng setTimeout để tránh lỗi ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       this.scannerComponent.start().subscribe(
         () => {
@@ -35,18 +34,25 @@ export class QrScannerComponent implements AfterViewInit {
       this.scannerComponent.data.subscribe((results) => {
         if (results && results.length > 0 && !this.isScanned) {
           const value = results[0].value;
-
-          this.ngZone.run(() => {
-            this.isScanned = true;
-            console.log('Navigating to ticket with value:', value);
-            // Gửi value qua state
-            this.router.navigate(['/admin/ticket'], {
-              state: { bookingCode: value },
-            });
-          });
+          this.handleNavigation(value);
         }
-
         this.scannedData = results;
+      });
+    });
+  }
+
+  onManualSubmit() {
+    if (this.manualBookingCode && !this.isScanned) {
+      this.handleNavigation(this.manualBookingCode);
+    }
+  }
+
+  private handleNavigation(bookingCode: string) {
+    this.ngZone.run(() => {
+      this.isScanned = true;
+      console.log('Navigating to ticket with value:', bookingCode);
+      this.router.navigate(['/admin/ticket'], {
+        state: { bookingCode },
       });
     });
   }

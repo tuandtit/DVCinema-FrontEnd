@@ -12,7 +12,9 @@
         type="text"
         [(ngModel)]="user.displayName"
         placeholder="Tên hiển thị"
+        required
       />
+      <span class="error-message" *ngIf="displayNameError">{{ displayNameError }}</span>
     </div>
     <div class="form-group avatar-group">
       <label>Avatar</label>

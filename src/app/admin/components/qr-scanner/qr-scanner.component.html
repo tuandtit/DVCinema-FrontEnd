@@ -1,20 +1,35 @@
 <div class="qr-scanner-container">
-  <ngx-scanner-qrcode
-    #action="scanner"
-    [loadWasmUrl]="'assets/wasm/zbar.wasm'"
-  ></ngx-scanner-qrcode>
+  <div class="scanner-section">
+    <h2 class="section-title">Quét mã QR</h2>
+    <ngx-scanner-qrcode
+      #action="scanner"
+      [loadWasmUrl]="'assets/wasm/zbar.wasm'"
+    ></ngx-scanner-qrcode>
+    <div class="scanner-controls">
+      <button class="action-btn" (click)="action.isStart ? action.stop() : action.start()">
+        {{ action.isStart ? 'Dừng quét' : 'Bắt đầu quét' }}
+      </button>
+    </div>
+    <p *ngIf="action.isLoading" class="loading-text">⌛ Đang tải...</p>
+    <div class="scanned-data" *ngIf="scannedData.length > 0">
+      <h3>Kết quả quét:</h3>
+      <span>{{ scannedData[0].value }}</span>
+    </div>
+  </div>
 
-  <!-- data  -->
-  <span>{{ action.data.value | json }}</span
-  ><!-- value -->
-  <span>{{ action.data | async | json }}</span
-  ><!-- async -->
-
-  <!-- Loading -->
-  <p *ngIf="action.isLoading">⌛ Loading...</p>
-
-  <!-- start -->
-  <button (click)="action.isStart ? action.stop() : action.start()">
-    {{ action.isStart ? 'Stop' : 'Start' }}
-  </button>
+  <div class="manual-input-section">
+    <h2 class="section-title">Nhập mã booking thủ công</h2>
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="manualBookingCode"
+        placeholder="Nhập mã booking"
+        class="booking-input"
+        (keyup.enter)="onManualSubmit()"
+      />
+      <button class="action-btn" (click)="onManualSubmit()" [disabled]="!manualBookingCode">
+        Xác nhận
+      </button>
+    </div>
+  </div>
 </div>

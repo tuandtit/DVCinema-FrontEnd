@@ -12,7 +12,7 @@ import { WebSocketService } from './websocket.service';
   providedIn: 'root',
 })
 export class SeatService {
-  private apiSeatByShowtime = `${environment.apiBaseUrl}/api/seat-by-showtime`;
+  private apiSeatByShowtime = `${environment.apiBaseUrl}/api/tickets`;
   private wsBaseUrl = `${environment.apiBaseUrl}/ws/seat-updates`;
   private webSocketSubject: Subject<Seat[]> = new Subject<Seat[]>();
   private currentRoomId: number | null = null;

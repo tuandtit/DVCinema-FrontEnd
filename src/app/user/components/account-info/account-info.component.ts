@@ -12,6 +12,7 @@ import { UserInfo } from '../../../core/models/user/user.model';
 })
 export class AccountInfoComponent implements OnInit {
   userId: number | null = null;
+  displayNameError: string | null = null;
 
   user: UserInfo = {
     displayName: '',
@@ -41,11 +42,9 @@ export class AccountInfoComponent implements OnInit {
 
     this.userService.getAccountInfo(this.userId).subscribe({
       next: (response: ApiResponse<UserInfo>) => {
-        debugger;
         this.user = response.data;
       },
       error: (err) => {
-        debugger;
         console.error('error:', err);
       },
       complete: () => {
@@ -62,8 +61,15 @@ export class AccountInfoComponent implements OnInit {
   }
 
   updateProfile(): void {
+    this.displayNameError = null;
+
     if (this.userId == null) {
       alert('Bạn chưa đăng nhập');
+      return;
+    }
+
+    if (!this.user.displayName.trim()) {
+      this.displayNameError = 'Tên hiển thị không được để trống';
       return;
     }
 
@@ -78,7 +84,7 @@ export class AccountInfoComponent implements OnInit {
       next: (response: ApiResponse<number>) => {
         alert('Cập nhật thông tin thành công!');
         this.userId = response.data;
-        this.loadUserInfo(); // Tải lại thông tin sau khi cập nhật
+        this.loadUserInfo();
       },
       error: (err) => {
         console.error('Lỗi khi cập nhật:', err);

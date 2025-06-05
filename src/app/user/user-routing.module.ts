@@ -15,6 +15,7 @@ import { SeatSelectionComponent } from './components/seat-selection/seat-selecti
 import { SuccessComponent } from './components/success/success.component';
 import { TopicComponent } from './components/topic/topic.component';
 import { UserComponent } from './user.component';
+import { HistoryBookingComponent } from './components/history-booking/history-booking.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
       { path: 'login', component: LoginComponent, canActivate: [RedirectIfLoggedInGuard] },
       { path: 'register', component: RegisterComponent },
       { path: 'account-info', component: AccountInfoComponent },
+      { path: 'history-booking', component: HistoryBookingComponent },
       { path: 'topics', component: TopicComponent },
       { path: 'search-page', component: SearchPageComponent },
       {

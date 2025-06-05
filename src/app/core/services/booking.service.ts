@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/base-response/api.response';
 import { BookingResponseDto } from '../models/booking/booking-response.dto';
 import { TicketDto } from '../models/booking/ticket.model';
+import { BookingHistory } from '../models/booking/booking-history.model';
 
 @Injectable({
   providedIn: 'root',
@@ -33,10 +34,21 @@ export class BookingService {
     });
   }
 
-  generatePdf(bookingCode: string): Observable<HttpResponse<Blob>> {
-    return this.http.post(`${this.apiUrl}/generate-pdf`, { bookingCode }, {
-      observe: 'response',
-      responseType: 'blob'
+  getBookingHistory(userId: number): Observable<ApiResponse<BookingHistory[]>> {
+    const params = new HttpParams().set('userId', userId);
+    return this.http.get<ApiResponse<BookingHistory[]>>(`${this.apiUrl}/history-booking`, {
+      params,
     });
+  }
+
+  generatePdf(bookingCode: string): Observable<HttpResponse<Blob>> {
+    return this.http.post(
+      `${this.apiUrl}/generate-pdf`,
+      { bookingCode },
+      {
+        observe: 'response',
+        responseType: 'blob',
+      }
+    );
   }
 }
