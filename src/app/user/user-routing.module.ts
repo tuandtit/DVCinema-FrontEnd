@@ -16,6 +16,7 @@ import { SuccessComponent } from './components/success/success.component';
 import { TopicComponent } from './components/topic/topic.component';
 import { UserComponent } from './user.component';
 import { HistoryBookingComponent } from './components/history-booking/history-booking.component';
+import { WatchMovieComponent } from './components/watch-movie/watch-movie.component';
 
 const routes: Routes = [
   {
@@ -40,7 +41,7 @@ const routes: Routes = [
       },
       { path: 'cinemas', component: HomeComponent },
       { path: 'ticket-prices', component: HomeComponent },
-      { path: 'news', component: HomeComponent },
+      { path: 'watch-movie/:id', component: WatchMovieComponent },
       { path: 'detail-movie/:id', component: DetailMovieComponent },
       { path: 'showtimes', component: OrderComponent, canActivate: [AuthGuard] },
       { path: 'seat-selection', component: SeatSelectionComponent, canActivate: [AuthGuard] },

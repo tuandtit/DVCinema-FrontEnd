@@ -149,7 +149,7 @@ export class HomeComponent implements OnInit {
 
   watchMovie(movie: Movie): void {
     if (movie.status === 'ONLINE') {
-      console.log('Chuyển hướng đến trang xem phim:', movie.title);
+      this.router.navigate(['/watch-movie', movie.id]);
     } else {
       alert('Phim này hiện chưa hỗ trợ xem online. Vui lòng đặt vé để xem tại rạp!');
     }

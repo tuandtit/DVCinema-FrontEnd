@@ -1,14 +1,16 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LoadingSpinnerComponent } from '../shared/components/loading-spinner/loading-spinner.component';
+import { AccountInfoComponent } from './components/account-info/account-info.component';
 import { ActorListComponent } from './components/actor-list/actor-list.component';
 import { CinemaShowtimeModalComponent } from './components/cinema-showtime-modal/cinema-showtime-modal.component';
 import { ConfirmBookingModalComponent } from './components/confirm-booking-modal/confirm-booking-modal.component';
 import { DetailMovieComponent } from './components/detail-movie/detail-movie.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
+import { HistoryBookingComponent } from './components/history-booking/history-booking.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { MovieCarouselComponent } from './components/movie-carousel/movie-carousel.component';
@@ -27,10 +29,9 @@ import { SuccessComponent } from './components/success/success.component';
 import { TopicComponent } from './components/topic/topic.component';
 import { TrailerModalComponent } from './components/trailer-modal/trailer-modal.component';
 import { TrailerComponent } from './components/trailer/trailer.component';
+import { WatchMovieComponent } from './components/watch-movie/watch-movie.component';
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
-import { AccountInfoComponent } from './components/account-info/account-info.component';
-import { HistoryBookingComponent } from './components/history-booking/history-booking.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { HistoryBookingComponent } from './components/history-booking/history-bo
     LoadingSpinnerComponent,
     AccountInfoComponent,
     HistoryBookingComponent,
+    WatchMovieComponent,
   ],
   imports: [CommonModule, FormsModule, RouterModule, UserRoutingModule],
 })

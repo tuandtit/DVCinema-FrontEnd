@@ -1,0 +1,46 @@
+<div class="movie-detail-container">
+  <div class="video-section">
+    <h1 class="movie-title">XEM PHIM: {{ movie?.title }}</h1>
+    <div class="video-player">
+      <ng-container *ngIf="safeVideoUrl">
+        <iframe
+          title="Frame phim"
+          [src]="safeVideoUrl"
+          frameborder="0"
+          allowfullscreen
+          class="video-frame"
+        ></iframe>
+      </ng-container>
+      <p *ngIf="!safeVideoUrl" class="no-video">Không có video để hiển thị.</p>
+    </div>
+  </div>
+
+  <div class="movie-details">
+    <div class="movie-poster">
+      <img title="Poster phim" [src]="movie?.posterUrl" [alt]="movie?.title" class="poster-img" />
+    </div>
+    <div class="movie-info">
+      <h2 class="section-title">Thông tin phim</h2>
+      <p><strong>Mô tả:</strong> {{ movie?.description || 'Không có mô tả.' }}</p>
+      <p><strong>Thời lượng:</strong> {{ movie?.duration }} phút</p>
+      <p><strong>Ngày phát hành:</strong> {{ movie?.releaseDate | date: 'dd/MM/yyyy' }}</p>
+      <p><strong>Ngày kết thúc:</strong> {{ movie?.endDate | date: 'dd/MM/yyyy' }}</p>
+      <p><strong>Trạng thái:</strong> {{ movie?.status || 'Không xác định' }}</p>
+      <p><strong>Thể loại:</strong> {{ movie?.genreNames?.join(', ') }}</p>
+      <p><strong>Diễn viên:</strong> {{ movie?.actorNames?.join(', ') }}</p>
+      <p><strong>Đạo diễn:</strong> {{ movie?.directorName }}</p>
+      <div *ngIf="movie?.trailerUrl" class="trailer-link">
+        <a [href]="movie?.trailerUrl" target="_blank" class="trailer-btn">Xem trailer</a>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Đang tải thông tin phim...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+</div>
