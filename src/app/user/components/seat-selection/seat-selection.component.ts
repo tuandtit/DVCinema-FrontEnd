@@ -111,6 +111,8 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
                 seatName: seat.seatName,
                 status: seat.status,
                 selectedByUserId: seat.selectedByUserId ?? -1,
+                price: seat.price,
+                seatType: seat.seatType,
               };
             })
         );
@@ -254,11 +256,16 @@ export class SeatSelectionComponent implements OnInit, OnDestroy {
   }
 
   calculateTotal(): number {
-    // const selectedCount = this.getSelectedSeats()
-    //   .split(', ')
-    //   .filter((s) => s).length;
-    // return selectedCount * (this.showtime?.ticketPrice || 85000);
-    return 5000;
+    let total = 0;
+    this.seats.forEach((row) => {
+      row.forEach((seat) => {
+        if (seat.status === SeatStatus.HOLD && seat.selectedByUserId === this.userId) {
+          total += seat.price || 0; // Cộng giá của ghế, sử dụng 0 nếu price không tồn tại
+        }
+      });
+    });
+    return total;
+    // return 5000;
   }
 
   confirmPayment(): void {

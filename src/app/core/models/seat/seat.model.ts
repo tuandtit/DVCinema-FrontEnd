@@ -4,6 +4,8 @@ export interface Seat {
   seatName: string;
   status: string;
   selectedByUserId?: number;
+  seatType: string;
+  price: number;
 }
 
 export interface SeatRow {
