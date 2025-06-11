@@ -71,13 +71,43 @@ export class MovieService {
     if (poster) {
       formData.append('poster', poster);
     }
-    debugger;
     // Gửi yêu cầu POST với FormData
     return this.http.post<ApiResponse<MovieResponseDto>>(`${this.apiUrl}`, formData);
   }
 
-  updateMovie(movieId: number, movie: MovieRequestDto): Observable<ApiResponse<MovieResponseDto>> {
-    return this.http.put<ApiResponse<MovieResponseDto>>(`${this.apiUrl}/${movieId}`, movie);
+  updateMovie(
+    movieId: number,
+    movie: MovieRequestDto,
+    poster: File | null = null
+  ): Observable<ApiResponse<MovieResponseDto>> {
+    const formData = new FormData();
+
+    // Append các trường từ MovieRequestDto
+    formData.append('movieId', movieId.toString() || '');
+    formData.append('title', movie.title || '');
+    formData.append('description', movie.description || '');
+    formData.append('duration', movie.duration?.toString() || '');
+    formData.append('releaseDate', movie.releaseDate?.toString() || '');
+    formData.append('trailerUrl', movie.trailerUrl || '');
+    formData.append('videoUrl', movie.videoUrl || '');
+    formData.append('status', movie.status?.toString() || 'SHOWING');
+    formData.append('directorId', movie.directorId?.toString() || '0');
+
+    // Append mảng actorIds
+    if (movie.actorIds && movie.actorIds.length > 0) {
+      movie.actorIds.forEach((id: number) => formData.append('actorIds', id.toString()));
+    }
+
+    // Append mảng genreIds
+    if (movie.genreIds && movie.genreIds.length > 0) {
+      movie.genreIds.forEach((id: number) => formData.append('genreIds', id.toString()));
+    }
+
+    // Append poster
+    if (poster) {
+      formData.append('poster', poster);
+    }
+    return this.http.put<ApiResponse<MovieResponseDto>>(`${this.apiUrl}`, formData);
   }
 
   deleteMovie(movieId: number): Observable<ApiResponse<void>> {

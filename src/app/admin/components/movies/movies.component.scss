@@ -106,6 +106,24 @@
         font-style: italic;
       }
 
+      .status {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        &.showing {
+          background: #28a745;
+          color: white;
+        }
+        &.upcoming {
+          background: #f39c12;
+          color: white;
+        }
+        &.ended {
+          background: #e74c3c;
+          color: white;
+        }
+      }
+
       .action-cell {
         display: flex;
         gap: 8px;
@@ -136,7 +154,6 @@
 
       .view-btn {
         background: #0984e3;
-
         &:hover {
           background: #0667b3;
         }
@@ -144,7 +161,6 @@
 
       .edit-btn {
         background: #f39c12;
-
         &:hover {
           background: #e67e22;
         }
@@ -152,7 +168,6 @@
 
       .delete-btn {
         background: #e74c3c;
-
         &:hover {
           background: #c0392b;
         }
@@ -210,7 +225,7 @@
       padding: 24px;
       border-radius: 8px;
       width: 90%;
-      max-width: 500px;
+      max-width: 600px;
       max-height: 85vh;
       overflow-y: auto;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -234,6 +249,7 @@
         }
 
         input,
+        textarea,
         select {
           width: 100%;
           padding: 10px;
@@ -249,6 +265,11 @@
           }
         }
 
+        textarea {
+          height: 100px;
+          resize: vertical;
+        }
+
         .custom-select {
           appearance: none;
           background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%232c3e50"><path d="M6 9l4-5H2z"/></svg>')
@@ -260,9 +281,7 @@
 
         .autocomplete-list {
           position: absolute;
-          top: 100%;
-          left: 0;
-          width: 100%;
+          width: calc(100% - 20px);
           border: 1px solid #dfe6e9;
           background: white;
           list-style: none;

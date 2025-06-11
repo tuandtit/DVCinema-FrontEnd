@@ -6,6 +6,7 @@ import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto'
 import { Movie } from '../../../core/models/movie/movie.model';
 import { ContributorDto } from '../../../core/models/contributor/contributor-search-result.model';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { GenreDto } from '../../../core/models/movie/genre.dto';
 
 @Component({
   selector: 'app-search-page',
@@ -62,11 +63,10 @@ export class SearchPageComponent implements OnInit {
           poster: dto.posterUrl,
           trailer: dto.trailerUrl,
           description: dto.description,
-          genres: dto.genreNames.join(', '),
-          director: dto.directorName,
-          actors: dto.actorNames.join(', '),
+          genres: this.getGenreNames(dto.genres),
+          director: dto.director.name,
+          actors: this.getActorNames(dto.actors),
           duration: dto.duration,
-          isAvailableOnline: dto.isAvailableOnline,
           releaseDate: dto.releaseDate,
           status: dto.status || '',
         }));
@@ -151,5 +151,12 @@ export class SearchPageComponent implements OnInit {
   closeTrailerModal(): void {
     this.showTrailerModal = false;
     this.safeTrailerUrl = null;
+  }
+  getGenreNames(genres: GenreDto[]): string {
+    return genres.length > 0 ? genres.map((g) => g.name).join(', ') : 'Chưa có';
+  }
+
+  getActorNames(actors: ContributorDto[]): string {
+    return actors.length > 0 ? actors.map((a) => a.name).join(', ') : 'Chưa có';
   }
 }

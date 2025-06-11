@@ -1,3 +1,6 @@
+import { ContributorDto } from '../contributor/contributor-search-result.model';
+import { GenreDto } from './genre.dto';
+
 export interface MovieResponseDto {
   id: number;
   title: string;
@@ -8,9 +11,8 @@ export interface MovieResponseDto {
   duration: number;
   releaseDate: string;
   endDate: string;
-  isAvailableOnline: boolean;
   status: string | null;
-  genreNames: string[];
-  actorNames: string[];
-  directorName: string;
+  genres: GenreDto[];
+  actors: ContributorDto[];
+  director: ContributorDto;
 }

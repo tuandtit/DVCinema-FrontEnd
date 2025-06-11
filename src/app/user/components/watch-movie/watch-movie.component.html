@@ -26,9 +26,9 @@
       <p><strong>Ngày phát hành:</strong> {{ movie?.releaseDate | date: 'dd/MM/yyyy' }}</p>
       <p><strong>Ngày kết thúc:</strong> {{ movie?.endDate | date: 'dd/MM/yyyy' }}</p>
       <p><strong>Trạng thái:</strong> {{ movie?.status || 'Không xác định' }}</p>
-      <p><strong>Thể loại:</strong> {{ movie?.genreNames?.join(', ') }}</p>
-      <p><strong>Diễn viên:</strong> {{ movie?.actorNames?.join(', ') }}</p>
-      <p><strong>Đạo diễn:</strong> {{ movie?.directorName }}</p>
+      <p><strong>Thể loại:</strong> {{ getGenreNames(movie?.genres || []) }}</p>
+      <p><strong>Diễn viên:</strong> {{ getActorNames(movie?.actors || []) }}</p>
+      <p><strong>Đạo diễn:</strong> {{ movie?.director?.name }}</p>
       <div *ngIf="movie?.trailerUrl" class="trailer-link">
         <a [href]="movie?.trailerUrl" target="_blank" class="trailer-btn">Xem trailer</a>
       </div>

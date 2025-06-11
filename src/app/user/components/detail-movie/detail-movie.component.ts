@@ -5,6 +5,8 @@ import { Cinema } from '../../../core/models/cinema/cinema.model';
 import { Showtime } from '../../../core/models/showtime/showtime.model';
 import { MovieService } from '../../../core/services/movie.service';
 import { finalize } from 'rxjs/operators';
+import { GenreDto } from '../../../core/models/movie/genre.dto';
+import { ContributorDto } from '../../../core/models/contributor/contributor-search-result.model';
 
 @Component({
   selector: 'app-detail-movie',
@@ -57,9 +59,9 @@ export class DetailMovieComponent implements OnInit {
           poster: response.data.posterUrl,
           trailer: response.data.trailerUrl,
           description: response.data.description,
-          genres: response.data.genreNames.join(', '),
-          director: response.data.directorName,
-          actors: response.data.actorNames.join(', '),
+          genres: this.getGenreNames(response.data.genres),
+          director: response.data.director.name,
+          actors: this.getActorNames(response.data.actors),
           duration: response.data.duration,
           releaseDate: response.data.releaseDate,
           status: response.data.status || '',
@@ -128,5 +130,12 @@ export class DetailMovieComponent implements OnInit {
       this.errorMessage = 'Trailer not available for this movie.';
       this.cdr.detectChanges();
     }
+  }
+  getGenreNames(genres: GenreDto[]): string {
+    return genres.length > 0 ? genres.map((g) => g.name).join(', ') : 'Chưa có';
+  }
+
+  getActorNames(actors: ContributorDto[]): string {
+    return actors.length > 0 ? actors.map((a) => a.name).join(', ') : 'Chưa có';
   }
 }

@@ -6,6 +6,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Cinema } from '../../../core/models/cinema/cinema.model';
 import { Showtime } from '../../../core/models/showtime/showtime.model';
+import { GenreDto } from '../../../core/models/movie/genre.dto';
+import { ContributorDto } from '../../../core/models/contributor/contributor-search-result.model';
 
 @Component({
   selector: 'app-home',
@@ -83,11 +85,10 @@ export class HomeComponent implements OnInit {
         poster: dto.posterUrl,
         trailer: dto.trailerUrl,
         description: dto.description,
-        genres: dto.genreNames.join(', '),
-        director: dto.directorName,
-        actors: dto.actorNames.join(', '),
+        genres: this.getGenreNames(dto.genres),
+        director: dto.director.name,
+        actors: this.getActorNames(dto.actors),
         duration: dto.duration,
-        isAvailableOnline: dto.isAvailableOnline,
         releaseDate: dto.releaseDate,
         status: dto.status || '',
       }));
@@ -192,5 +193,12 @@ export class HomeComponent implements OnInit {
         },
       });
     }
+  }
+  getGenreNames(genres: GenreDto[]): string {
+    return genres.length > 0 ? genres.map((g) => g.name).join(', ') : 'Chưa có';
+  }
+
+  getActorNames(actors: ContributorDto[]): string {
+    return actors.length > 0 ? actors.map((a) => a.name).join(', ') : 'Chưa có';
   }
 }

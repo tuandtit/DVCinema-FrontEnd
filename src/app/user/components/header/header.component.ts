@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../../core/services/user.service';
 import { ApiResponse } from '../../../core/models/base-response/api.response';
 import { UserInfo } from '../../../core/models/user/user.model';
+import { GenreDto } from '../../../core/models/movie/genre.dto';
 
 @Component({
   selector: 'app-header',
@@ -142,7 +143,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
             id: dto.id,
             poster: dto.posterUrl,
             title: dto.title,
-            genre: dto.genreNames.join(', '),
+            genre: dto.genres.join(', '),
           }));
 
           this.suggestions = newSuggestions;
@@ -223,7 +224,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
         const newSuggestions = response.data.contents.map((dto: MovieResponseDto) => ({
           id: dto.id,
           title: dto.title,
-          genre: dto.genreNames.join(', '),
+          genre: this.getGenreNames(dto.genres),
         }));
 
         this.suggestions = [...this.suggestions, ...newSuggestions];
@@ -304,5 +305,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   onImageError(event: Event) {
     const imgElement = event.target as HTMLImageElement;
     imgElement.src = 'assets/image/logo_dvcinema.jpg';
+  }
+  getGenreNames(genres: GenreDto[]): string {
+    return genres.length > 0 ? genres.map((g) => g.name).join(', ') : 'Chưa có';
   }
 }

@@ -9,6 +9,7 @@
         [(ngModel)]="query"
         (input)="filterMovies()"
         placeholder="Tìm kiếm phim theo tên..."
+        class="w-full p-2 border rounded-md"
       />
     </div>
     <div class="status-filter">
@@ -19,12 +20,12 @@
         class="custom-select"
       >
         <option value="">Tất cả</option>
-        <option value="NOW_SHOWING">Đang chiếu</option>
-        <option value="COMING_SOON">Sắp chiếu</option>
-        <option value="ONLINE">Chiếu online</option>
+        <option value="SHOWING">Đang chiếu</option>
+        <option value="UPCOMING">Sắp chiếu</option>
+        <option value="ENDED">Đã kết thúc</option>
       </select>
     </div>
-    <button class="add-btn" (click)="showAddForm = true"><i class="fas fa-plus"></i> Thêm</button>
+    <button class="add-btn" (click)="openAddForm()"><i class="fas fa-plus"></i> Thêm</button>
   </div>
 
   <!-- Bảng danh sách phim -->
@@ -35,6 +36,8 @@
           <th>Poster</th>
           <th>Tên phim</th>
           <th>Thể loại</th>
+          <th>Đạo diễn</th>
+          <th>Diễn viên</th>
           <th>Thời lượng</th>
           <th>Ngày phát hành</th>
           <th>Ngày kết thúc</th>
@@ -52,16 +55,17 @@
             />
           </td>
           <td>{{ movie.title }}</td>
-          <td>{{ movie.genreNames.join(', ') || 'Chưa có' }}</td>
+          <td>{{ getGenreNames(movie.genres) }}</td>
+          <td>{{ movie.director.name || 'Chưa có' }}</td>
+          <td>{{ getActorNames(movie.actors) }}</td>
           <td>{{ movie.duration }} phút</td>
-          <td>{{ movie.releaseDate }}</td>
-          <td>{{ movie.endDate || 'Chưa xác định' }}</td>
+          <td>{{ movie.releaseDate | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ movie.endDate ? (movie.endDate | date: 'dd/MM/yyyy') : 'Chưa xác định' }}</td>
           <td [ngSwitch]="movie.status">
-            <span *ngSwitchCase="'NOW_SHOWING'">Đang chiếu</span>
-            <span *ngSwitchCase="'COMING_SOON'">Sắp chiếu</span>
-            <span *ngSwitchCase="'ONLINE'">Online</span>
-            <span *ngSwitchCase="'ENDED'">Dừng chiếu</span>
-            <span *ngSwitchDefault>{{ movie.status }}</span>
+            <span *ngSwitchCase="'SHOWING'" class="status showing">Đang chiếu</span>
+            <span *ngSwitchCase="'UPCOMING'" class="status upcoming">Sắp chiếu</span>
+            <span *ngSwitchCase="'ENDED'" class="status ended">Đã kết thúc</span>
+            <span *ngSwitchDefault>{{ movie.status || 'Không xác định' }}</span>
           </td>
           <td class="action-cell">
             <button
@@ -80,7 +84,7 @@
           </td>
         </tr>
         <tr *ngIf="movies.length === 0">
-          <td colspan="8" class="no-data">Không có phim nào phù hợp.</td>
+          <td colspan="10" class="no-data">Không có phim nào phù hợp.</td>
         </tr>
       </tbody>
     </table>
@@ -90,17 +94,21 @@
   <div class="pagination" *ngIf="totalItems > size">
     <button [disabled]="page === 1" (click)="onPageChange(page - 1)">Trước</button>
     <span>Trang {{ page }} / {{ getTotalPages() }}</span>
-    <button [disabled]="page * size >= totalItems" (click)="onPageChange(page + 1)">Sau</button>
+    <button [disabled]="page === getTotalPages()" (click)="onPageChange(page + 1)">Sau</button>
   </div>
 
-  <!-- Form thêm phim -->
-  <div class="modal" *ngIf="showAddForm">
+  <!-- Form thêm/sửa phim -->
+  <div class="modal" *ngIf="showAddForm || showEditForm">
     <div class="modal-content">
-      <h3>Thêm phim mới</h3>
+      <h3>{{ showAddForm ? 'Thêm phim mới' : 'Sửa phim' }}</h3>
       <form [formGroup]="movieForm">
         <div class="form-group">
           <label for="title">Tên phim:</label>
           <input type="text" id="title" formControlName="title" />
+        </div>
+        <div class="form-group">
+          <label for="description">Mô tả:</label>
+          <textarea id="description" formControlName="description"></textarea>
         </div>
         <div class="form-group">
           <label for="genres">Thể loại:</label>
@@ -127,6 +135,54 @@
           </div>
         </div>
         <div class="form-group">
+          <label for="director">Đạo diễn:</label>
+          <input
+            type="text"
+            id="director"
+            [(ngModel)]="directorSearch"
+            [ngModelOptions]="{ standalone: true }"
+            (input)="loadContributors(directorSearch, 'DIRECTOR')"
+            (focus)="onInputFocus('director')"
+            (blur)="onInputBlur('director')"
+            placeholder="Tìm kiếm đạo diễn..."
+          />
+          <ul class="autocomplete-list" *ngIf="showDirectorList && directors.length > 0">
+            <li *ngFor="let director of directors" (click)="selectDirector(director)">
+              {{ director.name }}
+            </li>
+          </ul>
+          <div class="selected-items" *ngIf="movieForm.get('directorId')?.value">
+            <span class="selected-item">
+              {{ getContributorNameById(movieForm.get('directorId')?.value, directors) }}
+              <button type="button" (click)="removeDirector()">x</button>
+            </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="actors">Diễn viên:</label>
+          <input
+            type="text"
+            id="actors"
+            [(ngModel)]="actorSearch"
+            [ngModelOptions]="{ standalone: true }"
+            (input)="loadContributors(actorSearch, 'ACTOR')"
+            (focus)="onInputFocus('actor')"
+            (blur)="onInputBlur('actor')"
+            placeholder="Tìm kiếm diễn viên..."
+          />
+          <ul class="autocomplete-list" *ngIf="showActorList && actors.length > 0">
+            <li *ngFor="let actor of actors" (click)="selectActor(actor)">
+              {{ actor.name }}
+            </li>
+          </ul>
+          <div class="selected-items" *ngIf="movieForm.get('actorIds')?.value.length">
+            <span *ngFor="let id of movieForm.get('actorIds')?.value" class="selected-item">
+              {{ getContributorNameById(id, actors) }}
+              <button type="button" (click)="removeActor(id)">x</button>
+            </span>
+          </div>
+        </div>
+        <div class="form-group">
           <label for="duration">Thời lượng (phút):</label>
           <input type="number" id="duration" formControlName="duration" />
         </div>
@@ -139,15 +195,11 @@
           <input type="date" id="endDate" formControlName="endDate" />
         </div>
         <div class="form-group">
-          <label for="isAvailableOnline">Xem online:</label>
+          <label for="isAvailableOnline">Chiếu online:</label>
           <select id="isAvailableOnline" formControlName="isAvailableOnline" class="custom-select">
-            <option value="true">Có</option>
-            <option value="false">Không</option>
+            <option [value]="true">Có</option>
+            <option [value]="false">Không</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="poster">Poster:</label>
-          <input type="file" id="poster" (change)="onPosterChange($event)" />
         </div>
         <div class="form-group">
           <label for="trailerUrl">Trailer URL:</label>
@@ -160,98 +212,20 @@
         <div class="form-group">
           <label for="status">Trạng thái:</label>
           <select id="status" formControlName="status" class="custom-select">
-            <option value="NOW_SHOWING">Đang chiếu</option>
-            <option value="COMING_SOON">Sắp chiếu</option>
-            <option value="ONLINE">Chiếu online</option>
+            <option value="SHOWING">Đang chiếu</option>
+            <option value="UPCOMING">Sắp chiếu</option>
+            <option value="ENDED">Đã kết thúc</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label for="poster">Poster:</label>
+          <input type="file" id="poster" (change)="onPosterChange($event)" />
         </div>
       </form>
       <div class="form-actions">
-        <button class="save-btn" (click)="addMovie()">Thêm</button>
-        <button class="cancel-btn" (click)="cancelForm()">Hủy</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Form sửa phim -->
-  <div class="modal" *ngIf="showEditForm && editMovie">
-    <div class="modal-content">
-      <h3>Sửa phim</h3>
-      <form [formGroup]="movieForm">
-        <div class="form-group">
-          <label for="edit-title">Tên phim:</label>
-          <input type="text" id="edit-title" formControlName="title" />
-        </div>
-        <div class="form-group">
-          <label for="edit-genres">Thể loại:</label>
-          <input
-            type="text"
-            id="edit-genres"
-            [(ngModel)]="editGenreSearch"
-            [ngModelOptions]="{ standalone: true }"
-            (input)="loadGenres(editGenreSearch)"
-            (focus)="onInputFocus('genre', true)"
-            (blur)="onInputBlur('genre', true)"
-            placeholder="Tìm kiếm thể loại..."
-          />
-          <ul class="autocomplete-list" *ngIf="showEditGenreList && genres.length > 0">
-            <li *ngFor="let genre of genres" (click)="selectGenre(genre, true)">
-              {{ genre.name }}
-            </li>
-          </ul>
-          <div class="selected-items" *ngIf="movieForm.get('genreIds')?.value.length">
-            <span *ngFor="let id of movieForm.get('genreIds')?.value" class="selected-item">
-              {{ getGenreNameById(id) }}
-              <button type="button" (click)="removeGenre(id)">x</button>
-            </span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="edit-duration">Thời lượng (phút):</label>
-          <input type="number" id="edit-duration" formControlName="duration" />
-        </div>
-        <div class="form-group">
-          <label for="edit-releaseDate">Ngày phát hành:</label>
-          <input type="date" id="edit-releaseDate" formControlName="releaseDate" />
-        </div>
-        <div class="form-group">
-          <label for="edit-endDate">Ngày kết thúc:</label>
-          <input type="date" id="edit-endDate" formControlName="endDate" />
-        </div>
-        <div class="form-group">
-          <label for="edit-isAvailableOnline">Xem online:</label>
-          <select
-            id="edit-isAvailableOnline"
-            formControlName="isAvailableOnline"
-            class="custom-select"
-          >
-            <option value="true">Có</option>
-            <option value="false">Không</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="edit-poster">Poster (nếu thay đổi):</label>
-          <input type="file" id="edit-poster" (change)="onPosterChange($event)" />
-        </div>
-        <div class="form-group">
-          <label for="edit-trailerUrl">Trailer URL:</label>
-          <input type="text" id="edit-trailerUrl" formControlName="trailerUrl" />
-        </div>
-        <div class="form-group">
-          <label for="edit-videoUrl">Video URL:</label>
-          <input type="text" id="edit-videoUrl" formControlName="videoUrl" />
-        </div>
-        <div class="form-group">
-          <label for="edit-status">Trạng thái:</label>
-          <select id="edit-status" formControlName="status" class="custom-select">
-            <option value="NOW_SHOWING">Đang chiếu</option>
-            <option value="COMING_SOON">Sắp chiếu</option>
-            <option value="ONLINE">Chiếu online</option>
-          </select>
-        </div>
-      </form>
-      <div class="form-actions">
-        <button class="save-btn" (click)="updateMovie()">Lưu</button>
+        <button class="save-btn" (click)="showAddForm ? addMovie() : updateMovie()">
+          {{ showAddForm ? 'Thêm' : 'Lưu' }}
+        </button>
         <button class="cancel-btn" (click)="cancelForm()">Hủy</button>
       </div>
     </div>

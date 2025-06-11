@@ -5,6 +5,8 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
 import { MovieService } from '../../../core/services/movie.service';
 import { ApiResponse } from '../../../core/models/base-response/api.response';
+import { GenreDto } from '../../../core/models/movie/genre.dto';
+import { ContributorDto } from '../../../core/models/contributor/contributor-search-result.model';
 
 @Component({
   selector: 'app-watch-movie',
@@ -77,5 +79,12 @@ export class WatchMovieComponent implements OnInit, OnChanges {
     }
     // Return null if the URL is invalid or not a YouTube URL
     return null;
+  }
+  getGenreNames(genres: GenreDto[]): string {
+    return genres.length > 0 ? genres.map((g) => g.name).join(', ') : 'Chưa có';
+  }
+
+  getActorNames(actors: ContributorDto[]): string {
+    return actors.length > 0 ? actors.map((a) => a.name).join(', ') : 'Chưa có';
   }
 }
