@@ -56,10 +56,9 @@ export class MoviesComponent implements OnInit {
       duration: ['', [Validators.required, Validators.min(1)]],
       releaseDate: ['', Validators.required],
       endDate: [''],
-      isAvailableOnline: [false],
       trailerUrl: [''],
       videoUrl: [''],
-      status: ['SHOWING', Validators.required],
+      status: ['NOW_SHOWING', Validators.required],
     });
   }
 
@@ -137,10 +136,9 @@ export class MoviesComponent implements OnInit {
       duration: '',
       releaseDate: '',
       endDate: '',
-      isAvailableOnline: false,
       trailerUrl: '',
       videoUrl: '',
-      status: 'SHOWING',
+      status: 'NOW_SHOWING',
     });
     this.selectedPoster = null;
     this.genreSearch = '';
@@ -161,7 +159,7 @@ export class MoviesComponent implements OnInit {
       endDate: movie.endDate || '',
       trailerUrl: movie.trailerUrl || '',
       videoUrl: movie.videoUrl || '',
-      status: movie.status || 'SHOWING',
+      status: movie.status || 'NOW_SHOWING',
     });
     this.genreSearch = movie.genres.map((g) => g.name).join(', ') || '';
     this.directorSearch = movie.director?.name || '';
@@ -247,10 +245,9 @@ export class MoviesComponent implements OnInit {
       duration: '',
       releaseDate: '',
       endDate: '',
-      isAvailableOnline: false,
       trailerUrl: '',
       videoUrl: '',
-      status: 'SHOWING',
+      status: 'NOW_SHOWING',
     });
     this.selectedPoster = null;
     this.editMovie = null;

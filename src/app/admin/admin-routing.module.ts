@@ -9,13 +9,14 @@ import { AdminDashboardComponent } from './components/admin-dashboard/admin-dash
 import { RouterModule, Routes } from '@angular/router';
 import { QrScannerComponent } from './components/qr-scanner/qr-scanner.component';
 import { TicketDisplayComponent } from './components/ticket-display/ticket-display.component';
+import { StatsDashboardComponent } from './components/stats-dashboard/stats-dashboard.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
     children: [
-      { path: 'report', component: AdminDashboardComponent },
+      { path: 'report', component: StatsDashboardComponent },
       { path: 'movies', component: MoviesComponent },
       { path: 'cinemas', component: CinemasComponent },
       { path: 'bookings', component: BookingsComponent },

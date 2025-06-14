@@ -11,7 +11,7 @@
       <span *ngIf="isLoggedIn">Xin chào, {{ userName }}</span>
       <button *ngIf="isLoggedIn" class="btn btn-danger btn-sm" (click)="logout()">Đăng Xuất</button>
       <button *ngIf="!isLoggedIn" class="btn btn-primary btn-sm" [routerLink]="['/login']">
-        Đăng Nhập
+        Đăng Xuất
       </button>
     </div>
   </div>

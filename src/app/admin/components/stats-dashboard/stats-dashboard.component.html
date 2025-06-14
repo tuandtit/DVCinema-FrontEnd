@@ -1,0 +1,24 @@
+<div class="grid">
+    <div class="col-3">
+    <p-card header="Khách hàng mới">
+      <p>0 khách hàng</p>
+      <p-progressBar [value]="0"></p-progressBar>
+    </p-card>
+  </div>
+  <div class="col-3">
+    <p-card header="Số vé ra">
+      <p>0 vé</p>
+      <p-progressBar [value]="0"></p-progressBar>
+    </p-card>
+  </div>
+  <div class="col-3">
+    <p-card header="Doanh thu">
+      <p>40 VND</p>
+      <p-progressBar [value]="21"></p-progressBar>
+    </p-card>
+  </div>
+  <div class="col-12">
+    <h3>Thống kê doanh thu</h3>
+    <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
+  </div>
+</div>

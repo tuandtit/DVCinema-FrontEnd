@@ -11,16 +11,40 @@ interface Showtime {
 }
 
 @Component({
-    selector: 'app-showtimes',
-    templateUrl: './showtimes.component.html',
-    styleUrls: ['./showtimes.component.scss'],
-    standalone: false
+  selector: 'app-showtimes',
+  templateUrl: './showtimes.component.html',
+  styleUrls: ['./showtimes.component.scss'],
+  standalone: false,
 })
 export class ShowtimesComponent implements OnInit {
   showtimes: Showtime[] = [
-    { id: 1, movie: 'The Matrix', cinema: 'DVCinema Quận 1', room: 'Phòng 1', startTime: '2025-04-26T14:00', endTime: '2025-04-26T16:16', status: 'upcoming' },
-    { id: 2, movie: 'Inception', cinema: 'DVCinema Quận 7', room: 'Phòng 2', startTime: '2025-04-25T19:00', endTime: '2025-04-25T21:28', status: 'ongoing' },
-    { id: 3, movie: 'Dune: Part Two', cinema: 'DVCinema Thủ Đức', room: 'Phòng 3', startTime: '2025-04-27T15:30', endTime: '2025-04-27T18:16', status: 'upcoming' }
+    {
+      id: 1,
+      movie: 'The Matrix',
+      cinema: 'DVCinema Quận 1',
+      room: 'Phòng 1',
+      startTime: '2025-04-20T14:00',
+      endTime: '2025-04-20T16:16',
+      status: 'upcoming',
+    },
+    {
+      id: 2,
+      movie: 'Inception',
+      cinema: 'DVCinema Quận 7',
+      room: 'Phòng 2',
+      startTime: '2025-04-25T19:00',
+      endTime: '2025-04-25T21:28',
+      status: 'ongoing',
+    },
+    {
+      id: 3,
+      movie: 'Dune: Part Two',
+      cinema: 'DVCinema Thủ Đức',
+      room: 'Phòng 3',
+      startTime: '2025-04-27T15:30',
+      endTime: '2025-04-27T18:23',
+      status: 'upcoming',
+    },
   ];
 
   filteredShowtimes: Showtime[] = [...this.showtimes]; // Danh sách suất chiếu sau khi lọc/tìm kiếm
@@ -29,7 +53,15 @@ export class ShowtimesComponent implements OnInit {
 
   showAddForm: boolean = false; // Hiển thị form thêm suất chiếu
   showEditForm: boolean = false; // Hiển thị form sửa suất chiếu
-  newShowtime: Showtime = { id: 0, movie: '', cinema: '', room: '', startTime: '', endTime: '', status: 'ongoing' };
+  newShowtime: Showtime = {
+    id: 0,
+    movie: '',
+    cinema: '',
+    room: '',
+    startTime: '',
+    endTime: '',
+    status: 'ongoing',
+  };
   editShowtime: Showtime | null = null;
 
   ngOnInit(): void {
@@ -42,14 +74,14 @@ export class ShowtimesComponent implements OnInit {
 
     // Tìm kiếm theo tên phim
     if (this.searchTerm) {
-      tempShowtimes = tempShowtimes.filter(showtime =>
+      tempShowtimes = tempShowtimes.filter((showtime) =>
         showtime.movie.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     }
 
     // Lọc theo trạng thái
     if (this.statusFilter !== 'all') {
-      tempShowtimes = tempShowtimes.filter(showtime => showtime.status === this.statusFilter);
+      tempShowtimes = tempShowtimes.filter((showtime) => showtime.status === this.statusFilter);
     }
 
     this.filteredShowtimes = tempShowtimes;
@@ -57,15 +89,29 @@ export class ShowtimesComponent implements OnInit {
 
   // Thêm suất chiếu mới
   addShowtime(): void {
-    if (!this.newShowtime.movie || !this.newShowtime.cinema || !this.newShowtime.room || !this.newShowtime.startTime || !this.newShowtime.endTime) {
+    if (
+      !this.newShowtime.movie ||
+      !this.newShowtime.cinema ||
+      !this.newShowtime.room ||
+      !this.newShowtime.startTime ||
+      !this.newShowtime.endTime
+    ) {
       alert('Vui lòng điền đầy đủ thông tin suất chiếu!');
       return;
     }
 
-    const newId = this.showtimes.length ? Math.max(...this.showtimes.map(s => s.id)) + 1 : 1;
+    const newId = this.showtimes.length ? Math.max(...this.showtimes.map((s) => s.id)) + 1 : 1;
     this.showtimes.push({ ...this.newShowtime, id: newId });
     this.filteredShowtimes = [...this.showtimes];
-    this.newShowtime = { id: 0, movie: '', cinema: '', room: '', startTime: '', endTime: '', status: 'ongoing' };
+    this.newShowtime = {
+      id: 0,
+      movie: '',
+      cinema: '',
+      room: '',
+      startTime: '',
+      endTime: '',
+      status: 'ongoing',
+    };
     this.showAddForm = false;
     this.filterShowtimes();
   }
@@ -80,7 +126,7 @@ export class ShowtimesComponent implements OnInit {
   updateShowtime(): void {
     if (!this.editShowtime) return;
 
-    const index = this.showtimes.findIndex(s => s.id === this.editShowtime!.id);
+    const index = this.showtimes.findIndex((s) => s.id === this.editShowtime!.id);
     if (index !== -1) {
       this.showtimes[index] = { ...this.editShowtime };
       this.filteredShowtimes = [...this.showtimes];
@@ -93,7 +139,7 @@ export class ShowtimesComponent implements OnInit {
   // Xóa suất chiếu
   deleteShowtime(id: number): void {
     if (confirm('Bạn có chắc muốn xóa suất chiếu này?')) {
-      this.showtimes = this.showtimes.filter(showtime => showtime.id !== id);
+      this.showtimes = this.showtimes.filter((showtime) => showtime.id !== id);
       this.filteredShowtimes = [...this.showtimes];
       this.filterShowtimes();
     }
@@ -103,7 +149,15 @@ export class ShowtimesComponent implements OnInit {
   cancelForm(): void {
     this.showAddForm = false;
     this.showEditForm = false;
-    this.newShowtime = { id: 0, movie: '', cinema: '', room: '', startTime: '', endTime: '', status: 'ongoing' };
+    this.newShowtime = {
+      id: 0,
+      movie: '',
+      cinema: '',
+      room: '',
+      startTime: '',
+      endTime: '',
+      status: 'ongoing',
+    };
     this.editShowtime = null;
   }
 

@@ -16,6 +16,12 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UsersComponent } from './components/users/users.component';
 import { NgxScannerQrcodeComponent, LOAD_WASM } from 'ngx-scanner-qrcode';
 import { TicketDisplayComponent } from './components/ticket-display/ticket-display.component';
+import { StatsDashboardComponent } from './components/stats-dashboard/stats-dashboard.component';
+import { ChartModule } from 'primeng/chart';
+import { CardModule } from 'primeng/card'; // Import CardModule
+import { ProgressBarModule } from 'primeng/progressbar';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
 
 LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
 @NgModule({
@@ -31,6 +37,7 @@ LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
     AdminDashboardComponent,
     QrScannerComponent,
     TicketDisplayComponent,
+    StatsDashboardComponent,
   ],
   imports: [
     CommonModule,
@@ -39,7 +46,12 @@ LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
     ReactiveFormsModule,
     SharedModule,
     NgChartsModule,
+    ChartModule,
     NgxScannerQrcodeComponent,
+    CardModule,
+    ProgressBarModule,
+    DropdownModule,
+    ButtonModule
     // Nếu bạn muốn sử dụng NgChartsModule, hãy đảm bảo rằng module này đã được import chính xác
   ],
 })

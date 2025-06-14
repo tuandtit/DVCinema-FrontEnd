@@ -20,9 +20,10 @@
         class="custom-select"
       >
         <option value="">Tất cả</option>
-        <option value="SHOWING">Đang chiếu</option>
-        <option value="UPCOMING">Sắp chiếu</option>
+        <option value="NOW_SHOWING">Đang chiếu</option>
+        <option value="COMING_SOON">Sắp chiếu</option>
         <option value="ENDED">Đã kết thúc</option>
+        <option value="ONLINE">Online</option>
       </select>
     </div>
     <button class="add-btn" (click)="openAddForm()"><i class="fas fa-plus"></i> Thêm</button>
@@ -62,9 +63,10 @@
           <td>{{ movie.releaseDate | date: 'dd/MM/yyyy' }}</td>
           <td>{{ movie.endDate ? (movie.endDate | date: 'dd/MM/yyyy') : 'Chưa xác định' }}</td>
           <td [ngSwitch]="movie.status">
-            <span *ngSwitchCase="'SHOWING'" class="status showing">Đang chiếu</span>
-            <span *ngSwitchCase="'UPCOMING'" class="status upcoming">Sắp chiếu</span>
+            <span *ngSwitchCase="'NOW_SHOWING'" class="status showing">Đang chiếu</span>
+            <span *ngSwitchCase="'COMING_SOON'" class="status upcoming">Sắp chiếu</span>
             <span *ngSwitchCase="'ENDED'" class="status ended">Đã kết thúc</span>
+            <span *ngSwitchCase="'ONLINE'" class="status online">Online</span>
             <span *ngSwitchDefault>{{ movie.status || 'Không xác định' }}</span>
           </td>
           <td class="action-cell">
@@ -195,13 +197,6 @@
           <input type="date" id="endDate" formControlName="endDate" />
         </div>
         <div class="form-group">
-          <label for="isAvailableOnline">Chiếu online:</label>
-          <select id="isAvailableOnline" formControlName="isAvailableOnline" class="custom-select">
-            <option [value]="true">Có</option>
-            <option [value]="false">Không</option>
-          </select>
-        </div>
-        <div class="form-group">
           <label for="trailerUrl">Trailer URL:</label>
           <input type="text" id="trailerUrl" formControlName="trailerUrl" />
         </div>
@@ -212,9 +207,10 @@
         <div class="form-group">
           <label for="status">Trạng thái:</label>
           <select id="status" formControlName="status" class="custom-select">
-            <option value="SHOWING">Đang chiếu</option>
-            <option value="UPCOMING">Sắp chiếu</option>
+            <option value="NOW_SHOWING">Đang chiếu</option>
+            <option value="COMING_SOON">Sắp chiếu</option>
             <option value="ENDED">Đã kết thúc</option>
+            <option value="ONLINE">Online</option>
           </select>
         </div>
         <div class="form-group">
