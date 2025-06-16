@@ -1,21 +1,20 @@
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   HostListener,
   OnInit,
-  ElementRef,
   ViewChild,
-  AfterViewInit,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { MovieService } from '../../../core/services/movie.service';
-import { AccountService } from '../../../core/services/account.service';
-import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
-import { Router } from '@angular/router';
-import { UserService } from '../../../core/services/user.service';
 import { ApiResponse } from '../../../core/models/base-response/api.response';
+import { MovieResponseDto } from '../../../core/models/movie/movie-response.dto';
 import { UserInfo } from '../../../core/models/user/user.model';
-import { GenreDto } from '../../../core/models/movie/genre.dto';
+import { AccountService } from '../../../core/services/account.service';
+import { MovieService } from '../../../core/services/movie.service';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -24,23 +23,22 @@ import { GenreDto } from '../../../core/models/movie/genre.dto';
   standalone: false,
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
-  searchQuery: string = '';
+  searchQuery = '';
   suggestions: any[] = [];
-  pageSize: number = 5;
-  currentPage: number = 1;
-  totalPages: number = 0;
-  totalRecord: number = 0;
-  isLoading: boolean = false;
-  isLoadingMore: boolean = false;
-  canLoadMore: boolean = true;
-  isLoggedIn: boolean = false;
+  pageSize = 5;
+  currentPage = 1;
+  totalPages = 0;
+  totalRecord = 0;
+  isLoading = false;
+  isLoadingMore = false;
+  canLoadMore = true;
+  isLoggedIn = false;
   username: string | null = null;
-  avatar: string =
+  avatar =
     'http://res.cloudinary.com/dt8idd99e/image/upload/v1/dvcinema/04444ec4-6e3e-4f15-98f6-4b09ed29bba6_images.png';
-  showMoviesDropdown: boolean = false;
-  showUserDropdown: boolean = false;
-  // Danh sách các route yêu cầu đăng nhập
-  private routesRequiringLogin: string[] = [
+  showMoviesDropdown = false;
+  showUserDropdown = false;
+  private routesRequiringLogin = [
     '/showtimes',
     '/favorites',
     '/lists',
@@ -50,7 +48,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   @ViewChild('loadMoreTrigger') loadMoreTrigger!: ElementRef;
   @ViewChild('searchInput') searchInput!: ElementRef;
   @ViewChild('suggestionsList') suggestionsList!: ElementRef;
-
   private searchSubject = new Subject<string>();
   private observer!: IntersectionObserver;
 
@@ -61,7 +58,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     private userService: UserService
   ) {}
 
-  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:scroll')
   onScroll() {
     const header = document.querySelector('.sticky-header');
     if (window.scrollY > 50) {
@@ -74,7 +71,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-
     const clickedInsideSearch =
       this.searchInput?.nativeElement.contains(target) ||
       this.suggestionsList?.nativeElement.contains(target);
@@ -83,19 +79,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
 
     const navbarCollapse = document.querySelector('#navbarSupportedContent');
-    const navbarToggler = document.querySelector('.navbar-toggler');
-    const userInfo = document.querySelector('.user-info');
-    const moviesDropdownToggle = document.querySelector('.dropdown-toggle');
-    const moviesDropdownMenu = document.querySelector('.dropdown-menu');
-    const userDropdownMenu = document.querySelector('.user-dropdown');
-
     const clickedInsideMenu =
       navbarCollapse?.contains(target) ||
-      navbarToggler?.contains(target) ||
-      userInfo?.contains(target) ||
-      moviesDropdownToggle?.contains(target) ||
-      moviesDropdownMenu?.contains(target) ||
-      userDropdownMenu?.contains(target);
+      document.querySelector('.navbar-toggler')?.contains(target) ||
+      document.querySelector('.user-info')?.contains(target) ||
+      document.querySelector('.dropdown-toggle')?.contains(target) ||
+      document.querySelector('.dropdown-menu')?.contains(target) ||
+      document.querySelector('.user-dropdown')?.contains(target);
 
     if (!clickedInsideMenu && navbarCollapse?.classList.contains('show')) {
       navbarCollapse.classList.remove('show');
@@ -108,11 +98,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.accountService.isLoggedIn$.subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
       const userId = this.accountService.getUserIdFromStorage();
-      if (loggedIn) {
+      if (loggedIn && userId) {
         this.loadUserInfo(userId);
       } else {
         this.username = null;
-        this.showUserDropdown = false; // Đóng dropdown khi đăng xuất
+        this.showUserDropdown = false;
       }
     });
 
@@ -131,49 +121,29 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (response) => {
           if (response.status.code !== 200) {
-            console.error('Lỗi từ API:', response.status.timestamp);
             this.isLoading = false;
             return;
           }
-
           this.totalRecord = response.data.paging.totalRecord;
           this.totalPages = response.data.paging.totalPage;
-
-          const newSuggestions = response.data.contents.map((dto: MovieResponseDto) => ({
+          this.suggestions = response.data.contents.map((dto: MovieResponseDto) => ({
             id: dto.id,
             poster: dto.posterUrl,
             title: dto.title,
             genre: dto.genres.join(', '),
           }));
-
-          this.suggestions = newSuggestions;
           this.canLoadMore = this.currentPage < this.totalPages - 1;
           this.isLoading = false;
         },
-        error: (err) => {
-          console.error('Lỗi khi tìm kiếm phim:', err);
-          this.isLoading = false;
-        },
+        error: () => (this.isLoading = false),
       });
   }
-  loadUserInfo(userId: number | null) {
-    if (userId == null) {
-      alert('Bạn chưa đăng nhập');
-      return;
-    }
 
+  loadUserInfo(userId: number) {
     this.userService.getAccountInfo(userId).subscribe({
       next: (response: ApiResponse<UserInfo>) => {
-        debugger;
         this.username = response.data.displayName;
         this.avatar = response.data.avatar;
-      },
-      error: (err) => {
-        debugger;
-        console.error('error:', err);
-      },
-      complete: () => {
-        console.log('Truy vấn userId: ' + userId);
       },
     });
   }
@@ -187,7 +157,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       },
       { threshold: 0.1 }
     );
-
     if (this.loadMoreTrigger) {
       this.observer.observe(this.loadMoreTrigger.nativeElement);
     }
@@ -195,7 +164,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   onSearchChange(query: string): void {
     this.searchQuery = query;
-    if (query.trim() === '') {
+    if (!query.trim()) {
       this.suggestions = [];
       this.currentPage = 0;
       this.canLoadMore = true;
@@ -209,72 +178,49 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.canLoadMore = false;
       return;
     }
-
     this.isLoadingMore = true;
     this.currentPage++;
-
     this.movieService.getMovies(this.currentPage, this.pageSize, this.searchQuery, []).subscribe({
       next: (response) => {
         if (response.status.code !== 200) {
-          console.error('Lỗi từ API:', response.status.timestamp);
           this.isLoadingMore = false;
           return;
         }
-
         const newSuggestions = response.data.contents.map((dto: MovieResponseDto) => ({
           id: dto.id,
+          poster: dto.posterUrl,
           title: dto.title,
-          genre: this.getGenreNames(dto.genres),
+          genre: dto.genres.join(', '),
         }));
-
         this.suggestions = [...this.suggestions, ...newSuggestions];
         this.canLoadMore = this.currentPage < this.totalPages - 1;
         this.isLoadingMore = false;
       },
-      error: (err) => {
-        console.error('Lỗi khi load thêm gợi ý:', err);
-        this.isLoadingMore = false;
-      },
+      error: () => (this.isLoadingMore = false),
     });
   }
 
   onSearchEnter(): void {
-    if (this.searchQuery.trim() === '') return;
-    console.log('Chuyển hướng đến trang kết quả tìm kiếm với từ khóa:', this.searchQuery);
+    if (!this.searchQuery.trim()) return;
     this.suggestions = [];
     this.router.navigate(['/search-page'], { queryParams: { query: this.searchQuery } });
   }
 
-  selectMovie(movie: any): void {
-    console.log('Chuyển hướng đến trang chi tiết phim:', movie.id, movie.title);
-    this.suggestions = [];
-    this.searchQuery = movie.title;
-    this.router.navigate(['/detail-product', movie.id]);
-  }
-
   login(): void {
-    this.saveUrl();
+    const currentUrl = this.router.url;
+    if (currentUrl !== '/login') {
+      this.accountService.setReturnUrl(currentUrl);
+    }
     this.navigate('/login');
   }
 
   logout(): void {
     const currentUrl = this.router.url;
     this.accountService.logout();
-    // Kiểm tra xem trang hiện tại có yêu cầu đăng nhập không
-    const requiresLogin = this.routesRequiringLogin.some((route) => currentUrl.startsWith(route));
-    if (requiresLogin) {
-      // Nếu trang hiện tại yêu cầu đăng nhập, điều hướng đến trang đăng nhập
+    if (this.routesRequiringLogin.some((route) => currentUrl.startsWith(route))) {
       this.navigate('/login');
     } else {
-      // Nếu không, điều hướng về trang chủ
       this.navigate(currentUrl);
-    }
-  }
-
-  saveUrl(): void {
-    const currentUrl = this.router.url;
-    if (currentUrl !== '/login') {
-      this.accountService.setReturnUrl(currentUrl);
     }
   }
 
@@ -289,24 +235,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.showUserDropdown = false;
   }
 
-  toggleMoviesDropdown(event?: Event): void {
-    this.showMoviesDropdown = !this.showMoviesDropdown;
-    this.showUserDropdown = false;
-    event?.stopPropagation();
-  }
-
   toggleUserDropdown(event?: Event): void {
-    console.log('Toggling user dropdown', this.showUserDropdown);
     this.showUserDropdown = !this.showUserDropdown;
     this.showMoviesDropdown = false;
     event?.stopPropagation();
   }
 
   onImageError(event: Event) {
-    const imgElement = event.target as HTMLImageElement;
-    imgElement.src = 'assets/image/logo_dvcinema.jpg';
-  }
-  getGenreNames(genres: GenreDto[]): string {
-    return genres.length > 0 ? genres.map((g) => g.name).join(', ') : 'Chưa có';
+    (event.target as HTMLImageElement).src = 'assets/image/logo_dvcinema.jpg';
   }
 }

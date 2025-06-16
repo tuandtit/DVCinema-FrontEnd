@@ -2,40 +2,87 @@
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
   h2 {
     text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+    color: #1a1a1a;
+    margin-bottom: 24px;
+    font-size: 1.8rem;
+    font-weight: 600;
   }
 
   .booking-table {
     width: 100%;
     border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
 
     th,
     td {
-      padding: 10px;
+      padding: 12px 15px;
       text-align: left;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 0.95rem;
     }
 
     th {
-      background-color: #f4f4f4;
-      color: #555;
+      background-color: #f8fafc;
+      color: #374151;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
     }
 
     td {
-      color: #333;
+      color: #1f2937;
+    }
+
+    tr:hover {
+      background-color: #f9fafb;
+      transition: background-color 0.2s ease;
+    }
+
+    td img {
+      max-width: 100px; /* Scale down the ticket image */
+      height: auto;
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      display: block;
+      object-fit: cover;
     }
 
     a {
-      color: #007bff;
+      color: #2563eb;
       text-decoration: none;
+      font-weight: 500;
 
       &:hover {
         text-decoration: underline;
+        color: #1d4ed8;
+      }
+    }
+  }
+
+  /* Responsive design for smaller screens */
+  @media (max-width: 768px) {
+    padding: 15px;
+
+    .booking-table {
+      font-size: 0.9rem;
+
+      th,
+      td {
+        padding: 10px;
+      }
+
+      td img {
+        max-width: 80px; /* Smaller image on mobile */
       }
     }
   }

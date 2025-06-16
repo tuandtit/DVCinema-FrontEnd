@@ -17,6 +17,7 @@ import { TopicComponent } from './components/topic/topic.component';
 import { UserComponent } from './user.component';
 import { HistoryBookingComponent } from './components/history-booking/history-booking.component';
 import { WatchMovieComponent } from './components/watch-movie/watch-movie.component';
+import { ScheduleComponent } from './components/schedule/schedule.component';
 
 const routes: Routes = [
   {
@@ -30,20 +31,9 @@ const routes: Routes = [
       { path: 'history-booking', component: HistoryBookingComponent },
       { path: 'topics', component: TopicComponent },
       { path: 'search-page', component: SearchPageComponent },
-      {
-        path: 'movies',
-        component: DetailMovieComponent,
-        children: [
-          { path: 'single', component: HomeComponent },
-          { path: 'series', component: HomeComponent },
-          { path: 'theater', component: HomeComponent },
-        ],
-      },
-      { path: 'cinemas', component: HomeComponent },
-      { path: 'ticket-prices', component: HomeComponent },
+      { path: 'schedules', component: ScheduleComponent },
       { path: 'watch-movie/:id', component: WatchMovieComponent },
       { path: 'detail-movie/:id', component: DetailMovieComponent },
-      { path: 'showtimes', component: OrderComponent, canActivate: [AuthGuard] },
       { path: 'seat-selection', component: SeatSelectionComponent, canActivate: [AuthGuard] },
       { path: 'payment', component: PaymentComponent },
       { path: 'success', component: SuccessComponent },

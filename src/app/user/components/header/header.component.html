@@ -1,7 +1,6 @@
 <header class="sticky-header">
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-      <!-- Menu toggle button (bên trái logo) -->
       <button
         class="navbar-toggler me-2"
         type="button"
@@ -13,8 +12,6 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-
-      <!-- Logo -->
       <a class="navbar-brand" [routerLink]="['/']">
         <img
           src="https://res.cloudinary.com/dt8idd99e/image/upload/v1748446227/logo_dvcinema_pxoanh.jpg"
@@ -23,8 +20,6 @@
           (error)="onImageError($event)"
         />
       </a>
-
-      <!-- Ô tìm kiếm (bên phải logo) -->
       <div class="search-autocomplete ms-2 me-3 flex-grow-1">
         <div class="input-group">
           <input
@@ -57,50 +52,53 @@
           </li>
         </ul>
       </div>
-
-      <!-- Menu collapse -->
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link" (click)="navigate('/topics')">CHỦ ĐỀ</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="navigate('/schedules')">LỊCH CHIẾU</a>
+          </li>
           <li class="nav-item dropdown hover-dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              (click)="toggleMoviesDropdown()"
+            <a class="nav-link" role="button" aria-expanded="false" (click)="navigate('/movies')"
+              >PHIM</a
             >
-              PHIM
-            </a>
-            <!-- <ul class="dropdown-menu" [ngClass]="{ show: showMoviesDropdown }">
+          </li>
+          <li *ngIf="isLoggedIn" class="nav-item d-lg-none user-menu-mobile">
+            <div class="nav-link user-info" (click)="toggleUserDropdown()">
+              <img src="{{ avatar }}" alt="User Avatar" class="user-avatar-mobile" />
+              <span>{{ username || 'Người dùng' }}</span>
+            </div>
+            <ul class="user-dropdown" [ngClass]="{ show: showUserDropdown }">
               <li>
-                <a class="dropdown-item" (click)="navigate('/movies/single')">PHIM LẺ</a>
+                <a class="dropdown-item" (click)="navigate('/history-booking')">Lịch sử đặt vé</a>
               </li>
               <li>
-                <a class="dropdown-item" (click)="navigate('/movies/series')">PHIM BỘ</a>
+                <a class="dropdown-item" (click)="navigate('/account-info')">Thông tin tài khoản</a>
               </li>
-              <li>
-                <a class="dropdown-item" (click)="navigate('/movies/theater')">PHIM CHIẾU RẠP</a>
-              </li>
+              <li><a class="dropdown-item" (click)="logout()">Thoát</a></li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="navigate('/cinemas')">RẠP</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="navigate('/ticket-prices')">GIÁ VÉ</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="navigate('/news')">TIN TỨC</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="navigate('/showtimes')">LỊCH CHIẾU</a> -->
-          <!-- </li> -->
-          <!-- Menu trên mobile -->
-          <li *ngIf="isLoggedIn">
-            <div class="nav-item d-lg-none user-menu-mobile">
+        </ul>
+        <ng-container *ngIf="!isLoggedIn">
+          <div class="nav-item d-lg-none">
+            <button class="btn btn-primary btn-sm btn-login w-100 text-start" (click)="login()">
+              ĐĂNG NHẬP
+            </button>
+          </div>
+        </ng-container>
+        <div class="d-none d-lg-flex align-items-center ms-auto navbar-nav">
+          <ng-container *ngIf="!isLoggedIn">
+            <button
+              class="btn btn-primary btn-sm btn-login w-100 text-start nav-item"
+              (click)="login()"
+            >
+              ĐĂNG NHẬP
+            </button>
+          </ng-container>
+          <ng-container *ngIf="isLoggedIn">
+            <div class="nav-item dropdown user-menu">
               <div class="nav-link user-info" (click)="toggleUserDropdown()">
                 <img src="{{ avatar }}" alt="User Avatar" class="user-avatar-mobile" />
                 <span>{{ username || 'Người dùng' }}</span>
@@ -114,51 +112,7 @@
                     >Thông tin tài khoản</a
                   >
                 </li>
-                <li>
-                  <a class="dropdown-item" (click)="logout()">Thoát</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-
-        <!-- Nút đăng nhập trên mobile khi chưa đăng nhập -->
-        <ng-container *ngIf="!isLoggedIn">
-          <div class="nav-item d-lg-none">
-            <button class="btn btn-primary btn-sm btn-login w-100 text-start" (click)="login()">
-              ĐĂNG NHẬP
-            </button>
-          </div>
-        </ng-container>
-
-        <!-- User menu trên desktop -->
-        <div class="d-none d-lg-flex align-items-center ms-auto navbar-nav">
-          <ng-container *ngIf="!isLoggedIn">
-            <button
-              class="btn btn-primary btn-sm btn-login w-100 text-start nav-item"
-              (click)="login()"
-            >
-              ĐĂNG NHẬP
-            </button>
-          </ng-container>
-          <ng-container *ngIf="isLoggedIn">
-            <div class="nav-item dropdown user-menu">
-              <div class="nav-link user-info" (click)="toggleUserDropdown()">
-                <img src="{{ avatar }}" alt="ảnh" class="user-avatar-mobile" />
-                <span>{{ username || 'Người dùng' }}</span>
-              </div>
-              <ul class="user-dropdown" [ngClass]="{ show: showUserDropdown }">
-                <li>
-                  <a class="dropdown-item" (click)="navigate('/history-booking')">Lịch sử đặt vé</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" (click)="navigate('/account-info')"
-                    >Thông tin tài khoản</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" (click)="logout()">Thoát</a>
-                </li>
+                <li><a class="dropdown-item" (click)="logout()">Thoát</a></li>
               </ul>
             </div>
           </ng-container>

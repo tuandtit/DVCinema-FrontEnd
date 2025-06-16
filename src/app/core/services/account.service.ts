@@ -1,15 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { firebaseAuth } from '../config/FirebaseConfig';
 import { ApiResponse } from '../models/base-response/api.response';
 import { LoginResponse } from '../models/user/login.response';
 import { SignInDto } from '../models/user/signin.dto';
-import { firebaseAuth } from '../config/FirebaseConfig';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { DataSharingService } from './data-sharing.service';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class AccountService {
   private apiSignIn = `${environment.apiBaseUrl}/sign-in`;
   private apiLogOut = `${environment.apiBaseUrl}/logout`;
   private apiSignInGoogle = `${environment.apiBaseUrl}/google/sign-in`;
-
+  private jwtHelper = new JwtHelperService();
   private apiConfig = {
     headers: this.createHeaders(),
   };
@@ -29,7 +30,6 @@ export class AccountService {
   private userIdSubject = new BehaviorSubject<number | null>(null);
   userId$ = this.userIdSubject.asObservable();
   private returnUrl: string | null = null;
-
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -154,5 +154,17 @@ export class AccountService {
 
   getAvatar(): string | null {
     return sessionStorage.getItem('avatar');
+  }
+
+  getScopes(): string[] {
+    const token = this.getToken();
+    if (!token) return [];
+    const decoded = this.jwtHelper.decodeToken(token);
+    const scope = decoded.scope || '';
+    return scope.split(',').map((s: string) => s.trim());
+  }
+
+  hasAdminRole(): boolean {
+    return this.isLoggedIn() && this.getScopes().includes('ADMIN');
   }
 }

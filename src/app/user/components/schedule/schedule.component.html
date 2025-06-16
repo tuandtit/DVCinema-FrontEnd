@@ -1,0 +1,74 @@
+<div class="container">
+  <app-loading-spinner [isLoading]="isLoading"></app-loading-spinner>
+
+  <ng-container *ngIf="!isLoading">
+    <div class="schedule-content">
+      <!-- Cinema Menu 3 cấp -->
+      <div class="cinema-menu">
+        <div class="menu">
+          <button class="menu-toggle dropdown-toggle" type="button" (click)="toggleDropdown()">
+            {{ selectedCinemaName }}
+          </button>
+
+          <ul class="menu-level-1" [class.show]="isDropdownOpen">
+            <li
+              *ngFor="let city of cities"
+              class="menu-item"
+              (mouseenter)="onMouseEnter(city.id)"
+              (mouseleave)="onMouseLeave(city.id)"
+            >
+              <span class="menu-label">{{ city.name }}</span>
+
+              <ul class="menu-level-2" [class.show]="showSubmenu[city.id]">
+                <li *ngFor="let cinema of city.cinemas" class="menu-item">
+                  <a
+                    class="menu-label"
+                    (click)="selectCinemaAndLoadMovies(cinema.id); $event.stopPropagation()"
+                  >
+                    {{ cinema.name }}
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Date Filter -->
+      <div class="date-filter">
+        <button
+          *ngFor="let date of availableDates"
+          [class.active]="selectedDate === date"
+          (click)="selectDateAndLoadMovies(date)"
+        >
+          {{ date | date: 'dd/MM/yyyy' }}
+        </button>
+      </div>
+    </div>
+    <!-- Trailer Modal -->
+    <app-trailer-modal
+      [showModal]="showTrailerModal"
+      [movieTitle]="selectMovieModalTitle"
+      [trailerUrl]="safeTrailerUrl"
+      (close)="closeTrailerModal()"
+    ></app-trailer-modal>
+
+    <!-- Cinema Showtime Modal -->
+    <app-cinema-showtime-modal
+      [movie]="selectedMovie"
+      [showModal]="showCinemaModal"
+      (close)="closeCinemaModal()"
+      (proceed)="openConfirmModal($event)"
+    ></app-cinema-showtime-modal>
+
+    <!-- Confirm Booking Modal -->
+    <app-confirm-booking-modal
+      [showModal]="showConfirmModal"
+      [movie]="selectedMovie"
+      [cinema]="selectedCinemaObj"
+      [showtime]="selectedShowtime"
+      (close)="closeConfirmModal()"
+      (confirm)="proceedToSeatSelection()"
+    ></app-confirm-booking-modal>
+  </ng-container>
+</div>

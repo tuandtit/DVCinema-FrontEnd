@@ -6,10 +6,23 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
 import { SharedModule } from './shared/shared.module';
+import { JwtModule } from '@auth0/angular-jwt';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, RouterModule, SharedModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    RouterModule,
+    SharedModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => localStorage.getItem('token'), // Lấy token từ localStorage
+        allowedDomains: [],
+        disallowedRoutes: [],
+      },
+    }),
+  ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
     {

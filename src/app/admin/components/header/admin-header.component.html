@@ -1,0 +1,69 @@
+<header class="sticky-header">
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <!-- Menu toggle button -->
+      <button
+        class="navbar-toggler me-2"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Logo -->
+      <a class="navbar-brand" [routerLink]="['/admin']">
+        <img
+          src="https://res.cloudinary.com/dt8idd99e/image/upload/v1748446227/logo_dvcinema_pxoanh.jpg"
+          alt="logo_dvcinema"
+          class="logo-img"
+          (error)="onImageError($event)"
+        />
+      </a>
+
+      <!-- Menu collapse -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li *ngIf="isLoggedIn">
+            <div class="nav-item d-lg-none user-menu-mobile">
+              <div class="nav-link user-info" (click)="toggleUserDropdown()">
+                <img src="{{ avatar }}" alt="User Avatar" class="user-avatar-mobile" />
+                <span>{{ username || 'Người dùng' }}</span>
+              </div>
+              <ul class="user-dropdown" [ngClass]="{ show: showUserDropdown }">
+                <li>
+                  <a class="dropdown-item" (click)="logout()">Thoát</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+
+        <!-- User menu trên desktop -->
+        <div class="d-none d-lg-flex align-items-center ms-auto navbar-nav">
+          <ng-container *ngIf="!isLoggedIn">
+            <button class="btn btn-primary btn-sm btn-login nav-item" (click)="login()">
+              ĐĂNG NHẬP
+            </button>
+          </ng-container>
+          <ng-container *ngIf="isLoggedIn">
+            <div class="nav-item dropdown user-menu">
+              <div class="nav-link user-info" (click)="toggleUserDropdown()">
+                <img src="{{ avatar }}" alt="User Avatar" class="user-avatar-mobile" />
+                <span>{{ username || 'Người dùng' }}</span>
+              </div>
+              <ul class="user-dropdown" [ngClass]="{ show: showUserDropdown }">
+                <li>
+                  <a class="dropdown-item" (click)="logout()">Thoát</a>
+                </li>
+              </ul>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>

@@ -1,8 +1,6 @@
 @use 'variables' as *;
-@use 'common' as *;
 @use 'sass:color';
 
-// Header
 .sticky-header {
   position: fixed;
   top: 0;
@@ -20,24 +18,14 @@
   }
 }
 
-body {
-  padding-top: 80px;
-  @media (max-width: 991px) {
-    padding-top: 60px;
-  }
-}
-
-// Navbar
 .navbar {
   background: transparent;
-  box-shadow: none;
 
   .container {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: nowrap;
-    position: relative;
     padding: 0 10px;
 
     .navbar-brand {
@@ -45,6 +33,7 @@ body {
       font-weight: bold;
       cursor: pointer;
       order: 2;
+
       @media (min-width: 992px) {
         order: 1;
       }
@@ -61,12 +50,10 @@ body {
       border: none;
       padding: 8px;
       background: transparent;
+
       &:focus {
         outline: none;
         box-shadow: none;
-      }
-      @media (min-width: 992px) {
-        flex: 0 0 auto;
       }
     }
 
@@ -81,6 +68,7 @@ body {
         width: 100%;
         flex: 1 1 auto;
       }
+
       @media (min-width: 992px) {
         order: 2;
         flex-grow: 0;
@@ -108,9 +96,6 @@ body {
       }
 
       .suggestions-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
         position: absolute;
         top: 100%;
         left: 0;
@@ -122,14 +107,19 @@ body {
         overflow-y: auto;
         border-radius: 0 0 8px 8px;
         box-shadow: $box-shadow-light;
+        padding: 0;
+        margin: 0;
+        list-style: none;
 
         .suggestion-item {
           padding: 8px 12px;
           cursor: pointer;
           border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
           &:last-child {
             border-bottom: none;
           }
+
           &:hover {
             background: color.scale($color-dropdown-search-box-bg, $lightness: -5%);
           }
@@ -148,11 +138,13 @@ body {
 
             .suggestion-details {
               flex: 1;
+
               .suggestion-title {
                 font-weight: bold;
                 font-size: 14px;
                 color: $color-text-dark;
               }
+
               .suggestion-genre {
                 font-size: 12px;
                 color: #666;
@@ -163,6 +155,7 @@ body {
 
         .load-more-trigger {
           text-align: center;
+
           .loading-more {
             padding: 8px 12px;
             font-size: 14px;
@@ -177,6 +170,7 @@ body {
         @media (max-width: 991px) {
           padding: 8px 0;
           border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
           &:last-child {
             border-bottom: none;
           }
@@ -193,9 +187,10 @@ body {
         &:hover {
           background: $color-primary-light;
         }
+
         &.active {
           background: $color-primary;
-          color: white !important;
+          color: white;
         }
 
         @media (max-width: 991px) {
@@ -208,7 +203,6 @@ body {
 
     .navbar-collapse {
       @media (min-width: 992px) {
-        position: static;
         order: 3;
         display: flex !important;
       }
@@ -218,7 +212,6 @@ body {
         top: 100%;
         width: 220px;
         left: 10px;
-        right: auto;
         display: none;
         opacity: 0;
         visibility: hidden;
@@ -239,6 +232,7 @@ body {
         &::-webkit-scrollbar {
           display: none;
         }
+
         &.show {
           display: block;
           opacity: 1;
@@ -259,7 +253,6 @@ body {
   }
 }
 
-// Hover Dropdown (menu PHIM và user-menu trên desktop)
 .hover-dropdown {
   position: relative;
 
@@ -284,8 +277,9 @@ body {
       padding: 8px 16px;
       cursor: pointer;
       transition:
-        0.2s ease,
+        background 0.2s ease,
         color 0.2s ease;
+
       &:hover {
         background: $color-primary-light;
         color: $color-primary;
@@ -300,7 +294,6 @@ body {
   }
 
   @media (min-width: 992px) {
-    // Hover trên desktop
     &:hover .dropdown-menu {
       display: block;
       opacity: 1;
@@ -309,11 +302,7 @@ body {
   }
 
   @media (max-width: 991px) {
-    // Click trên mobile
     .dropdown-menu {
-      display: none;
-      opacity: 1;
-      visibility: visible;
       position: relative;
       top: 0;
       left: 0;
@@ -325,7 +314,6 @@ body {
   }
 }
 
-// User Menu trên desktop và mobile
 .user-menu,
 .user-menu-mobile {
   position: relative;
@@ -375,8 +363,9 @@ body {
       padding: 8px 16px;
       cursor: pointer;
       transition:
-        0.2s ease,
+        background 0.2s ease,
         color 0.2s ease;
+
       &:hover {
         background: $color-primary-light;
         color: $color-primary;
@@ -385,13 +374,11 @@ body {
   }
 
   @media (min-width: 992px) {
-    // Hover trên desktop
     &.user-menu {
       .user-dropdown {
         position: absolute;
         top: 100%;
         right: 0;
-        left: auto;
         list-style: none;
       }
 
@@ -404,12 +391,8 @@ body {
   }
 
   @media (max-width: 991px) {
-    // Click trên mobile
     &.user-menu-mobile {
       .user-dropdown {
-        display: none;
-        opacity: 1;
-        visibility: visible;
         position: relative;
         top: 0;
         left: 0;
@@ -418,12 +401,6 @@ body {
         background: transparent;
         padding: 0 16px;
         list-style: none;
-
-        &.show {
-          display: block;
-          opacity: 1;
-          visibility: visible;
-        }
       }
     }
   }

@@ -32,6 +32,7 @@ import { TrailerComponent } from './components/trailer/trailer.component';
 import { WatchMovieComponent } from './components/watch-movie/watch-movie.component';
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
+import { ScheduleComponent } from './components/schedule/schedule.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { UserComponent } from './user.component';
     AccountInfoComponent,
     HistoryBookingComponent,
     WatchMovieComponent,
+    ScheduleComponent,
   ],
   imports: [CommonModule, FormsModule, RouterModule, UserRoutingModule],
 })

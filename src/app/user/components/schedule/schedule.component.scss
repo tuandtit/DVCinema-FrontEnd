@@ -1,0 +1,192 @@
+@use 'variables' as *;
+@use 'common' as *;
+
+$color-primary: #1da1f2;
+$color-primary-light: rgba(29, 161, 242, 0.15);
+$color-text-dark: #1a1a1a;
+$color-accent: #1da1f2;
+$color-dropdown-bg: #ffffff;
+$box-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.12);
+$box-shadow-deep: 0 4px 12px rgba(0, 0, 0, 0.15);
+$border-color: #d1d5db;
+
+.container {
+  color: $color-text-dark;
+  margin-top: 10px;
+
+  .schedule-content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+
+    .cinema-menu {
+      position: relative;
+
+      .menu {
+        position: relative;
+
+        .menu-toggle {
+          padding: 12px 20px;
+          color: black;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-weight: 600;
+          font-size: 1rem;
+          box-shadow: $box-shadow-light;
+
+          &:hover {
+            background-color: $color-primary-light;
+            box-shadow: $box-shadow-deep;
+          }
+        }
+
+        .menu-level-1 {
+          list-style: none;
+          padding: 0;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          background-color: $color-dropdown-bg;
+          border: 1px solid $border-color;
+          border-radius: 5px;
+          box-shadow: $box-shadow-light;
+          width: 200px;
+          display: none;
+          z-index: 1000;
+
+          &.show {
+            display: block;
+          }
+
+          .menu-item {
+            position: relative;
+
+            .menu-label {
+              display: block;
+              text-decoration: none;
+              padding: 12px 15px;
+              cursor: pointer;
+              color: $color-text-dark;
+              font-weight: 500;
+
+              &:hover {
+                background-color: $color-primary-light;
+              }
+            }
+
+            .menu-level-2 {
+              list-style: none;
+              padding: 0;
+              margin: 0;
+              position: absolute;
+              top: 0;
+              left: 100%;
+              min-width: 200px;
+              background-color: $color-dropdown-bg;
+              border: 1px solid $border-color;
+              border-radius: 5px;
+              box-shadow: $box-shadow-deep;
+              display: none;
+              z-index: 1100;
+
+              &.show {
+                display: block;
+              }
+
+              .menu-item {
+                .menu-label {
+                  padding: 10px 15px;
+                  cursor: pointer;
+                  color: $color-text-dark;
+
+                  &:hover {
+                    background-color: $color-primary-light;
+                  }
+                }
+              }
+            }
+            &:hover .menu-level-2 {
+              display: block;
+            }
+          }
+        }
+        &:hover .menu-level-1 {
+          display: block;
+        }
+      }
+    }
+
+    .date-filter {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+
+      button {
+        padding: 12px 24px;
+        border: 2px solid $color-primary;
+        background-color: $color-dropdown-bg;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 1rem;
+        color: $color-text-dark;
+        transition: all 0.3s ease;
+        box-shadow: $box-shadow-light;
+
+        &.active {
+          background-color: $color-primary;
+          color: $color-dropdown-bg;
+          border-color: $color-primary;
+        }
+
+        &:hover {
+          background-color: $color-primary-light;
+          border-color: $color-primary;
+          color: $color-text-dark;
+          box-shadow: $box-shadow-deep;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .schedule-content {
+      flex-direction: column;
+      align-items: stretch;
+
+      .cinema-menu {
+        .menu {
+          .menu-level-1 {
+            position: static;
+            width: 100%;
+            box-shadow: none;
+            border: 1px solid $border-color;
+            border-radius: 5px;
+
+            .menu-item {
+              .menu-level-2 {
+                position: static;
+                min-width: 100%;
+                box-shadow: none;
+                border: none;
+                background-color: $color-dropdown-bg;
+              }
+            }
+          }
+        }
+      }
+
+      .date-filter {
+        margin-top: 10px;
+        gap: 8px;
+
+        button {
+          padding: 10px 20px;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}

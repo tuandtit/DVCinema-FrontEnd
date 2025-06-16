@@ -55,7 +55,6 @@ export class HomeComponent implements OnInit {
     this.isLoading = true;
     try {
       let status: string[] = [];
-      let isAvailableOnline: boolean | null = null;
 
       switch (this.filterType) {
         case 'online':

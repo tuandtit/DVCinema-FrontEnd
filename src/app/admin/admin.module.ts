@@ -8,7 +8,7 @@ import { AdminComponent } from './admin.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 import { BookingsComponent } from './components/bookings/bookings.component';
 import { CinemasComponent } from './components/cinemas/cinemas.component';
-import { HeaderComponent } from './components/header/header.component';
+import { AdminHeaderComponent } from './components/header/admin-header.component';
 import { MoviesComponent } from './components/movies/movies.component';
 import { QrScannerComponent } from './components/qr-scanner/qr-scanner.component';
 import { ShowtimesComponent } from './components/showtimes/showtimes.component';
@@ -27,7 +27,7 @@ LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
 @NgModule({
   declarations: [
     AdminComponent,
-    HeaderComponent,
+    AdminHeaderComponent,
     SidebarComponent,
     MoviesComponent,
     CinemasComponent,
@@ -51,7 +51,7 @@ LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
     CardModule,
     ProgressBarModule,
     DropdownModule,
-    ButtonModule
+    ButtonModule,
     // Nếu bạn muốn sử dụng NgChartsModule, hãy đảm bảo rằng module này đã được import chính xác
   ],
 })
