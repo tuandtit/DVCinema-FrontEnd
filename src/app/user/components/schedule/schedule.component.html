@@ -45,6 +45,14 @@
         </button>
       </div>
     </div>
+    <app-movie-list
+      [movies]="movies"
+      [isLoading]="isLoading"
+      (playTrailer)="playTrailer($event)"
+      (viewDetails)="viewDetails($event)"
+      (watchMovie)="watchMovie($event)"
+      (bookTicket)="bookTicket($event)"
+    ></app-movie-list>
     <!-- Trailer Modal -->
     <app-trailer-modal
       [showModal]="showTrailerModal"
@@ -59,6 +67,7 @@
       [showModal]="showCinemaModal"
       (close)="closeCinemaModal()"
       (proceed)="openConfirmModal($event)"
+      [cinemaId]="selectedCinema"
     ></app-cinema-showtime-modal>
 
     <!-- Confirm Booking Modal -->

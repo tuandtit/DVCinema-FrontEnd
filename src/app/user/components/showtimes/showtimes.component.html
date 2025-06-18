@@ -26,7 +26,7 @@
       </div>
     </div>
     <!-- Lọc theo ngày -->
-    <div class="date-filter">
+    <div class="date-filter" *ngIf="availableDates.length > 0">
       <button
         *ngFor="let date of availableDates"
         [class.active]="selectedDate === date"
@@ -48,6 +48,8 @@
         </button>
       </div>
     </div>
-    <p *ngIf="!filteredShowtimes?.length">Không có suất chiếu nào vào ngày này tại rạp này.</p>
+    <p *ngIf="!filteredShowtimes?.length && selectedDate">
+      Không có suất chiếu nào vào ngày này tại rạp này.
+    </p>
   </div>
 </div>

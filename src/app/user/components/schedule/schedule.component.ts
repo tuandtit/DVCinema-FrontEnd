@@ -22,7 +22,6 @@ import { ShowtimeService } from '../../../core/services/showtime.service';
 export class ScheduleComponent implements OnInit {
   // Movie data
   movies: Movie[] = [];
-  featuredMovies: Movie[] = [];
   filteredMovies: Movie[] = [];
 
   // Location & date
@@ -69,6 +68,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   generateAvailableDates(): void {
+    debugger;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     this.availableDates = Array.from({ length: 7 }, (_, i) => {
@@ -111,50 +111,36 @@ export class ScheduleComponent implements OnInit {
   }
 
   loadMovies(): void {
-    // if (!this.selectedDate || !this.selectedCinema) return;
-    // this.isLoading = true;
-    // const selectedDateStr = this.selectedDate.toISOString().split('T')[0];
-    // this.movieService.getMoviesByDateAndCinema(selectedDateStr, this.selectedCinema).subscribe({
-    //   next: (response) => {
-    //     this.isLoading = false;
-    //     if (response.status.code !== 200) return;
-    //     this.movies = response.data.contents.map((dto: MovieResponseDto) => ({
-    //       id: dto.id,
-    //       title: dto.title,
-    //       poster: dto.posterUrl,
-    //       trailer: dto.trailerUrl,
-    //       description: dto.description,
-    //       genres: this.getGenreNames(dto.genres),
-    //       director: dto.director.name,
-    //       actors: this.getActorNames(dto.actors),
-    //       duration: dto.duration,
-    //       releaseDate: dto.releaseDate,
-    //       status: dto.status || '',
-    //     }));
-    //     this.filteredMovies = this.movies;
-    //     this.totalPages = Math.ceil(this.filteredMovies.length / this.pageSize);
-    //     this.loadFeaturedMovies();
-    //   },
-    //   error: (err) => {
-    //     this.isLoading = false;
-    //     console.error('Lỗi khi lấy danh sách phim:', err);
-    //   },
-    // });
-  }
-
-  loadFeaturedMovies(): void {
-    this.featuredMovies = this.movies.slice(0, 3);
-  }
-
-  getPaginatedMovies(): Movie[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredMovies.slice(start, start + this.pageSize);
-  }
-
-  changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
-      this.currentPage = page;
-    }
+    debugger;
+    if (!this.selectedDate || !this.selectedCinema) return;
+    console.log(this.selectedDate);
+    this.isLoading = true;
+    const selectedDateStr = this.selectedDate.toLocaleDateString('en-CA');
+    this.movieService.getMoviesByDateAndCinema(selectedDateStr, this.selectedCinema).subscribe({
+      next: (response) => {
+        debugger;
+        this.isLoading = false;
+        if (response.status.code !== 200) return;
+        this.movies = response.data.map((dto: MovieResponseDto) => ({
+          id: dto.id,
+          title: dto.title,
+          poster: dto.posterUrl,
+          trailer: dto.trailerUrl,
+          description: dto.description,
+          genres: this.getGenreNames(dto.genres),
+          director: dto.director.name,
+          actors: this.getActorNames(dto.actors),
+          duration: dto.duration,
+          releaseDate: dto.releaseDate,
+          status: dto.status || '',
+        }));
+        this.filteredMovies = this.movies;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Lỗi khi lấy danh sách phim:', err);
+      },
+    });
   }
 
   selectDateAndLoadMovies(date: Date): void {

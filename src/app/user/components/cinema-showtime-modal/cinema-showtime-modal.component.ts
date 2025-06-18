@@ -20,6 +20,7 @@ import { Cinema } from '../../../core/models/cinema/cinema.model';
 export class CinemaShowtimeModalComponent {
   @Input() showModal: boolean = false;
   @Input() movie: Movie | null = null;
+  @Input() cinemaId: number | null = null;
   @Output() close = new EventEmitter<void>();
   @Output() proceed = new EventEmitter<{ cinema: Cinema; showtime: Showtime }>();
 

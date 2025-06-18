@@ -43,7 +43,7 @@ export class SeatService {
       .set('userId', userId.toString())
       .set('showtimeId', showtimeId.toString())
       .set('seatId', seatId.toString())
-      .set('ticketPrice', '5000');
+      .set('ticketPrice', ticketPrice);
     return this.http.post<ApiResponse<BaseDto>>(`${this.apiSeatByShowtime}/hold-seat`, null, {
       params,
     });

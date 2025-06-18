@@ -20,6 +20,7 @@ interface CinemaShowtime {
 export class ShowtimesComponent implements OnInit {
   @Input() movieId!: number;
   @Input() status: string = '';
+  @Input() cinemaId: number | null = null;
   @Output() bookShowtime = new EventEmitter<{ showtime: Showtime; cinema: Cinema }>();
   showtimes: Showtime[] = [];
   cities: City[] = [];
@@ -50,6 +51,19 @@ export class ShowtimesComponent implements OnInit {
           name: dto.name,
           cinemas: dto.cinemas,
         }));
+
+        if (this.cinemaId) {
+          // Tìm thành phố chứa cinemaId
+          const city = this.cities.find((city) =>
+            city.cinemas.some((cinema) => cinema.id === this.cinemaId)
+          );
+          if (city) {
+            this.selectedCity = city.id;
+            this.cinemasInCity = city.cinemas;
+            this.selectedCinema = this.cinemaId;
+            this.loadShowtimes(this.selectedCinema);
+          }
+        }
       },
       error: (err) => {
         console.error('Lỗi khi lấy danh sách thành phố:', err);

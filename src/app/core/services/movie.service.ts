@@ -1,12 +1,12 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { ApiResponse } from '../models/base-response/api.response';
+import { PagingResponse } from '../models/base-response/paging-response.dto';
+import { MovieRequestDto } from '../models/movie/movie-request.dto';
 import { MovieResponseDto } from '../models/movie/movie-response.dto';
 import { MovieSearchRequest } from '../models/movie/movie-search-request.dto';
-import { PagingResponse } from '../models/base-response/paging-response.dto';
-import { ApiResponse } from '../models/base-response/api.response';
-import { MovieRequestDto } from '../models/movie/movie-request.dto';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -112,5 +112,15 @@ export class MovieService {
 
   deleteMovie(movieId: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${movieId}`);
+  }
+
+  getMoviesByDateAndCinema(
+    selectedDateStr: string,
+    selectedCinema: number
+  ): Observable<ApiResponse<MovieResponseDto[]>> {
+    const params = new HttpParams()
+      .set('date', selectedDateStr) 
+      .set('cinemaId', selectedCinema.toString());
+    return this.http.get<ApiResponse<MovieResponseDto[]>>(`${this.apiUrl}/by-date`, { params });
   }
 }

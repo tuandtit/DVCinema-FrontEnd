@@ -71,7 +71,7 @@ export class MoviesComponent implements OnInit {
 
   loadMovies(): void {
     this.movieService
-      .getMovies(this.page - 1, this.size, this.query, this.statusFilter ? [this.statusFilter] : [])
+      .getMovies(this.page, this.size, this.query, this.statusFilter ? [this.statusFilter] : [])
       .subscribe({
         next: (response) => {
           if (response.status.code === 200) {
