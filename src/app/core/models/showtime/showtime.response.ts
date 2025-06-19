@@ -1,10 +1,13 @@
 export interface ShowtimeResponseDto {
   id: number;
   movieId: number;
+  movieTitle: string;
   roomId: number;
   roomName: string;
   cinemaId: number;
-  showDate: string; // Thời gian bắt đầu
-  startTime: string; // Thời gian kết thúc
+  cinemaName: string;
+  showDate: string;
+  startTime: string;
+  endTime: string;
   ticketPrice: number;
 }

@@ -14,6 +14,7 @@ export class AuthAdminGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (!this.accountService.isLoggedIn()) {
+      this.accountService.setReturnUrl(state.url);
       this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
       return false;
     }

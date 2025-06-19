@@ -19,7 +19,7 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private accountService: AccountService,
+    private accountService: AccountService
   ) {
     this.username = '';
     this.password = '';
@@ -40,8 +40,9 @@ export class LoginComponent {
         // Xử lý khi kết quả trả về khi đăng nhập thành công
         if (response && (response.status.code === 200 || response.status.code === 201)) {
           debugger;
-          console.log('true');
-          this.accountService.clearReturnUrl();
+          console.log(this.accountService.getReturnUrl());
+          this.navigate(this.accountService.getReturnUrl() || '/');
+          // this.accountService.clearReturnUrl();
 
           this.accountService.loginSuccess();
         } else {

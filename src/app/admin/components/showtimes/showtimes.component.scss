@@ -13,7 +13,7 @@
 
   .filters {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 15px;
     margin-bottom: 30px;
     background: #fff;
@@ -21,41 +21,19 @@
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
-    .search {
-      position: relative;
-      flex: 1;
-
-      input {
-        width: 100%;
-        padding: 10px 10px 10px 35px;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-
-        &:focus {
-          outline: none;
-          border-color: #3498db;
-          box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        &::placeholder {
-          color: #95a5a6;
-        }
-      }
-    }
-
-    .status-filter {
+    .filter-group {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      flex: 1;
 
       label {
         color: #2c3e50;
         font-weight: 500;
+        margin-bottom: 8px;
       }
 
-      select.custom-select {
+      .custom-select,
+      .custom-input {
         padding: 10px;
         border: 1px solid #dee2e6;
         border-radius: 8px;
@@ -69,6 +47,11 @@
           border-color: #3498db;
           box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
+      }
+
+      .custom-input[type='date'] {
+        width: 100%;
+        cursor: text;
       }
     }
 
@@ -119,7 +102,7 @@
       tbody {
         tr {
           border-bottom: 1px solid #dee2e6;
-          transition: background 0.2s ease;
+          transition: 0.2s ease background-color;
 
           &:hover {
             background: #f9fafc;
@@ -135,23 +118,6 @@
               color: #7f8c8d;
               padding: 20px;
               font-style: italic;
-            }
-
-            .status {
-              padding: 6px 12px;
-              border-radius: 12px;
-              font-size: 0.85rem;
-              font-weight: 500;
-
-              &.showing {
-                background: #2ecc71;
-                color: #fff;
-              }
-
-              &.upcoming {
-                background: #f1c40f;
-                color: #fff;
-              }
             }
 
             &.action-cell {
@@ -301,14 +267,13 @@
       flex-direction: column;
       align-items: stretch;
 
-      .search,
-      .status-filter,
+      .filter-group,
       .add-btn {
         width: 100%;
       }
 
-      .search input,
-      .status-filter select,
+      .custom-select,
+      .custom-input,
       .add-btn {
         font-size: 0.9rem;
       }
