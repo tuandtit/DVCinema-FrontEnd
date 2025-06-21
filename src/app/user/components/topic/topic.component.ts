@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TopicService } from '../../../core/services/topic.service';
+import { Router } from '@angular/router';
 
 interface Topic {
   id: number;
@@ -8,10 +9,10 @@ interface Topic {
 }
 
 @Component({
-    selector: 'app-topic',
-    templateUrl: './topic.component.html',
-    styleUrls: ['./topic.component.scss'],
-    standalone: false
+  selector: 'app-topic',
+  templateUrl: './topic.component.html',
+  styleUrls: ['./topic.component.scss'],
+  standalone: false,
 })
 export class TopicComponent implements OnInit {
   topics: Topic[] = [];
@@ -30,12 +31,17 @@ export class TopicComponent implements OnInit {
     'linear-gradient(135deg, #d4a5eb, #84b6f4)',
   ];
 
-  constructor(private topicService: TopicService) {}
+  constructor(
+    private topicService: TopicService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadTopics();
   }
-
+  searchMoviceByGenre(arg0: number) {
+    this.router.navigate(['/search-page'], { queryParams: { genreId: arg0 } });
+  }
   loadTopics(): void {
     this.topicService.getTopics().subscribe({
       next: (response) => {

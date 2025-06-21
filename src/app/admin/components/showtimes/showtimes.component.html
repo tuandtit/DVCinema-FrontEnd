@@ -8,9 +8,10 @@
       <select
         id="cinema"
         [(ngModel)]="selectedCinemaId"
-        (change)="loadShowtimes()"
+        (change)="onCinemaChange()"
         class="custom-select"
       >
+        <option value="0" disabled>Chọn rạp</option>
         <option *ngFor="let cinema of cinemas" [value]="cinema.id">{{ cinema.name }}</option>
       </select>
     </div>
@@ -21,11 +22,10 @@
         id="showDate"
         [(ngModel)]="selectedShowDate"
         (change)="loadShowtimes()"
-        [min]="today"
         class="custom-input"
       />
     </div>
-    <button class="add-btn" (click)="showAddForm = true"><i class="fas fa-plus"></i> Thêm</button>
+    <button class="add-btn" (click)="openAddForm()"><i class="fas fa-plus"></i> Thêm</button>
   </div>
 
   <!-- Bảng danh sách suất chiếu -->
@@ -48,12 +48,9 @@
           <td>{{ showtime.movieTitle }}</td>
           <td>{{ showtime.roomName }}</td>
           <td>{{ formatDateTime(showtime.startTime) }}</td>
-          <td>{{ showtime.endTime ? formatDateTime(showtime.endTime) : '--' }}</td>
+          <td>{{ showtime.endTime ? formatDateTime(showtime.endTime) : '-' }}</td>
           <td>{{ formatPrice(showtime.ticketPrice) }}</td>
           <td class="action-cell">
-            <button class="action-btn edit-btn" (click)="openEditForm(showtime)" title="Sửa">
-              <i class="fas fa-edit"></i>
-            </button>
             <button class="action-btn delete-btn" (click)="deleteShowtime(showtime.id)" title="Xóa">
               <i class="fas fa-trash"></i>
             </button>
@@ -71,108 +68,79 @@
     <div class="modal-content">
       <h3><i class="fas fa-plus-circle"></i> Thêm suất chiếu mới</h3>
       <div class="form-group">
-        <label for="movieTitle">Phim:</label>
-        <input
-          type="text"
-          id="movieTitle"
-          [(ngModel)]="newShowtime.movieTitle"
-          class="w-full p-2 border rounded-md"
-        />
+        <label for="add-cinema">Rạp chiếu:</label>
+        <select
+          id="add-cinema"
+          [(ngModel)]="newShowtime.cinemaId"
+          (change)="updateCinemaRoomsForAddForm()"
+          class="custom-select"
+        >
+          <option value="0" disabled>Chọn rạp</option>
+          <option *ngFor="let cinema of cinemas" [value]="cinema.id">{{ cinema.name }}</option>
+        </select>
       </div>
       <div class="form-group">
-        <label for="roomName">Phòng chiếu:</label>
+        <label for="room">Phòng chiếu:</label>
+        <select
+          id="room"
+          [(ngModel)]="newShowtime.roomId"
+          (change)="updateRoomName()"
+          class="custom-select"
+          [disabled]="!newShowtime.cinemaId"
+        >
+          <option value="0" disabled>Chọn phòng</option>
+          <option *ngFor="let room of selectedCinemaRooms" [value]="room.id">
+            {{ room.name }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="movie">Phim:</label>
+        <div class="relative">
+          <input
+            type="text"
+            id="movieSearch"
+            [(ngModel)]="movieSearchQuery"
+            (input)="searchMovies()"
+            (focus)="loadMovies()"
+            placeholder="Tìm kiếm phim..."
+            class="w-full p-2 border rounded-md"
+          />
+          <div class="movie-dropdown" *ngIf="showMovieDropdown">
+            <div class="movie-list" (scroll)="onMovieListScroll($event)">
+              <div class="movie-item" *ngFor="let movie of movies" (click)="selectMovie(movie)">
+                <img [src]="movie.posterUrl" alt="{{ movie.title }}" class="movie-poster" />
+                <div class="movie-info">
+                  <div class="movie-title">{{ movie.title }}</div>
+                  <div class="movie-genres">{{ getGenres(movie) }}</div>
+                </div>
+              </div>
+              <div class="loading" *ngIf="loadingMovies">Đang tải...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="showDate">Ngày chiếu:</label>
         <input
-          type="text"
-          id="roomName"
-          [(ngModel)]="newShowtime.roomName"
+          type="date"
+          id="showDate"
+          [(ngModel)]="newShowtime.showDate"
+          [min]="today"
           class="w-full p-2 border rounded-md"
         />
       </div>
       <div class="form-group">
         <label for="startTime">Thời gian bắt đầu:</label>
         <input
-          type="datetime-local"
+          type="time"
           id="startTime"
           [(ngModel)]="newShowtime.startTime"
           class="w-full p-2 border rounded-md"
         />
       </div>
-      <div class="form-group">
-        <label for="endTime">Thời gian kết thúc:</label>
-        <input
-          type="datetime-local"
-          id="endTime"
-          [(ngModel)]="newShowtime.endTime"
-          class="w-full p-2 border rounded-md"
-        />
-      </div>
-      <div class="form-group">
-        <label for="ticketPrice">Giá vé:</label>
-        <input
-          type="number"
-          id="ticketPrice"
-          [(ngModel)]="newShowtime.ticketPrice"
-          class="w-full p-2 border rounded-md"
-        />
-      </div>
       <div class="form-actions">
         <button class="save-btn" (click)="addShowtime()"><i class="fas fa-save"></i> Thêm</button>
-        <button class="cancel-btn" (click)="cancelForm()"><i class="fas fa-times"></i> Hủy</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Form sửa suất chiếu -->
-  <div class="modal" *ngIf="showEditForm">
-    <div class="modal-content">
-      <h3><i class="fas fa-edit"></i> Sửa suất chiếu</h3>
-      <div class="form-group">
-        <label for="edit-movieTitle">Phim:</label>
-        <input
-          type="text"
-          id="edit-movieTitle"
-          [(ngModel)]="editShowtime!.movieTitle"
-          class="w-full p-2 border rounded-md"
-        />
-      </div>
-      <div class="form-group">
-        <label for="edit-roomName">Phòng chiếu:</label>
-        <input
-          type="text"
-          id="edit-roomName"
-          [(ngModel)]="editShowtime!.roomName"
-          class="w-full p-2 border rounded-md"
-        />
-      </div>
-      <div class="form-group">
-        <label for="edit-startTime">Thời gian bắt đầu:</label>
-        <input
-          type="datetime-local"
-          id="edit-startTime"
-          [(ngModel)]="editShowtime!.startTime"
-          class="w-full p-2 border rounded-md"
-        />
-      </div>
-      <div class="form-group">
-        <label for="edit-endTime">Thời gian kết thúc:</label>
-        <input
-          type="datetime-local"
-          id="edit-endTime"
-          [(ngModel)]="editShowtime!.endTime"
-          class="w-full p-2 border rounded-md"
-        />
-      </div>
-      <div class="form-group">
-        <label for="edit-ticketPrice">Giá vé:</label>
-        <input
-          type="number"
-          id="edit-ticketPrice"
-          [(ngModel)]="editShowtime!.ticketPrice"
-          class="w-full p-2 border rounded-md"
-        />
-      </div>
-      <div class="form-actions">
-        <button class="save-btn" (click)="updateShowtime()"><i class="fas fa-save"></i> Lưu</button>
         <button class="cancel-btn" (click)="cancelForm()"><i class="fas fa-times"></i> Hủy</button>
       </div>
     </div>

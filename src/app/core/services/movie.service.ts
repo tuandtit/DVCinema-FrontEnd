@@ -20,6 +20,7 @@ export class MovieService {
     page: number,
     size: number,
     query: string,
+    genreId: string,
     status: string[]
   ): Observable<ApiResponse<PagingResponse<MovieResponseDto>>> {
     const request: MovieSearchRequest = {
@@ -32,6 +33,7 @@ export class MovieService {
       },
       query: query,
       status: status,
+      genreId: genreId,
     };
 
     return this.http.post<ApiResponse<PagingResponse<MovieResponseDto>>>(
@@ -119,7 +121,7 @@ export class MovieService {
     selectedCinema: number
   ): Observable<ApiResponse<MovieResponseDto[]>> {
     const params = new HttpParams()
-      .set('date', selectedDateStr) 
+      .set('date', selectedDateStr)
       .set('cinemaId', selectedCinema.toString());
     return this.http.get<ApiResponse<MovieResponseDto[]>>(`${this.apiUrl}/by-date`, { params });
   }

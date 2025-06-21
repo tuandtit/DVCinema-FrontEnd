@@ -8,7 +8,7 @@
         class="topic-item"
         *ngFor="let topic of topics; let i = index"
         [ngStyle]="getGradientStyle(i)"
-        [routerLink]="['/topics', topic.slug]"
+        (click)="searchMoviceByGenre(topic.id)"
       >
         <h3>{{ topic.name }}</h3>
         <p>Xem toàn bộ</p>

@@ -115,7 +115,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
           this.currentPage = 1;
           this.suggestions = [];
           this.canLoadMore = true;
-          return this.movieService.getMovies(this.currentPage, this.pageSize, query, []);
+          return this.movieService.getMovies(this.currentPage, this.pageSize, query, '', []);
         })
       )
       .subscribe({
@@ -180,24 +180,26 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
     this.isLoadingMore = true;
     this.currentPage++;
-    this.movieService.getMovies(this.currentPage, this.pageSize, this.searchQuery, []).subscribe({
-      next: (response) => {
-        if (response.status.code !== 200) {
+    this.movieService
+      .getMovies(this.currentPage, this.pageSize, this.searchQuery, '', [])
+      .subscribe({
+        next: (response) => {
+          if (response.status.code !== 200) {
+            this.isLoadingMore = false;
+            return;
+          }
+          const newSuggestions = response.data.contents.map((dto: MovieResponseDto) => ({
+            id: dto.id,
+            poster: dto.posterUrl,
+            title: dto.title,
+            genre: dto.genres.join(', '),
+          }));
+          this.suggestions = [...this.suggestions, ...newSuggestions];
+          this.canLoadMore = this.currentPage < this.totalPages - 1;
           this.isLoadingMore = false;
-          return;
-        }
-        const newSuggestions = response.data.contents.map((dto: MovieResponseDto) => ({
-          id: dto.id,
-          poster: dto.posterUrl,
-          title: dto.title,
-          genre: dto.genres.join(', '),
-        }));
-        this.suggestions = [...this.suggestions, ...newSuggestions];
-        this.canLoadMore = this.currentPage < this.totalPages - 1;
-        this.isLoadingMore = false;
-      },
-      error: () => (this.isLoadingMore = false),
-    });
+        },
+        error: () => (this.isLoadingMore = false),
+      });
   }
 
   onSearchEnter(): void {

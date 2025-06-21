@@ -16,6 +16,7 @@ import { GenreDto } from '../../../core/models/movie/genre.dto';
 })
 export class SearchPageComponent implements OnInit {
   query: string = '';
+  genreId: string = '';
   searchType: 'movies' | 'actors' = 'movies';
   movies: Movie[] = [];
   actors: ContributorDto[] = [];
@@ -36,8 +37,10 @@ export class SearchPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    debugger;
     this.route.queryParams.subscribe((params) => {
       this.query = params['query'] || '';
+      this.genreId = params['genreId'] || 1;
       this.searchType = (params['type'] as 'movies' | 'actors') || 'movies';
       this.currentPage = +params['page'] || 1;
       this.search();
@@ -50,7 +53,7 @@ export class SearchPageComponent implements OnInit {
     try {
       if (this.searchType === 'movies') {
         const response = await this.movieService
-          .getMovies(this.currentPage, this.pageSize, this.query, [])
+          .getMovies(this.currentPage, this.pageSize, this.query, this.genreId, [])
           .toPromise();
 
         if (response.status.code !== 200) {

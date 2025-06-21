@@ -25,7 +25,7 @@
       <p><strong>Tên Phim:</strong> {{ ticket.movieTitle }}</p>
       <p><strong>Thời Gian Chiếu:</strong> {{ ticket.showtime }}</p>
       <p><strong>Địa Chỉ:</strong> {{ ticket.address }}</p>
-      <p><strong>Giá:</strong> {{ ticket.price | currency: 'USD' }}</p>
+      <p><strong>Giá:</strong> {{ ticket.price | currency: 'VND' }}</p>
     </div>
   </div>
 
@@ -34,13 +34,6 @@
   </ng-template>
 
   <div class="action-buttons">
-    <button
-      class="btn btn-primary mr-2"
-      (click)="generatePDF()"
-      [disabled]="isLoading || tickets.length === 0"
-    >
-      Tải PDF
-    </button>
     <button class="btn btn-secondary" (click)="goBack()" [disabled]="isLoading">Quay Lại</button>
   </div>
 </div>

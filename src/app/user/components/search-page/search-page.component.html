@@ -3,7 +3,7 @@
     <app-loading-spinner [isLoading]="isLoading"></app-loading-spinner>
 
     <ng-container *ngIf="!isLoading">
-      <h2>Kết Quả Tìm Kiếm: "{{ query }}"</h2>
+      <h2>Kết Quả Tìm Kiếm: "{{ query || 'Theo chủ đề' }}"</h2>
 
       <!-- Quick Filter -->
       <div class="quick-filter">

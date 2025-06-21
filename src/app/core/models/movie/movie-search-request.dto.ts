@@ -6,4 +6,5 @@ export interface MovieSearchRequest {
   };
   query: string;
   status: string[];
+  genreId: string;
 }

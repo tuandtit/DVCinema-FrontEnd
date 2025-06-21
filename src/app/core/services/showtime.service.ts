@@ -61,6 +61,18 @@ export class ShowtimeService {
     );
   }
 
+  deleteShowtime(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`).pipe(
+      map((response) => {
+        if (response.status.code !== 204) {
+          throw new Error(response.message || 'Failed to delete showtime');
+        }
+        return response;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An error occurred';
 
